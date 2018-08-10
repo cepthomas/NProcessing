@@ -9,8 +9,7 @@ using NLog;
 using MoreLinq;
 using Nebulator.Common;
 using Nebulator.Script;
-
-
+using Markdig;
 
 namespace NProcessing
 {
@@ -93,22 +92,14 @@ namespace NProcessing
             btnWrap.Checked = UserSettings.TheSettings.WordWrap;
             btnWrap.Click += (object _, EventArgs __) => { UserSettings.TheSettings.WordWrap = btnWrap.Checked; txtView.WordWrap = btnWrap.Checked; };
 
-            // Init main UI from settings
-            if (UserSettings.TheSettings.MainFormInfo.Width == 0)
-            {
-                WindowState = FormWindowState.Maximized;
-            }
-            else
-            {
-                Location = new Point(UserSettings.TheSettings.MainFormInfo.X, UserSettings.TheSettings.MainFormInfo.Y);
-                Size = new Size(UserSettings.TheSettings.MainFormInfo.Width, UserSettings.TheSettings.MainFormInfo.Height);
-                WindowState = FormWindowState.Normal;
-            }
+            // Init UI from settings
+            Location = new Point(UserSettings.TheSettings.MainFormInfo.X, UserSettings.TheSettings.MainFormInfo.Y);
+            Size = new Size(UserSettings.TheSettings.MainFormInfo.Width, UserSettings.TheSettings.MainFormInfo.Height);
+            WindowState = FormWindowState.Normal;
 
-            _surface.Size = new Size(UserSettings.TheSettings.SurfaceFormInfo.Width, UserSettings.TheSettings.SurfaceFormInfo.Height);
             _surface.Visible = true;
+            _surface.Location = new Point(Right, Top);
             _surface.TopMost = UserSettings.TheSettings.LockUi;
-            _surface.Location = new Point(UserSettings.TheSettings.SurfaceFormInfo.X, UserSettings.TheSettings.SurfaceFormInfo.Y);
 
             PopulateRecentMenu();
 
@@ -519,17 +510,7 @@ namespace NProcessing
         /// </summary>
         void SaveSettings()
         {
-            UserSettings.TheSettings.SurfaceFormInfo.FromForm(_surface);
-
-            if (WindowState == FormWindowState.Maximized)
-            {
-                UserSettings.TheSettings.MainFormInfo.Width = 0; // indicates maximized
-                UserSettings.TheSettings.MainFormInfo.Height = 0;
-            }
-            else
-            {
-                UserSettings.TheSettings.MainFormInfo.FromForm(this);
-            }
+            UserSettings.TheSettings.MainFormInfo.FromForm(this);
 
             UserSettings.TheSettings.Save();
         }
@@ -537,61 +518,48 @@ namespace NProcessing
         /// <summary>
         /// Edit the options in a property grid.
         /// </summary>
-        void Settings_Click(object sender, EventArgs e) // TODO
+        void Settings_Click(object sender, EventArgs e)
         {
-            //using (Form f = new Form()
-            //{
-            //    Text = "User Settings",
-            //    Size = new Size(350, 400),
-            //    StartPosition = FormStartPosition.Manual,
-            //    Location = new Point(200, 200),
-            //    FormBorderStyle = FormBorderStyle.FixedToolWindow,
-            //    ShowIcon = false,
-            //    ShowInTaskbar = false
-            //})
-            //{
-            //    PropertyGridEx pg = new PropertyGridEx()
-            //    {
-            //        Dock = DockStyle.Fill,
-            //        PropertySort = PropertySort.NoSort,
-            //        SelectedObject = UserSettings.TheSettings
-            //    };
+            using (Form f = new Form()
+            {
+                Text = "User Settings",
+                Size = new Size(350, 400),
+                StartPosition = FormStartPosition.Manual,
+                Location = new Point(200, 200),
+                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                ShowIcon = false,
+                ShowInTaskbar = false
+            })
+            {
+                PropertyGrid pg = new PropertyGrid()
+                {
+                    Dock = DockStyle.Fill,
+                    PropertySort = PropertySort.NoSort,
+                    SelectedObject = UserSettings.TheSettings
+                };
 
-            //    //// Supply the midi options. There should be a cleaner way than this but the ComponentModel is a hard wrestle.
-            //    //ListSelector.Options.Clear();
-            //    //ListSelector.Options.Add("MidiIn", _device1.ProtocolInputs);
-            //    //ListSelector.Options.Add("MidiOut", _device1.ProtocolOutputs);
+                // Detect changes of interest.
+                bool ctrls = false;
+                pg.PropertyValueChanged += (sdr, args) =>
+                {
+                    string p = args.ChangedItem.PropertyDescriptor.Name;
+                    ctrls |= (p.Contains("Font") | p.Contains("Color"));
+                };
 
-            //    // Detect changes of interest.
-            //    //bool midi = false;
-            //    bool ctrls = false;
-            //    pg.PropertyValueChanged += (sdr, args) =>
-            //    {
-            //        string p = args.ChangedItem.PropertyDescriptor.Name;
-            //        //midi |= p.Contains("Midi");
-            //        ctrls |= (p.Contains("Font") | p.Contains("Color"));
-            //    };
+                f.Controls.Add(pg);
+                f.ShowDialog();
 
-            //    f.Controls.Add(pg);
-            //    f.ShowDialog();
+                if (ctrls)
+                {
+                    MessageBox.Show("UI changes require a restart to take effect.");
+                }
 
-            //    //// Figure out what changed - each handled differently.
-            //    //if (midi)
-            //    //{
-            //    //    _device1.Init();
-            //    //}
+                // Always safe to update these.
+                SetUiTimerPeriod();
+                _surface.TopMost = UserSettings.TheSettings.LockUi;
 
-            //    if (ctrls)
-            //    {
-            //        MessageBox.Show("UI changes require a restart to take effect.");
-            //    }
-
-            //    // Always safe to update these.
-            //    SetUiTimerPeriod();
-            //    _surface.TopMost = UserSettings.TheSettings.LockUi;
-
-            //    SaveSettings();
-            //}
+                SaveSettings();
+            }
         }
         #endregion
 
@@ -663,20 +631,34 @@ namespace NProcessing
         /// <summary>
         /// The meaning of life.
         /// </summary>
-        void About_Click(object sender, EventArgs e)
+        void About_Click(object sender, EventArgs e) // TODO
         {
-            //About dlg = new About(); TODO
-            //dlg.ShowDialog();
+            using (Form f = new Form()
+            {
+                Text = "User Settings",
+                Size = new Size(350, 400),
+                StartPosition = FormStartPosition.Manual,
+                Location = new Point(200, 200),
+                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                ShowIcon = false,
+                ShowInTaskbar = false
+            })
+            {
+                WebBrowser b = new WebBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = UserSettings.TheSettings.BackColor
+                };
 
-            //private void About_Load(object sender, EventArgs e)
-            //{
-            //    BackColor = UserSettings.TheSettings.BackColor;
+                f.Controls.Add(b);
 
-            //    string s = Markdown.ToHtml(File.ReadAllText(@"Resources\README.md"));
-            //    // Insert some style.
-            //    s = s.Insert(0, $"<style>body {{ background - color: {UserSettings.TheSettings.BackColor.Name}; }}</style>");
-            //    browser.DocumentText = s;
-            //}
+                string s = Markdown.ToHtml(File.ReadAllText(@"README.md"));
+                // Insert some style.
+                s = s.Insert(0, $"<style>body {{ background - color: {UserSettings.TheSettings.BackColor.Name}; }}</style>");
+                b.DocumentText = s;
+
+                f.Show();
+            }
         }
         #endregion
     }

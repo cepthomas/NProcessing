@@ -43,6 +43,9 @@
     <Reference Include="Nebulator.Common">
       <HintPath>lib\Nebulator.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Nebulator.Protocol">
+      <HintPath>lib\Nebulator.Protocol.dll</HintPath>
+    </Reference>
     <Reference Include="Nebulator.Script">
       <HintPath>lib\Nebulator.Script.dll</HintPath>
     </Reference>
@@ -121,6 +124,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Goupil .ico" />
   </ItemGroup>
   <ItemGroup>

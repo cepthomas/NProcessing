@@ -497,9 +497,6 @@
             <param name="key">Note name and octave.</param>
             <returns>Array of notes or empty if invalid.</returns>
         </member>
-        <member name="F:Nebulator.Script.ScriptCore._rand">
-            <summary>Script randomizer.</summary>
-        </member>
         <member name="F:Nebulator.Script.ScriptCore._textPaint">
             <summary>Current font to draw.</summary>
         </member>
@@ -521,6 +518,18 @@
         <member name="F:Nebulator.Script.ScriptCore._smooth">
             <summary>Smoothing option.</summary>
         </member>
+        <member name="F:Nebulator.Script.ScriptCore._logger">
+            <summary>My logger.</summary>
+        </member>
+        <member name="F:Nebulator.Script.ScriptCore._disposed">
+            <summary>Resource clean up.</summary>
+        </member>
+        <member name="F:Nebulator.Script.ScriptCore._rand">
+            <summary>Script randomizer.</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptCore.Protocol">
+            <summary>Protocol to use.</summary>
+        </member>
         <member name="P:Nebulator.Script.ScriptCore.Loop">
             <summary>Loop option.</summary>
         </member>
@@ -529,15 +538,6 @@
         </member>
         <member name="P:Nebulator.Script.ScriptCore.Canvas">
             <summary>Current working object to draw on.</summary>
-        </member>
-        <member name="F:Nebulator.Script.ScriptCore._logger">
-            <summary>My logger.</summary>
-        </member>
-        <member name="F:Nebulator.Script.ScriptCore._disposed">
-            <summary>Resource clean up.</summary>
-        </member>
-        <member name="P:Nebulator.Script.ScriptCore.Protocol">
-            <summary>Protocol to use.</summary>
         </member>
         <member name="P:Nebulator.Script.ScriptCore.StepTime">
             <summary>Main -> Script</summary>
@@ -691,17 +691,6 @@
             <summary>
             Initialize form controls.
             </summary>
-        </member>
-        <member name="M:Nebulator.Script.Surface.Surface_Resize(System.Object,System.EventArgs)">
-            <summary>
-            Handle resize event.
-            </summary>
-        </member>
-        <member name="M:Nebulator.Script.Surface.CleanupBitmap(System.Boolean)">
-            <summary>
-            General purpose bitmap utility.
-            </summary>
-            <param name="regen">True to recreate.</param>
         </member>
         <member name="M:Nebulator.Script.Surface.InitSurface(Nebulator.Script.ScriptCore)">
             <summary>
