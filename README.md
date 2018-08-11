@@ -1,19 +1,15 @@
 
 # What It Is
-Coming soon!
-
-The script syntax is roughly based on that used by [Processing](https://processing.org/), combined with C# language features. In fact, a subset of the Processing graphics functions is implemented to support the UI/graphical aspects. Simple Processing scripts should port easily and run fine.
+NProcessing is a partial port of [Processing](https://processing.org/) to the .NET/C# world.
+Simple Processing scripts should port easily and run fine. A porting guide is included
 
 For lots more info see the [Wiki](https://github.com/cepthomas/NProcessing/wiki)
-
 
 # Bonus Stuff
 This project contains a bunch of components that are either recycled or created for this. Most could be stripped out for subsequent reuse.
 - A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - Multiple file change watcher.
 - General purpose embedded C# in memory compiler.
-- Super lightweight unit tester for when NUnit is too much.
-
 
 # Third Party
 This application uses these excellent FOSS components:
