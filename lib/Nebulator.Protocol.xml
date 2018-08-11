@@ -57,6 +57,21 @@
         <member name="M:Nebulator.Protocol.IProtocol.Dispose">
             <summary>Clean up resources.</summary>
         </member>
+        <member name="F:Nebulator.Protocol.ProtocolSettings._fn">
+            <summary>The file name.</summary>
+        </member>
+        <member name="P:Nebulator.Protocol.ProtocolSettings.TheSettings">
+            <summary>Current global user settings.</summary>
+        </member>
+        <member name="M:Nebulator.Protocol.ProtocolSettings.#ctor">
+            <summary>Default constructor.</summary>
+        </member>
+        <member name="M:Nebulator.Protocol.ProtocolSettings.Save">
+            <summary>Save object to file.</summary>
+        </member>
+        <member name="M:Nebulator.Protocol.ProtocolSettings.Load(System.String)">
+            <summary>Create object from file.</summary>
+        </member>
         <member name="T:Nebulator.Protocol.Step">
             <summary>
             Base class for internal interface representation of a compiled event to be sent or received.

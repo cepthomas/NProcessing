@@ -803,6 +803,11 @@
             <param name="max"></param>
             <returns></returns>
         </member>
+        <member name="T:Nebulator.Common.FormInfo">
+            <summary>
+            General purpose container for persistence.
+            </summary>
+        </member>
         <member name="T:Nebulator.Common.CheckBoxRenderer">
             <summary>
             Custom renderer for toolstrip checkbox color.

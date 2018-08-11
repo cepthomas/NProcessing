@@ -73,7 +73,7 @@ namespace NProcessing
         }
 
         /// <summary>
-        /// Initialize form controls.
+        /// Initialize form controls. TODO colors stil funky.
         /// </summary>
         void MainForm_Load(object sender, EventArgs e)
         {
@@ -116,7 +116,7 @@ namespace NProcessing
             SetUiTimerPeriod();
             _timer.Start();
 
-            string f = @"C:\Dev\Nebulator\Examples\generative1.neb";
+            string f = @"C:\Dev\NProcessing\Examples\generative1.np";
             string s = OpenFile(f);
 
             if (s != "")
@@ -186,7 +186,7 @@ namespace NProcessing
             {
                 NebCompiler compiler = new NebCompiler();
 
-                // Save internal nebp file vals now as they will be reloaded during compile.
+                // Save internal npp file vals now as they will be reloaded during compile.
                 _npVals.Save();
 
                 // Compile now.
@@ -355,13 +355,13 @@ namespace NProcessing
         }
 
         /// <summary>
-        /// Allows the user to select a neb file from file system.
+        /// Allows the user to select a np file from file system.
         /// </summary>
         void Open_Click(object sender, EventArgs e)
         {
             OpenFileDialog openDlg = new OpenFileDialog()
             {
-                Filter = "NProcessing files (*.neb)|*.neb",
+                Filter = "NProcessing files (*.np)|*.np",
                 Title = "Select a NProcessing file"
             };
 
@@ -372,9 +372,9 @@ namespace NProcessing
         }
 
         /// <summary>
-        /// Common neb file opener.
+        /// Common np file opener.
         /// </summary>
-        /// <param name="fn">The neb file to open.</param>
+        /// <param name="fn">The np file to open.</param>
         /// <returns>Error string or empty if ok.</returns>
         public string OpenFile(string fn)
         {
@@ -384,8 +384,8 @@ namespace NProcessing
             {
                 try
                 {
-                    _logger.Info($"Reading neb file: {fn}");
-                    _npVals = Bag.Load(fn.Replace(".neb", ".nebp"));
+                    _logger.Info($"Reading np file: {fn}");
+                    _npVals = Bag.Load(fn.Replace(".np", ".npp"));
                     _fn = fn;
 
                     // This may be coming from the web service...
@@ -405,7 +405,7 @@ namespace NProcessing
                 }
                 catch (Exception ex)
                 {
-                    ret = $"Couldn't open the neb file: {fn} because: {ex.Message}";
+                    ret = $"Couldn't open the np file: {fn} because: {ex.Message}";
                     _logger.Error(ret);
                 }
 
@@ -444,7 +444,7 @@ namespace NProcessing
         }
 
         /// <summary>
-        /// One or more neb files have changed so reload/compile.
+        /// One or more np files have changed so reload/compile.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -631,23 +631,23 @@ namespace NProcessing
         /// <summary>
         /// The meaning of life.
         /// </summary>
-        void About_Click(object sender, EventArgs e) // TODO
+        void About_Click(object sender, EventArgs e)
         {
             using (Form f = new Form()
             {
                 Text = "User Settings",
-                Size = new Size(350, 400),
+                Size = new Size(800, 700),
                 StartPosition = FormStartPosition.Manual,
-                Location = new Point(200, 200),
-                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                Location = new Point(200, 10),
+                FormBorderStyle = FormBorderStyle.SizableToolWindow,
                 ShowIcon = false,
-                ShowInTaskbar = false
+                ShowInTaskbar = false,
             })
             {
                 WebBrowser b = new WebBrowser()
                 {
                     Dock = DockStyle.Fill,
-                    BackColor = UserSettings.TheSettings.BackColor
+                    BackColor = UserSettings.TheSettings.BackColor,
                 };
 
                 f.Controls.Add(b);
@@ -657,7 +657,7 @@ namespace NProcessing
                 s = s.Insert(0, $"<style>body {{ background - color: {UserSettings.TheSettings.BackColor.Name}; }}</style>");
                 b.DocumentText = s;
 
-                f.Show();
+                f.ShowDialog();
             }
         }
         #endregion

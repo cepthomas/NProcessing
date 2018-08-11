@@ -24,7 +24,7 @@
         </member>
         <member name="T:Nebulator.Script.NebCompiler">
             <summary>
-            Parses/compiles *.neb file(s).
+            Parses/compiles *.np file(s).
             </summary>
         </member>
         <member name="T:Nebulator.Script.NebCompiler.FileContext">
@@ -72,14 +72,14 @@
             <summary>
             Run the Compiler.
             </summary>
-            <param name="nebfn">Fully qualified path to topmost file.</param>
+            <param name="npfn">Fully qualified path to topmost file.</param>
             <returns>The newly minted script object or null if failed.</returns>
         </member>
         <member name="M:Nebulator.Script.NebCompiler.Parse(System.String)">
             <summary>
             Top level parser.
             </summary>
-            <param name="nebfn">Topmost file in collection.</param>
+            <param name="npfn">Topmost file in collection.</param>
         </member>
         <member name="M:Nebulator.Script.NebCompiler.ParseOneFile(Nebulator.Script.NebCompiler.FileContext)">
             <summary>
