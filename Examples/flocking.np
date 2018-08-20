@@ -20,6 +20,8 @@ Flock my_flock;
 public override void setup()
 {
     size(800, 800);
+    frameRate(30);
+    
     my_flock = new Flock();
 
     // Add an initial set of boids into the system

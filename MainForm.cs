@@ -73,13 +73,13 @@ namespace NProcessing
         }
 
         /// <summary>
-        /// Initialize form controls. TODO colors stil funky.
+        /// Initialize form controls.
         /// </summary>
         void MainForm_Load(object sender, EventArgs e)
         {
             // Hook logging to client window.
             LogClientNotificationTarget.ClientNotification += Log_ClientNotification;
-            _logger.Info("hellow world");
+            _logger.Info("Welcome to NProcessing");
 
             txtView.Font = UserSettings.TheSettings.EditorFont;
             txtView.BackColor = UserSettings.TheSettings.BackColor;
@@ -115,14 +115,6 @@ namespace NProcessing
             _timer.TimerElapsedEvent += TimerElapsedEvent;
             SetUiTimerPeriod();
             _timer.Start();
-
-            string f = @"C:\Dev\NProcessing\Examples\generative1.np";
-            string s = OpenFile(f);
-
-            if (s != "")
-            {
-                _logger.Error($"Couldn't open file because {s}");
-            }
         }
 
         /// <summary>
@@ -230,14 +222,11 @@ namespace NProcessing
 
                 _compileResults.ForEach(r =>
                 {
-                    if (r.ErrorType == ScriptError.ScriptErrorType.Warning)
+                    _logger.Log(new LogEventInfo()
                     {
-                        _logger.Warn(r.ToString());
-                    }
-                    else
-                    {
-                        _logger.Error(r.ToString());
-                    }
+                        Level = r.ErrorType == ScriptError.ScriptErrorType.Warning ? LogLevel.Warn : LogLevel.Error,
+                        Message = r.ToString()
+                    });
                 });
             }
 
@@ -252,7 +241,7 @@ namespace NProcessing
         {
             if (compileStatus)
             {
-                btnCompile.BackColor = UserSettings.TheSettings.IconColor;
+                btnCompile.BackColor = SystemColors.Control;
                 _needCompile = false;
             }
             else
@@ -334,7 +323,7 @@ namespace NProcessing
             ProcessPlay(PlayCommand.Stop, false);
             SetCompileStatus(false);
 
-            ScriptError err = ScriptCore.ProcessScriptRuntimeError(args, _compileTempDir);
+            ScriptError err = ScriptUtils.ProcessScriptRuntimeError(args, _compileTempDir);
 
             if (err != null)
             {
@@ -388,18 +377,10 @@ namespace NProcessing
                     _npVals = Bag.Load(fn.Replace(".np", ".npp"));
                     _fn = fn;
 
-                    // This may be coming from the web service...
-                    if (InvokeRequired)
-                    {
-                        Invoke((MethodInvoker)delegate
-                        {
-                            // Running on the UI thread
-                            SetCompileStatus(true);
-                            AddToRecentDefs(fn);
+                    SetCompileStatus(true);
+                    AddToRecentDefs(fn);
 
-                            Compile();
-                        });
-                    }
+                    Compile();
 
                     Text = $"NProcessing {Utils.GetVersionString()} - {fn}";
                 }
@@ -494,9 +475,7 @@ namespace NProcessing
                     txtView.SelectedText = "";
                 }
 
-                txtView.SelectionBackColor = BackColor;
-
-                //if (msg.Contains(s)) - colorize
+                txtView.SelectionBackColor = UserSettings.TheSettings.BackColor;
 
                 txtView.AppendText(s);
                 txtView.ScrollToCaret();
@@ -594,6 +573,8 @@ namespace NProcessing
                     btnPlay.Checked = false;
                     break;
             }
+
+            btnPlay.BackColor = btnPlay.Checked ? UserSettings.TheSettings.SelectedColor : SystemColors.Control;
 
             return ret;
         }

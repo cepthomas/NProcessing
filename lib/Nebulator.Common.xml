@@ -446,86 +446,14 @@
             Load chord and midi definitions from md doc file.
             </summary>
         </member>
-        <member name="T:Nebulator.Common.Time">
+        <member name="T:Nebulator.Common.FormInfo">
             <summary>
-            Unit of time.
+            General purpose container for persistence.
             </summary>
         </member>
-        <member name="F:Nebulator.Common.Time.TOCKS_PER_TICK">
-            <summary>Subdivision setting.</summary>
-        </member>
-        <member name="P:Nebulator.Common.Time.Tick">
-            <summary>Left of the decimal point.</summary>
-        </member>
-        <member name="P:Nebulator.Common.Time.Tock">
-            <summary>Right of the decimal point.</summary>
-        </member>
-        <member name="P:Nebulator.Common.Time.TotalTocks">
-            <summary>Total Tocks for the unit of time.</summary>
-        </member>
-        <member name="P:Nebulator.Common.Time.AsDouble">
-            <summary>Convert to double representation.</summary>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor">
+        <member name="T:Nebulator.Common.CheckBoxRenderer">
             <summary>
-            Default constructor.
-            </summary>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor(Nebulator.Common.Time)">
-            <summary>
-            Copy constructor.
-            </summary>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor(System.Int32,System.Int32)">
-            <summary>
-            Constructor from discrete components.
-            </summary>
-            <param name="tick"></param>
-            <param name="tock">Tock to set - can be negative.</param>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor(System.Int32)">
-            <summary>
-            Constructor from tocks.
-            </summary>
-            <param name="tocks"></param>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor(System.Int64)">
-            <summary>
-            Constructor from tocks.
-            </summary>
-            <param name="tocks"></param>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor(System.Double)">
-            <summary>
-            Constructor from Tick.Tock representation as a double.
-            </summary>
-            <param name="tts"></param>
-        </member>
-        <member name="M:Nebulator.Common.Time.#ctor(System.Single)">
-            <summary>
-            Constructor from Tick.Tock representation as a double.
-            </summary>
-            <param name="tts"></param>
-        </member>
-        <member name="M:Nebulator.Common.Time.Advance">
-            <summary>
-            Move to the next tock and update clock.
-            </summary>
-            <returns>True if it's a new Tick.</returns>
-        </member>
-        <member name="M:Nebulator.Common.Time.Reset">
-            <summary>
-            Go back jack.
-            </summary>
-        </member>
-        <member name="M:Nebulator.Common.Time.RoundUp">
-            <summary>
-            Round up to next Tick.
-            </summary>
-        </member>
-        <member name="M:Nebulator.Common.Time.ToString">
-            <summary>
-            For viewing pleasure.
+            Custom renderer for toolstrip checkbox color.
             </summary>
         </member>
         <member name="T:Nebulator.Common.TimingAnalyzer">
@@ -608,6 +536,11 @@
         </member>
         <member name="M:Nebulator.Common.UserSettings.Load(System.String)">
             <summary>Create object from file.</summary>
+        </member>
+        <member name="T:Nebulator.Common.Utils">
+            <summary>
+            Static utility functions.
+            </summary>
         </member>
         <member name="F:Nebulator.Common.Utils.UNKNOWN_STRING">
             <summary>General purpose marker.</summary>
@@ -802,16 +735,6 @@
             <param name="min"></param>
             <param name="max"></param>
             <returns></returns>
-        </member>
-        <member name="T:Nebulator.Common.FormInfo">
-            <summary>
-            General purpose container for persistence.
-            </summary>
-        </member>
-        <member name="T:Nebulator.Common.CheckBoxRenderer">
-            <summary>
-            Custom renderer for toolstrip checkbox color.
-            </summary>
         </member>
         <member name="T:Nebulator.Common.WaitCursor">
             <summary>Class that provides a better wait cursor. Clients should use it with using (new WaitCursor()) { slow code }</summary>
