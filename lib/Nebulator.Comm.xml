@@ -1,138 +1,143 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Nebulator.Protocol</name>
+        <name>Nebulator.Comm</name>
     </assembly>
     <members>
-        <member name="P:Nebulator.Protocol.ProtocolInputEventArgs.Step">
+        <member name="P:Nebulator.Comm.CommInputEventArgs.Step">
             <summary>Received data.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.ProtocolLogEventArgs.Category">
+        <member name="P:Nebulator.Comm.CommLogEventArgs.Category">
             <summary>Category.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.ProtocolLogEventArgs.Message">
+        <member name="P:Nebulator.Comm.CommLogEventArgs.Message">
             <summary>Text to log.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.ProtocolCaps">
+        <member name="T:Nebulator.Comm.CommCaps">
             <summary>What it can do, provided by implementations. Self explanatory.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.IProtocol">
+        <member name="T:Nebulator.Comm.IComm">
             <summary>Abstraction layer between low level protocols (e.g. midi, OSC) and Nebulator steps.</summary>
         </member>
-        <member name="E:Nebulator.Protocol.IProtocol.ProtocolInputEvent">
+        <member name="E:Nebulator.Comm.IComm.CommInputEvent">
             <summary>Reporting a change to listeners.</summary>
         </member>
-        <member name="E:Nebulator.Protocol.IProtocol.ProtocolLogEvent">
+        <member name="E:Nebulator.Comm.IComm.CommLogEvent">
             <summary>Request for logging service.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.IProtocol.Caps">
+        <member name="P:Nebulator.Comm.IComm.Caps">
             <summary>What it can do.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.IProtocol.ProtocolInputs">
+        <member name="P:Nebulator.Comm.IComm.CommInputs">
             <summary>All available inputs for UI selection.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.IProtocol.ProtocolOutputs">
+        <member name="P:Nebulator.Comm.IComm.CommOutputs">
             <summary>All available outputs for UI selection.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Init">
+        <member name="M:Nebulator.Comm.IComm.Init">
             <summary>Initialize everything.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Start">
+        <member name="M:Nebulator.Comm.IComm.Start">
             <summary>Start listening for inputs.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Stop">
+        <member name="M:Nebulator.Comm.IComm.Stop">
             <summary>Stop listening for inputs.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Housekeep">
+        <member name="M:Nebulator.Comm.IComm.Housekeep">
             <summary>Background operations such as process any stop notes.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Send(Nebulator.Protocol.Step)">
-            <summary>Protocol out processor.</summary>
+        <member name="M:Nebulator.Comm.IComm.Send(Nebulator.Comm.Step)">
+            <summary>Comm out processor.</summary>
             <param name="step"></param>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Kill(System.Nullable{System.Int32})">
+        <member name="M:Nebulator.Comm.IComm.Kill(System.Nullable{System.Int32})">
             <summary>Kill one channel.</summary>
             <param name="channel">Specific channel or null for all.</param>
         </member>
-        <member name="M:Nebulator.Protocol.IProtocol.Dispose">
+        <member name="M:Nebulator.Comm.IComm.Dispose">
             <summary>Clean up resources.</summary>
         </member>
-        <member name="F:Nebulator.Protocol.ProtocolSettings._fn">
+        <member name="F:Nebulator.Comm.CommSettings._fn">
             <summary>The file name.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.ProtocolSettings.TheSettings">
+        <member name="P:Nebulator.Comm.CommSettings.TheSettings">
             <summary>Current global user settings.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.ProtocolSettings.#ctor">
+        <member name="M:Nebulator.Comm.CommSettings.#ctor">
             <summary>Default constructor.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.ProtocolSettings.Save">
+        <member name="M:Nebulator.Comm.CommSettings.Save">
             <summary>Save object to file.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.ProtocolSettings.Load(System.String)">
+        <member name="M:Nebulator.Comm.CommSettings.Load(System.String)">
             <summary>Create object from file.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.Step">
+        <member name="T:Nebulator.Comm.CommSelector">
+            <summary
+            >Plugin to property grid.
+            </summary>
+        </member>
+        <member name="T:Nebulator.Comm.Step">
             <summary>
             Base class for internal interface representation of a compiled event to be sent or received.
             </summary>
         </member>
-        <member name="P:Nebulator.Protocol.Step.Channel">
+        <member name="P:Nebulator.Comm.Step.Channel">
             <summary>Channel.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.Step.Adjust(Nebulator.Protocol.ProtocolCaps,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Comm.Step.Adjust(Nebulator.Comm.CommCaps,System.Int32,System.Int32)">
             <summary>Possibly make adjustments to values.</summary>
             <param name="caps">What it can do.</param>
             <param name="masterVolume"></param>
             <param name="channelVolume"></param>
         </member>
-        <member name="M:Nebulator.Protocol.Step.ToString">
+        <member name="M:Nebulator.Comm.Step.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.StepNoteOn">
+        <member name="T:Nebulator.Comm.StepNoteOn">
             <summary>
             One note on.
             </summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOn.NoteNumber">
+        <member name="P:Nebulator.Comm.StepNoteOn.NoteNumber">
             <summary>The note to play.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOn.Velocity">
+        <member name="P:Nebulator.Comm.StepNoteOn.Velocity">
             <summary>The default volume.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOn.VelocityToPlay">
+        <member name="P:Nebulator.Comm.StepNoteOn.VelocityToPlay">
             <summary>The possibly modified Volume.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOn.Duration">
+        <member name="P:Nebulator.Comm.StepNoteOn.Duration">
             <summary>Time between note on/off. Default of 0 indicates note off generated by owner.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepNoteOn.Adjust(Nebulator.Protocol.ProtocolCaps,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Comm.StepNoteOn.Adjust(Nebulator.Comm.CommCaps,System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Nebulator.Protocol.StepNoteOn.ToString">
+        <member name="M:Nebulator.Comm.StepNoteOn.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.StepNoteOff">
+        <member name="T:Nebulator.Comm.StepNoteOff">
             <summary>
             One note off.
             </summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOff.NoteNumber">
+        <member name="P:Nebulator.Comm.StepNoteOff.NoteNumber">
             <summary>The note to stop.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOff.Velocity">
+        <member name="P:Nebulator.Comm.StepNoteOff.Velocity">
             <summary>Velocity.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepNoteOff.Expiry">
+        <member name="P:Nebulator.Comm.StepNoteOff.Expiry">
             <summary>When it's done in tocks - used by stop note chasing.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepNoteOff.Adjust(Nebulator.Protocol.ProtocolCaps,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Comm.StepNoteOff.Adjust(Nebulator.Comm.CommCaps,System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Nebulator.Protocol.StepNoteOff.ToString">
+        <member name="M:Nebulator.Comm.StepNoteOff.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.StepControllerChange">
+        <member name="T:Nebulator.Comm.StepControllerChange">
             <summary>
             One control change event. This supports
               - standard CC messages
@@ -140,153 +145,153 @@
               - notes that can be used as control inputs
             </summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepControllerChange.ControllerId">
+        <member name="P:Nebulator.Comm.StepControllerChange.ControllerId">
             <summary>Specific controller. See also specials in ControllerType.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepControllerChange.Value">
+        <member name="P:Nebulator.Comm.StepControllerChange.Value">
             <summary>The payload. CC value, pitch value, note number.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepControllerChange.ToString">
+        <member name="M:Nebulator.Comm.StepControllerChange.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepPatch.PatchNumber">
+        <member name="P:Nebulator.Comm.StepPatch.PatchNumber">
             <summary>Specific patch.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepPatch.ToString">
+        <member name="M:Nebulator.Comm.StepPatch.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.StepInternal">
+        <member name="T:Nebulator.Comm.StepInternal">
             <summary>Used for internal things that are not actually comm protocol.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepInternal.ScriptFunction">
+        <member name="P:Nebulator.Comm.StepInternal.ScriptFunction">
             <summary>A function to call.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepInternal.ToString">
+        <member name="M:Nebulator.Comm.StepInternal.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Protocol.StepCollection">
+        <member name="T:Nebulator.Comm.StepCollection">
             <summary>A collection of Steps.</summary>
         </member>
-        <member name="F:Nebulator.Protocol.StepCollection._steps">
+        <member name="F:Nebulator.Comm.StepCollection._steps">
             <summary>The main collection of Steps. The key is the time to send the list.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepCollection.Times">
+        <member name="P:Nebulator.Comm.StepCollection.Times">
             <summary>Gets a collection of the list.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.StepCollection.MaxTick">
+        <member name="P:Nebulator.Comm.StepCollection.MaxTick">
             <summary>The duration of the whole thing.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepCollection.AddStep(Nebulator.Protocol.Time,Nebulator.Protocol.Step)">
+        <member name="M:Nebulator.Comm.StepCollection.AddStep(Nebulator.Comm.Time,Nebulator.Comm.Step)">
             <summary>
             Add a step at the given time.
             </summary>
             <param name="time"></param>
             <param name="step"></param>
         </member>
-        <member name="M:Nebulator.Protocol.StepCollection.Add(Nebulator.Protocol.StepCollection)">
+        <member name="M:Nebulator.Comm.StepCollection.Add(Nebulator.Comm.StepCollection)">
             <summary>
             Concatenate another collection to this.
             </summary>
             <param name="stepsToAdd"></param>
         </member>
-        <member name="M:Nebulator.Protocol.StepCollection.GetSteps(Nebulator.Protocol.Time)">
+        <member name="M:Nebulator.Comm.StepCollection.GetSteps(Nebulator.Comm.Time)">
             <summary>
             Get the steps for the given time.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepCollection.DeleteSteps(Nebulator.Protocol.Time)">
+        <member name="M:Nebulator.Comm.StepCollection.DeleteSteps(Nebulator.Comm.Time)">
             <summary>
             Delete the steps at the given time.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepCollection.Clear">
+        <member name="M:Nebulator.Comm.StepCollection.Clear">
             <summary>
             Cleanse me.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.StepCollection.ToString">
+        <member name="M:Nebulator.Comm.StepCollection.ToString">
             <summary>
             Display the content steps.
             </summary>
         </member>
-        <member name="T:Nebulator.Protocol.Time">
+        <member name="T:Nebulator.Comm.Time">
             <summary>
             Unit of time.
             </summary>
         </member>
-        <member name="F:Nebulator.Protocol.Time.TOCKS_PER_TICK">
+        <member name="F:Nebulator.Comm.Time.TOCKS_PER_TICK">
             <summary>Subdivision setting.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.Time.Tick">
+        <member name="P:Nebulator.Comm.Time.Tick">
             <summary>Left of the decimal point.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.Time.Tock">
+        <member name="P:Nebulator.Comm.Time.Tock">
             <summary>Right of the decimal point.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.Time.TotalTocks">
+        <member name="P:Nebulator.Comm.Time.TotalTocks">
             <summary>Total Tocks for the unit of time.</summary>
         </member>
-        <member name="P:Nebulator.Protocol.Time.AsDouble">
+        <member name="P:Nebulator.Comm.Time.AsDouble">
             <summary>Convert to double representation.</summary>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor">
+        <member name="M:Nebulator.Comm.Time.#ctor">
             <summary>
             Default constructor.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor(Nebulator.Protocol.Time)">
+        <member name="M:Nebulator.Comm.Time.#ctor(Nebulator.Comm.Time)">
             <summary>
             Copy constructor.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor(System.Int32,System.Int32)">
+        <member name="M:Nebulator.Comm.Time.#ctor(System.Int32,System.Int32)">
             <summary>
             Constructor from discrete components.
             </summary>
             <param name="tick"></param>
             <param name="tock">Tock to set - can be negative.</param>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor(System.Int32)">
+        <member name="M:Nebulator.Comm.Time.#ctor(System.Int32)">
             <summary>
             Constructor from tocks.
             </summary>
             <param name="tocks"></param>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor(System.Int64)">
+        <member name="M:Nebulator.Comm.Time.#ctor(System.Int64)">
             <summary>
             Constructor from tocks.
             </summary>
             <param name="tocks"></param>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor(System.Double)">
+        <member name="M:Nebulator.Comm.Time.#ctor(System.Double)">
             <summary>
             Constructor from Tick.Tock representation as a double.
             </summary>
             <param name="tts"></param>
         </member>
-        <member name="M:Nebulator.Protocol.Time.#ctor(System.Single)">
+        <member name="M:Nebulator.Comm.Time.#ctor(System.Single)">
             <summary>
             Constructor from Tick.Tock representation as a double.
             </summary>
             <param name="tts"></param>
         </member>
-        <member name="M:Nebulator.Protocol.Time.Advance">
+        <member name="M:Nebulator.Comm.Time.Advance">
             <summary>
             Move to the next tock and update clock.
             </summary>
             <returns>True if it's a new Tick.</returns>
         </member>
-        <member name="M:Nebulator.Protocol.Time.Reset">
+        <member name="M:Nebulator.Comm.Time.Reset">
             <summary>
             Go back jack.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.Time.RoundUp">
+        <member name="M:Nebulator.Comm.Time.RoundUp">
             <summary>
             Round up to next Tick.
             </summary>
         </member>
-        <member name="M:Nebulator.Protocol.Time.ToString">
+        <member name="M:Nebulator.Comm.Time.ToString">
             <summary>
             For viewing pleasure.
             </summary>

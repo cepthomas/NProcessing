@@ -445,7 +445,7 @@
             <param name="vol">Note volume.</param>
             <param name="dur">How long it lasts in Time representation. 0 means no note off generated.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.String,System.Int32,Nebulator.Protocol.Time)">
+        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.String,System.Int32,Nebulator.Comm.Time)">
             <summary>Send a note immediately. Respects solo/mute.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="snote">Note string using any form allowed in the script. Requires double quotes in the script.</param>
@@ -536,8 +536,8 @@
         <member name="F:Nebulator.Script.ScriptCore._smooth">
             <summary>Smoothing option.</summary>
         </member>
-        <member name="P:Nebulator.Script.ScriptCore.Protocol">
-            <summary>Protocol to use.</summary>
+        <member name="P:Nebulator.Script.ScriptCore.Comm">
+            <summary>Device to use.</summary>
         </member>
         <member name="P:Nebulator.Script.ScriptCore.StepTime">
             <summary>Main -> Script</summary>
@@ -824,7 +824,7 @@
             <param name="val">Center distribution around this.</param>
             <returns>Randomized value or val if ranges are 0 (default).</returns>
         </member>
-        <member name="M:Nebulator.Script.Wobbler.Next(Nebulator.Protocol.Time)">
+        <member name="M:Nebulator.Script.Wobbler.Next(Nebulator.Comm.Time)">
             <summary>
             Return next from standard distribution.
             </summary>

@@ -509,13 +509,13 @@
             </summary>
             <returns>New stats are available.</returns>
         </member>
-        <member name="T:Nebulator.Common.ListSelector">
+        <member name="T:Nebulator.Common.ListSelectorX">
             <summary
             >Plugin to property grid.
             </summary>
         </member>
-        <member name="P:Nebulator.Common.ListSelector.Options">
-            <summary>The owner supplies the listbox contents using this. A bit kludgy...</summary>
+        <member name="P:Nebulator.Common.ListSelectorX.Options">
+            <summary>The owner supplies the listbox contents using this. A bit kludgy... TODO fix?</summary>
         </member>
         <member name="T:Nebulator.Common.StringListEditor">
             <summary>
