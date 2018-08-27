@@ -7,6 +7,9 @@
         <member name="P:Nebulator.Comm.CommInputEventArgs.Step">
             <summary>Received data.</summary>
         </member>
+        <member name="T:Nebulator.Comm.CommLogEventArgs.LogCategory">
+            <summary>Category types.</summary>
+        </member>
         <member name="P:Nebulator.Comm.CommLogEventArgs.Category">
             <summary>Category.</summary>
         </member>
@@ -19,75 +22,60 @@
         <member name="T:Nebulator.Comm.IComm">
             <summary>Abstraction layer between low level protocols (e.g. midi, OSC) and Nebulator steps.</summary>
         </member>
-        <member name="E:Nebulator.Comm.IComm.CommInputEvent">
-            <summary>Reporting a change to listeners.</summary>
-        </member>
         <member name="E:Nebulator.Comm.IComm.CommLogEvent">
             <summary>Request for logging service.</summary>
+        </member>
+        <member name="P:Nebulator.Comm.IComm.CommName">
+            <summary>Comm name.</summary>
         </member>
         <member name="P:Nebulator.Comm.IComm.Caps">
             <summary>What it can do.</summary>
         </member>
-        <member name="P:Nebulator.Comm.IComm.CommInputs">
-            <summary>All available inputs for UI selection.</summary>
-        </member>
-        <member name="P:Nebulator.Comm.IComm.CommOutputs">
-            <summary>All available outputs for UI selection.</summary>
+        <member name="P:Nebulator.Comm.IComm.Monitor">
+            <summary>Log traffic.</summary>
         </member>
         <member name="M:Nebulator.Comm.IComm.Init">
-            <summary>Initialize everything.</summary>
+            <summary>Initialize everything. Set valid CommName first!</summary>
         </member>
         <member name="M:Nebulator.Comm.IComm.Start">
-            <summary>Start listening for inputs.</summary>
+            <summary>Start operation.</summary>
         </member>
         <member name="M:Nebulator.Comm.IComm.Stop">
-            <summary>Stop listening for inputs.</summary>
+            <summary>Stop operation.</summary>
         </member>
         <member name="M:Nebulator.Comm.IComm.Housekeep">
             <summary>Background operations such as process any stop notes.</summary>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Send(Nebulator.Comm.Step)">
+        <member name="T:Nebulator.Comm.NInput">
+            <summary>Input specific version. Slight naming violation to support user scripts consistently.</summary>
+        </member>
+        <member name="E:Nebulator.Comm.NInput.CommInputEvent">
+            <summary>Reporting a change to listeners.</summary>
+        </member>
+        <member name="T:Nebulator.Comm.NOutput">
+            <summary>Output specific version. Slight naming violation to support user scripts consistently.</summary>
+        </member>
+        <member name="M:Nebulator.Comm.NOutput.Send(Nebulator.Comm.Step)">
             <summary>Comm out processor.</summary>
             <param name="step"></param>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Kill(System.Nullable{System.Int32})">
-            <summary>Kill one channel.</summary>
+        <member name="M:Nebulator.Comm.NOutput.Kill(System.Nullable{System.Int32})">
+            <summary>Kill channel(s).</summary>
             <param name="channel">Specific channel or null for all.</param>
-        </member>
-        <member name="M:Nebulator.Comm.IComm.Dispose">
-            <summary>Clean up resources.</summary>
-        </member>
-        <member name="F:Nebulator.Comm.CommSettings._fn">
-            <summary>The file name.</summary>
-        </member>
-        <member name="P:Nebulator.Comm.CommSettings.TheSettings">
-            <summary>Current global user settings.</summary>
-        </member>
-        <member name="M:Nebulator.Comm.CommSettings.#ctor">
-            <summary>Default constructor.</summary>
-        </member>
-        <member name="M:Nebulator.Comm.CommSettings.Save">
-            <summary>Save object to file.</summary>
-        </member>
-        <member name="M:Nebulator.Comm.CommSettings.Load(System.String)">
-            <summary>Create object from file.</summary>
-        </member>
-        <member name="T:Nebulator.Comm.CommSelector">
-            <summary
-            >Plugin to property grid.
-            </summary>
         </member>
         <member name="T:Nebulator.Comm.Step">
             <summary>
             Base class for internal interface representation of a compiled event to be sent or received.
             </summary>
         </member>
-        <member name="P:Nebulator.Comm.Step.Channel">
-            <summary>Channel.</summary>
+        <member name="P:Nebulator.Comm.Step.Output">
+            <summary>Associated comm device - optional.</summary>
         </member>
-        <member name="M:Nebulator.Comm.Step.Adjust(Nebulator.Comm.CommCaps,System.Int32,System.Int32)">
+        <member name="P:Nebulator.Comm.Step.ChannelNumber">
+            <summary>Channel number.</summary>
+        </member>
+        <member name="M:Nebulator.Comm.Step.Adjust(System.Int32,System.Int32)">
             <summary>Possibly make adjustments to values.</summary>
-            <param name="caps">What it can do.</param>
             <param name="masterVolume"></param>
             <param name="channelVolume"></param>
         </member>
@@ -111,7 +99,7 @@
         <member name="P:Nebulator.Comm.StepNoteOn.Duration">
             <summary>Time between note on/off. Default of 0 indicates note off generated by owner.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepNoteOn.Adjust(Nebulator.Comm.CommCaps,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Comm.StepNoteOn.Adjust(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:Nebulator.Comm.StepNoteOn.ToString">
@@ -131,7 +119,7 @@
         <member name="P:Nebulator.Comm.StepNoteOff.Expiry">
             <summary>When it's done in tocks - used by stop note chasing.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepNoteOff.Adjust(Nebulator.Comm.CommCaps,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Comm.StepNoteOff.Adjust(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:Nebulator.Comm.StepNoteOff.ToString">

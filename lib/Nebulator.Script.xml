@@ -147,35 +147,41 @@
             For viewing pleasure.
             </summary>
         </member>
-        <member name="T:Nebulator.Script.NControlPoint">
+        <member name="T:Nebulator.Script.NController">
             <summary>
             Defines a controller input.
             </summary>
         </member>
-        <member name="P:Nebulator.Script.NControlPoint.Channel">
-            <summary>Associated channel.</summary>
+        <member name="P:Nebulator.Script.NController.Input">
+            <summary>The associated comm device.</summary>
         </member>
-        <member name="P:Nebulator.Script.NControlPoint.ControllerId">
+        <member name="P:Nebulator.Script.NController.ChannelNumber">
+            <summary>The associated numerical (midi) channel to use.</summary>
+        </member>
+        <member name="P:Nebulator.Script.NController.ControllerId">
             <summary>The numerical (midi) controller type.</summary>
         </member>
-        <member name="P:Nebulator.Script.NControlPoint.BoundVar">
+        <member name="P:Nebulator.Script.NController.BoundVar">
             <summary>The bound var.</summary>
         </member>
-        <member name="M:Nebulator.Script.NControlPoint.ToString">
+        <member name="M:Nebulator.Script.NController.ToString">
             <summary>
             For viewing pleasure.
             </summary>
         </member>
         <member name="T:Nebulator.Script.NChannel">
             <summary>
-            One instrument.
+            One channel output, usually an instrument.
             </summary>
         </member>
         <member name="P:Nebulator.Script.NChannel.Name">
             <summary>The UI name for this channel.</summary>
         </member>
-        <member name="P:Nebulator.Script.NChannel.Channel">
-            <summary>The numerical (midi) channel to use: 1 - 16.</summary>
+        <member name="P:Nebulator.Script.NChannel.Output">
+            <summary>The associated comm device.</summary>
+        </member>
+        <member name="P:Nebulator.Script.NChannel.ChannelNumber">
+            <summary>The associated numerical (midi) channel to use.</summary>
         </member>
         <member name="P:Nebulator.Script.NChannel.Volume">
             <summary>Current volume.</summary>
@@ -374,20 +380,32 @@
         <member name="P:Nebulator.Script.ScriptCore.volume">
             <summary>Nebulator master Volume.</summary>
         </member>
-        <member name="P:Nebulator.Script.ScriptCore.winGm">
-            <summary>Indicates using internal synth.</summary>
-        </member>
         <member name="M:Nebulator.Script.ScriptCore.setupNeb">
             <summary>Called to iniialize Nebulator stuff.</summary>
         </member>
         <member name="M:Nebulator.Script.ScriptCore.step">
             <summary>Called every Nebulator Tock.</summary>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.createControllerIn(Nebulator.Script.NChannel,System.Int32,Nebulator.Script.NVariable)">
+        <member name="M:Nebulator.Script.ScriptCore.createInput(System.String)">
+            <summary>
+            Create a device input.
+            </summary>
+            <param name="commName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Nebulator.Script.ScriptCore.createOutput(System.String)">
+            <summary>
+            Create a device output.
+            </summary>
+            <param name="commName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Nebulator.Script.ScriptCore.createController(Nebulator.Comm.NInput,System.Int32,System.Int32,Nebulator.Script.NVariable)">
             <summary>
             Create a controller input.
             </summary>
-            <param name="channel">Associated channel.</param>
+            <param name="input">Comm device.</param>
+            <param name="channelNum">Which channel.</param>
             <param name="controlId">Which</param>
             <param name="bound">NVariable</param>
         </member>
@@ -421,12 +439,13 @@
             <param name="start"></param>
             <param name="length"></param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.createChannel(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Script.ScriptCore.createChannel(System.String,Nebulator.Comm.NOutput,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Normal factory.
             </summary>
-            <param name="name"></param>
-            <param name="channel"></param>
+            <param name="name">UI name</param>
+            <param name="output">Comm device.</param>
+            <param name="channelNum"></param>
             <param name="wobvol"></param>
             <param name="wobbefore"></param>
             <param name="wobafter"></param>
@@ -459,7 +478,7 @@
             <param name="vol">Note volume.</param>
         </member>
         <member name="M:Nebulator.Script.ScriptCore.sendNoteOff(Nebulator.Script.NChannel,System.Int32)">
-            <summary>Send a note off.</summary>
+            <summary>Send a note off immediately.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="inote">Note number.</param>
         </member>
@@ -536,9 +555,6 @@
         <member name="F:Nebulator.Script.ScriptCore._smooth">
             <summary>Smoothing option.</summary>
         </member>
-        <member name="P:Nebulator.Script.ScriptCore.Comm">
-            <summary>Device to use.</summary>
-        </member>
         <member name="P:Nebulator.Script.ScriptCore.StepTime">
             <summary>Main -> Script</summary>
         </member>
@@ -559,6 +575,12 @@
         </member>
         <member name="P:Nebulator.Script.ScriptCore.RuntimeSteps">
             <summary>Steps added by script functions at runtime e.g. playSequence(). Script -> Main</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptCore.Outputs">
+            <summary>Devices to use for send.</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptCore.Inputs">
+            <summary>Devices to use for recv.</summary>
         </member>
         <member name="P:Nebulator.Script.ScriptCore.InputControllers">
             <summary>Control inputs.</summary>

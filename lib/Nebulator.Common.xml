@@ -509,19 +509,6 @@
             </summary>
             <returns>New stats are available.</returns>
         </member>
-        <member name="T:Nebulator.Common.ListSelectorX">
-            <summary
-            >Plugin to property grid.
-            </summary>
-        </member>
-        <member name="P:Nebulator.Common.ListSelectorX.Options">
-            <summary>The owner supplies the listbox contents using this. A bit kludgy... TODO fix?</summary>
-        </member>
-        <member name="T:Nebulator.Common.StringListEditor">
-            <summary>
-            Plug in to property grid. String list is edited as a newline delimited string.
-            </summary>
-        </member>
         <member name="F:Nebulator.Common.UserSettings._fn">
             <summary>The file name.</summary>
         </member>

@@ -40,11 +40,12 @@
     <Reference Include="MoreLinq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>packages\morelinq.3.0.0\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
+    <Reference Include="Nebulator.Comm, Version=0.9.6813.19182, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Nebulator.Comm.dll</HintPath>
+    </Reference>
     <Reference Include="Nebulator.Common">
       <HintPath>lib\Nebulator.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Nebulator.Protocol">
-      <HintPath>lib\Nebulator.Protocol.dll</HintPath>
     </Reference>
     <Reference Include="Nebulator.Script">
       <HintPath>lib\Nebulator.Script.dll</HintPath>
