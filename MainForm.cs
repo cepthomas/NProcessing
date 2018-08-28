@@ -83,14 +83,12 @@ namespace NProcessing
 
             txtView.Font = UserSettings.TheSettings.EditorFont;
             txtView.BackColor = UserSettings.TheSettings.BackColor;
-            txtView.WordWrap = UserSettings.TheSettings.WordWrap;
 
             //btnClear.Image = Utils.ColorizeBitmap(btnClear.Image, UserSettings.TheSettings.IconColor);
             btnClear.Click += (object _, EventArgs __) => { txtView.Clear(); };
 
             //btnWrap.Image = Utils.ColorizeBitmap(btnWrap.Image, UserSettings.TheSettings.IconColor);
-            btnWrap.Checked = UserSettings.TheSettings.WordWrap;
-            btnWrap.Click += (object _, EventArgs __) => { UserSettings.TheSettings.WordWrap = btnWrap.Checked; txtView.WordWrap = btnWrap.Checked; };
+            btnWrap.Click += (object _, EventArgs __) => { txtView.WordWrap = btnWrap.Checked; };
 
             // Init UI from settings
             Location = new Point(UserSettings.TheSettings.MainFormInfo.X, UserSettings.TheSettings.MainFormInfo.Y);

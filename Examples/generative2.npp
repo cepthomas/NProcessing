@@ -1,3 +1,6 @@
 {
-  "Values": {}
+  "Values": {
+    "master.volume": 90,
+    "master.speed": 30.0
+  }
 }
