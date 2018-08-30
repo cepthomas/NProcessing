@@ -677,7 +677,7 @@
             </summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="seq">Which notes to send.</param>
-            <param name="startTick">Which tick to start at.</param>
+            <param name="startTick">Which tick toB start at.</param>
         </member>
         <member name="M:Nebulator.Script.ScriptUtils.ProcessScriptRuntimeError(Nebulator.Script.Surface.RuntimeErrorEventArgs,System.String)">
             <summary>

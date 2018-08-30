@@ -62,7 +62,7 @@
         </member>
         <member name="T:Nebulator.Comm.Step">
             <summary>
-            Base class for internal interface representation of a received event or a compiled event to be sent.
+            Base class for representation of a received event or a compiled event to be sent.
             </summary>
         </member>
         <member name="P:Nebulator.Comm.Step.Comm">
