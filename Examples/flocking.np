@@ -67,8 +67,7 @@ public class Flock
     }
 }
 
-
-// The Boid class
+// One Boid.
 public class Boid
 {
     PVector position;

@@ -24,7 +24,7 @@ public override void setup()
     tileHeight = height / tileCountY;
     noFill();
     stroke(0, 128);
-    //frameRate(1);
+    frameRate(30);
 }
 
 public override void draw()
