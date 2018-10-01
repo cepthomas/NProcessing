@@ -19,7 +19,7 @@ Flock my_flock;
 
 public override void setup()
 {
-    size(800, 800);
+    size(600, 600);
     frameRate(30);
     
     my_flock = new Flock();

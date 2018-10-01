@@ -329,16 +329,6 @@ namespace NProcessing
 
         #region File handling
         /// <summary>
-        /// The user has asked to open a recent file.
-        /// </summary>
-        void Recent_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem item = sender as ToolStripMenuItem;
-            string fn = sender.ToString();
-            OpenFile(fn);
-        }
-
-        /// <summary>
         /// Allows the user to select a np file from file system.
         /// </summary>
         void Open_Click(object sender, EventArgs e)
@@ -353,6 +343,16 @@ namespace NProcessing
             {
                 OpenFile(openDlg.FileName);
             }
+        }
+
+        /// <summary>
+        /// The user has asked to open a recent file.
+        /// </summary>
+        void Recent_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            string fn = sender.ToString();
+            OpenFile(fn);
         }
 
         /// <summary>
@@ -372,10 +372,10 @@ namespace NProcessing
                     _npVals = Bag.Load(fn.Replace(".np", ".npp"));
                     _fn = fn;
 
-                    SetCompileStatus(true);
                     AddToRecentDefs(fn);
 
-                    Compile();
+                    bool ok = Compile();
+                    SetCompileStatus(ok);
 
                     Text = $"NProcessing {Utils.GetVersionString()} - {fn}";
                 }
@@ -383,9 +383,8 @@ namespace NProcessing
                 {
                     ret = $"Couldn't open the np file: {fn} because: {ex.Message}";
                     _logger.Error(ret);
+                    SetCompileStatus(false);
                 }
-
-                SetCompileStatus(false);
             }
 
             return ret;

@@ -581,7 +581,7 @@
         <member name="P:Nebulator.Script.ScriptCore.Inputs">
             <summary>Devices to use for recv.</summary>
         </member>
-        <member name="P:Nebulator.Script.ScriptCore.InputControllers">
+        <member name="P:Nebulator.Script.ScriptCore.Controllers">
             <summary>Control inputs.</summary>
         </member>
         <member name="P:Nebulator.Script.ScriptCore.Levers">

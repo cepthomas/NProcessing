@@ -31,8 +31,17 @@
         <member name="P:Nebulator.Comm.IComm.Caps">
             <summary>What it can do.</summary>
         </member>
+        <member name="P:Nebulator.Comm.IComm.Inited">
+            <summary>It's alive.</summary>
+        </member>
+        <member name="M:Nebulator.Comm.IComm.Create(System.String)">
+            <summary>Interfaces don't allow constructors so do this instead.</summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
         <member name="M:Nebulator.Comm.IComm.Init">
-            <summary>Initialize everything. Set valid CommName first!</summary>
+            <summary>Initialize everything.</summary>
+            <returns></returns>
         </member>
         <member name="M:Nebulator.Comm.IComm.Start">
             <summary>Start operation.</summary>
@@ -187,6 +196,12 @@
             <summary>
             Cleanse me.
             </summary>
+        </member>
+        <member name="M:Nebulator.Comm.StepCollection.Dump">
+            <summary>
+            Utility dump 
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Nebulator.Comm.StepCollection.ToString">
             <summary>

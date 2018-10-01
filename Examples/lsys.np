@@ -13,7 +13,7 @@ List<Point> lines = new List<Point>();
 
 public override void setup()
 {
-    size(800, 800);
+    size(600, 600);
 
     genLSys(-1.359672, -0.138235, _angle, 14.11);
     print("setup()");

@@ -26,7 +26,7 @@ bool pause = false;
 
 public override void setup()
 {
-    size(800, 800);
+    size(600, 600);
 
     frameRate(1);
 
