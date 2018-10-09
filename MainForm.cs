@@ -555,6 +555,7 @@ namespace NProcessing
                     {
                         _startTime = DateTime.Now;
                         btnPlay.Checked = true;
+                        _surface.InitSurface(_script);
                     }
                     else
                     {

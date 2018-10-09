@@ -27,7 +27,6 @@ bool pause = false;
 public override void setup()
 {
     size(600, 600);
-
     frameRate(1);
 
     // Instantiate arrays
@@ -58,7 +57,6 @@ public override void setup()
     }
     // Don't! background(0); // Fill in black in case cells don't cover all the windows
 }
-
 
 public override void draw()
 {
@@ -123,8 +121,6 @@ public override void draw()
         }
     }
 }
-
-
 
 void iteration()   // When the clock ticks
 {
