@@ -26,7 +26,7 @@
             </summary>
             <param name="owner"></param>
             <param name="valname"></param>
-            <returns>value</returns>
+            <returns>The value or null if not in the collection.</returns>
         </member>
         <member name="M:Nebulator.Common.Bag.SetValue(System.String,System.String,System.Object)">
             <summary>

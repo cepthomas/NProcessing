@@ -29,18 +29,21 @@
             <summary>Comm name.</summary>
         </member>
         <member name="P:Nebulator.Comm.IComm.Caps">
-            <summary>What it can do.</summary>
+            <summary>What it can do. Set by implementation.</summary>
         </member>
         <member name="P:Nebulator.Comm.IComm.Inited">
             <summary>It's alive.</summary>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Create(System.String)">
-            <summary>Interfaces don't allow constructors so do this instead.</summary>
+        <member name="M:Nebulator.Comm.IComm.Construct(System.String)">
+            <summary>
+            Interfaces don't allow constructors so do this instead.
+            Corresponds to the definition in the script.
+            </summary>
             <param name="name"></param>
             <returns></returns>
         </member>
         <member name="M:Nebulator.Comm.IComm.Init">
-            <summary>Initialize everything.</summary>
+            <summary>Actually create the comm device.</summary>
             <returns></returns>
         </member>
         <member name="M:Nebulator.Comm.IComm.Start">
