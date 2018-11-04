@@ -119,6 +119,16 @@
             <param name="mruList">The MRU.</param>
             <param name="newVal">New value(s) to perhaps insert.</param>
         </member>
+        <member name="M:Nebulator.Common.Extensions.Subset``1(``0[],System.Int32,System.Int32)">
+            <summary>
+            Get a subset of an array.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="start"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
         <member name="T:Nebulator.Common.LogClientNotificationTarget">
             <summary>Handles writes to the client.</summary>
         </member>

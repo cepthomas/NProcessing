@@ -31,19 +31,12 @@
         <member name="P:Nebulator.Comm.IComm.Caps">
             <summary>What it can do. Set by implementation.</summary>
         </member>
-        <member name="P:Nebulator.Comm.IComm.Inited">
-            <summary>It's alive.</summary>
-        </member>
-        <member name="M:Nebulator.Comm.IComm.Construct(System.String)">
+        <member name="M:Nebulator.Comm.IComm.Init(System.String)">
             <summary>
             Interfaces don't allow constructors so do this instead.
             Corresponds to the definition in the script.
             </summary>
             <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Nebulator.Comm.IComm.Init">
-            <summary>Actually create the comm device.</summary>
             <returns></returns>
         </member>
         <member name="M:Nebulator.Comm.IComm.Start">
@@ -56,13 +49,13 @@
             <summary>Background operations such as process any stop notes.</summary>
         </member>
         <member name="T:Nebulator.Comm.NInput">
-            <summary>Input specific version. Slight naming violation to support user scripts consistently.</summary>
+            <summary>Input specific version.</summary>
         </member>
         <member name="E:Nebulator.Comm.NInput.CommInputEvent">
             <summary>Reporting a change to listeners.</summary>
         </member>
         <member name="T:Nebulator.Comm.NOutput">
-            <summary>Output specific version. Slight naming violation to support user scripts consistently.</summary>
+            <summary>Output specific version.</summary>
         </member>
         <member name="M:Nebulator.Comm.NOutput.Send(Nebulator.Comm.Step)">
             <summary>Comm out processor.</summary>
