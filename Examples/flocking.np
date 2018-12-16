@@ -2,6 +2,7 @@
 //////////// port of https://processing.org/examples/flocking.html /////////
 
 // Changes I made:
+// - float >>> double
 // - ArrayList<> >>> List<>
 // - e.g. for (Boid b : boids) >>> foreach (Boid b in boids)
 // - .add >>> .Add
@@ -73,18 +74,18 @@ public class Boid
     PVector position;
     PVector velocity;
     PVector acceleration;
-    float r;
-    float maxforce;    // Maximum steering force
-    float maxspeed;    // Maximum speed
+    double r;
+    double maxforce;    // Maximum steering force
+    double maxspeed;    // Maximum speed
 
-    public Boid(float x, float y)
+    public Boid(double x, double y)
     {
         acceleration = new PVector(0, 0);
         velocity = PVector.random2D();
         position = new PVector(x, y);
-        r = 2.0f;
-        maxspeed = 2f;
-        maxforce = 0.03f;
+        r = 2.0;
+        maxspeed = 2;
+        maxforce = 0.03;
     }
 
     public void run(List<Boid> boids)
@@ -148,7 +149,7 @@ public class Boid
     public void render()
     {
         // Draw a triangle rotated in the direction of velocity
-        float theta = velocity.heading() + s.radians(90);
+        double theta = velocity.heading() + s.radians(90);
 
         s.fill(200, 100, 50);
         s.stroke(255);
@@ -176,14 +177,14 @@ public class Boid
     // Method checks for nearby boids and steers away
     public PVector separate (List<Boid> boids)
     {
-        float desiredseparation = 25.0f;
+        double desiredseparation = 25.0;
         PVector steer = new PVector(0, 0, 0);
         int count = 0;
 
         // For every boid in the system, check if it's too close
         foreach (Boid other in boids)
         {
-            float d = PVector.dist(position, other.position);
+            double d = PVector.dist(position, other.position);
             // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
             if ((d > 0) && (d < desiredseparation))
             {
@@ -198,7 +199,7 @@ public class Boid
         // Average -- divide by how many
         if (count > 0)
         {
-            steer.div((float)count);
+            steer.div((double)count);
         }
 
         // As long as the vector is greater than 0
@@ -216,13 +217,13 @@ public class Boid
     // For every nearby boid in the system, calculate the average velocity
     public PVector align (List<Boid> boids)
     {
-        float neighbordist = 50;
+        double neighbordist = 50;
         PVector sum = new PVector(0, 0);
         int count = 0;
 
         foreach (Boid other in boids)
         {
-            float d = PVector.dist(position, other.position);
+            double d = PVector.dist(position, other.position);
             if ((d > 0) && (d < neighbordist))
             {
                 sum.add(other.velocity);
@@ -232,7 +233,7 @@ public class Boid
 
         if (count > 0)
         {
-            sum.div((float)count);
+            sum.div((double)count);
 
             // Implement Reynolds: Steering = Desired - Velocity
             sum.setMag(maxspeed);
@@ -250,13 +251,13 @@ public class Boid
     // For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
     public PVector cohesion (List<Boid> boids)
     {
-        float neighbordist = 50;
+        double neighbordist = 50;
         PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all positions
         int count = 0;
 
         foreach (Boid other in boids)
         {
-            float d = PVector.dist(position, other.position);
+            double d = PVector.dist(position, other.position);
             if ((d > 0) && (d < neighbordist))
             {
                 sum.add(other.position); // Add position

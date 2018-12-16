@@ -30,16 +30,16 @@ public override void draw()
             int posX = width / tileCount * gridX;
             int posY = height / tileCount * gridY;
 
-            float amt = 30.0f;
+            double amt = 30.0;
 
-            float shiftX1 = mouseX / amt * random(-1.0f, 1.0f);
-            float shiftY1 = mouseY / amt * random(-1.0f, 1.0f);
-            float shiftX2 = mouseX / amt * random(-1.0f, 1.0f);
-            float shiftY2 = mouseY / amt * random(-1.0f, 1.0f);
-            float shiftX3 = mouseX / amt * random(-1.0f, 1.0f);
-            float shiftY3 = mouseY / amt * random(-1.0f, 1.0f);
-            float shiftX4 = mouseX / amt * random(-1.0f, 1.0f);
-            float shiftY4 = mouseY / amt * random(-1.0f, 1.0f);
+            double shiftX1 = mouseX / amt * random(-1.0, 1.0);
+            double shiftY1 = mouseY / amt * random(-1.0, 1.0);
+            double shiftX2 = mouseX / amt * random(-1.0, 1.0);
+            double shiftY2 = mouseY / amt * random(-1.0, 1.0);
+            double shiftX3 = mouseX / amt * random(-1.0, 1.0);
+            double shiftY3 = mouseY / amt * random(-1.0, 1.0);
+            double shiftX4 = mouseX / amt * random(-1.0, 1.0);
+            double shiftY4 = mouseY / amt * random(-1.0, 1.0);
             // int shiftX1 = mouseX / 20 * random(-1, 1);
             // int shiftY1 = mouseY / 20 * random(-1, 1);
             // int shiftX2 = mouseX / 20 * random(-1, 1);

@@ -4,24 +4,6 @@
         <name>Nebulator.Script</name>
     </assembly>
     <members>
-        <member name="T:Nebulator.Script.ScriptError">
-            <summary>General script error container.</summary>
-        </member>
-        <member name="P:Nebulator.Script.ScriptError.ErrorType">
-            <summary>Where it came from.</summary>
-        </member>
-        <member name="P:Nebulator.Script.ScriptError.SourceFile">
-            <summary>Original source file.</summary>
-        </member>
-        <member name="P:Nebulator.Script.ScriptError.LineNumber">
-            <summary>Original source line number.</summary>
-        </member>
-        <member name="P:Nebulator.Script.ScriptError.Message">
-            <summary>Content.</summary>
-        </member>
-        <member name="M:Nebulator.Script.ScriptError.ToString">
-            <summary>Readable.</summary>
-        </member>
         <member name="T:Nebulator.Script.NebCompiler">
             <summary>
             Parses/compiles *.np file(s).
@@ -119,6 +101,24 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Nebulator.Script.ScriptError">
+            <summary>General script error container.</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptError.ErrorType">
+            <summary>Where it came from.</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptError.SourceFile">
+            <summary>Original source file.</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptError.LineNumber">
+            <summary>Original source line number.</summary>
+        </member>
+        <member name="P:Nebulator.Script.ScriptError.Message">
+            <summary>Content.</summary>
+        </member>
+        <member name="M:Nebulator.Script.ScriptError.ToString">
+            <summary>Readable.</summary>
+        </member>
         <member name="T:Nebulator.Script.ChannelState">
             <summary>Channel state.</summary>
         </member>
@@ -131,7 +131,7 @@
             <summary>Variable name - as shown in ui.</summary>
         </member>
         <member name="P:Nebulator.Script.NVariable.Value">
-            <summary>Value as int. It is initialized from the script supplied value.</summary>
+            <summary>Value as double. It is initialized from the script supplied value.</summary>
         </member>
         <member name="P:Nebulator.Script.NVariable.Min">
             <summary>Min value - optional.</summary>
@@ -216,7 +216,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Nebulator.Script.NChannel.NextVol(System.Int32)">
+        <member name="M:Nebulator.Script.NChannel.NextVol(System.Double)">
             <summary>
             Get the next volume.
             </summary>
@@ -274,7 +274,7 @@
         <member name="P:Nebulator.Script.NSequence.Length">
             <summary>Length in ticks.</summary>
         </member>
-        <member name="M:Nebulator.Script.NSequence.Add(System.Double,System.String,System.Int32,System.Double)">
+        <member name="M:Nebulator.Script.NSequence.Add(System.Double,System.String,System.Double,System.Double)">
             <summary>
             Like: Z.Add(00.00, "G3", 90, 0.60).
             </summary>
@@ -283,7 +283,7 @@
             <param name="volume"></param>
             <param name="duration"></param>
         </member>
-        <member name="M:Nebulator.Script.NSequence.Add(System.Double,System.Int32,System.Int32,System.Double)">
+        <member name="M:Nebulator.Script.NSequence.Add(System.Double,System.Int32,System.Double,System.Double)">
             <summary>
             Like: Z.Add(00.00, 66, 90, 0.60) or Z.Add(00.00, CrashCymbal1, 90, 0.60).
             </summary>
@@ -292,7 +292,7 @@
             <param name="volume"></param>
             <param name="duration"></param>
         </member>
-        <member name="M:Nebulator.Script.NSequence.Add(System.Double,System.Action,System.Int32)">
+        <member name="M:Nebulator.Script.NSequence.Add(System.Double,System.Action,System.Double)">
             <summary>
             Like: Z.Add(01.00, algoDynamic, 90).
             </summary>
@@ -300,7 +300,7 @@
             <param name="func"></param>
             <param name="volume"></param>
         </member>
-        <member name="M:Nebulator.Script.NSequence.Add(System.String,System.Int32,System.Int32,System.Double)">
+        <member name="M:Nebulator.Script.NSequence.Add(System.String,System.Int32,System.Double,System.Double)">
             <summary>
             Like: Z.Add("x-------x-------x-------x-------", AcousticBassDrum, 90).
             Each hit is 1/16 note - fixed res for now.
@@ -341,7 +341,7 @@
             </summary>
             <param name="s"></param>
         </member>
-        <member name="M:Nebulator.Script.NSequenceElement.#ctor(System.Int32)">
+        <member name="M:Nebulator.Script.NSequenceElement.#ctor(System.Double)">
             <summary>
             Constructor from note number.
             </summary>
@@ -395,7 +395,7 @@
             <summary>
             Create a controller input.
             </summary>
-            <param name="input">Comm device.</param>
+            <param name="devName">Comm device.</param>
             <param name="channelNum">Which channel.</param>
             <param name="controlId">Which</param>
             <param name="bound">NVariable</param>
@@ -406,7 +406,7 @@
             </summary>
             <param name="bound"></param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.createVariable(System.String,System.Int32,System.Int32,System.Int32,System.Action)">
+        <member name="M:Nebulator.Script.ScriptCore.createVariable(System.String,System.Double,System.Double,System.Double,System.Action)">
             <summary>
             Normal factory.
             </summary>
@@ -430,50 +430,50 @@
             <param name="start"></param>
             <param name="length">Length in ticks.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.createChannel(System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Script.ScriptCore.createChannel(System.String,System.String,System.Int32,System.Double,System.Double,System.Int32)">
             <summary>
             Normal factory.
             </summary>
             <param name="name">UI name</param>
-            <param name="output">Comm device.</param>
+            <param name="devName">Comm device.</param>
             <param name="channelNum"></param>
             <param name="wobvol"></param>
             <param name="wobbefore"></param>
             <param name="wobafter"></param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.Int32,System.Int32,System.Double)">
+        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.Double,System.Double,System.Double)">
             <summary>Send a note immediately. Respects solo/mute. Adds a note off to play after dur time.</summary>
             <param name="channel">Which channel to send it on.</param>
-            <param name="inote">Note number.</param>
+            <param name="dnote">Note number.</param>
             <param name="vol">Note volume. If 0, sends NoteOff instead.</param>
             <param name="dur">How long it lasts in Time. 0 means no note off generated. User has to turn it off explicitly.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.String,System.Int32,System.Double)">
+        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.String,System.Double,System.Double)">
             <summary>Send a note immediately. Respects solo/mute.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="snote">Note string using any form allowed in the script. Requires double quotes in the script.</param>
             <param name="vol">Note volume.</param>
             <param name="dur">How long it lasts in Time representation. 0 means no note off generated.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.String,System.Int32,Nebulator.Comm.Time)">
+        <member name="M:Nebulator.Script.ScriptCore.sendNote(Nebulator.Script.NChannel,System.String,System.Double,Nebulator.Common.Time)">
             <summary>Send a note immediately. Respects solo/mute.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="snote">Note string using any form allowed in the script. Requires double quotes in the script.</param>
             <param name="vol">Note volume.</param>
             <param name="dur">How long it lasts in Time representation. 0 means no note off generated.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendNoteOn(Nebulator.Script.NChannel,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Script.ScriptCore.sendNoteOn(Nebulator.Script.NChannel,System.Double,System.Double)">
             <summary>Send a note on immediately. Respects solo/mute.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="inote">Note number.</param>
             <param name="vol">Note volume.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendNoteOff(Nebulator.Script.NChannel,System.Int32)">
+        <member name="M:Nebulator.Script.ScriptCore.sendNoteOff(Nebulator.Script.NChannel,System.Double)">
             <summary>Send a note off immediately.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="inote">Note number.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.sendController(Nebulator.Script.NChannel,System.Int32,System.Int32)">
+        <member name="M:Nebulator.Script.ScriptCore.sendController(Nebulator.Script.NChannel,System.Int32,System.Double)">
             <summary>Send a controller immediately.</summary>
             <param name="channel">Which channel to send it on.</param>
             <param name="ctlnum">Controller number.</param>
@@ -601,7 +601,7 @@
             <param name="name"></param>
             <param name="desc"></param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.SafeColor(System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:Nebulator.Script.ScriptCore.SafeColor(System.Double,System.Double,System.Double,System.Double)">
             <summary>Bounds check a color definition./// </summary>
             <param name="r"></param>
             <param name="g"></param>
@@ -824,14 +824,14 @@
         <member name="P:Nebulator.Script.Wobbler.RangeHigh">
             <summary>Maximum range for randomizing - 3 sigma.</summary>
         </member>
-        <member name="M:Nebulator.Script.Wobbler.Next(System.Int32)">
+        <member name="M:Nebulator.Script.Wobbler.Next(System.Double)">
             <summary>
             Return next from standard distribution.
             </summary>
             <param name="val">Center distribution around this.</param>
             <returns>Randomized value or val if ranges are 0 (default).</returns>
         </member>
-        <member name="M:Nebulator.Script.Wobbler.Next(Nebulator.Comm.Time)">
+        <member name="M:Nebulator.Script.Wobbler.Next(Nebulator.Common.Time)">
             <summary>
             Return next from standard distribution.
             </summary>

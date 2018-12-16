@@ -93,8 +93,8 @@ public override void step()
 
 
 ///////////////////// ball /////////////////////////////////
-float posX = 50;
-float posY = 50;
+double posX = 50;
+double posY = 50;
 int velX = 3;
 int velY = 3;
 int ballSize = 40;
@@ -183,14 +183,14 @@ void draw_regular_polygon()
     popMatrix();
 }
 
-void polygon(float x, float y, float radius, int npoints)
+void polygon(double x, double y, double radius, int npoints)
 {
-    float angle = TWO_PI / npoints;
+    double angle = TWO_PI / npoints;
     beginShape();
-    for (float a = 0; a < TWO_PI; a += angle)
+    for (double a = 0; a < TWO_PI; a += angle)
     {
-        float sx = x + cos(a) * radius;
-        float sy = y + sin(a) * radius;
+        double sx = x + cos(a) * radius;
+        double sy = y + sin(a) * radius;
         //vertex(sx, sy);
         vertex((int)sx, (int)sy);
     }
@@ -237,9 +237,9 @@ void draw_radial_gradient()
 
 
 ////////////////////// sine cosine /////////////////////////////
-float x1, x2, y1, y2;
-float angle1, angle2;
-float scalar = 70;
+double x1, x2, y1, y2;
+double angle1, angle2;
+double scalar = 70;
 
 void setup_sine_cosine()
 {
@@ -252,8 +252,8 @@ void draw_sine_cosine()
 {
     background(0);
 
-    float ang1 = radians(angle1);
-    float ang2 = radians(angle2);
+    double ang1 = radians(angle1);
+    double ang2 = radians(angle2);
 
     x1 = width / 2 + (scalar * cos(ang1));
     x2 = width / 2 + (scalar * cos(ang2));
@@ -317,7 +317,7 @@ void setup_pointillism()
 
 void draw_pointillism()
 {
-    float pointillize = map(mouseX, 0, width, smallPoint, largePoint);
+    double pointillize = map(mouseX, 0, width, smallPoint, largePoint);
     pointillize = 10; // dev
     int x = @int(random(img.width));
     int y = @int(random(img.height));
@@ -339,11 +339,11 @@ void setup_random_gaussian()
 void draw_random_gaussian()
 {
     // Get a gaussian random number with mean of 0 and standard deviation of 1.0
-    float val = randomGaussian();
+    double val = randomGaussian();
 
-    float sd = 60;                  // Define a standard deviation
-    float mean = width / 2;         // Define a mean value (middle of the screen along the x-axis)
-    float x = ( val * sd ) + mean;  // Scale the gaussian random number by standard deviation and mean
+    double sd = 60;                  // Define a standard deviation
+    double mean = width / 2;         // Define a mean value (middle of the screen along the x-axis)
+    double x = ( val * sd ) + mean;  // Scale the gaussian random number by standard deviation and mean
 
     fill(255, 30);
     ellipse(x, height / 2, 32, 32);   // Draw an ellipse at our "normal" random location
