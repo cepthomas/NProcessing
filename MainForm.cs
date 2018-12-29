@@ -547,29 +547,37 @@ namespace NProcessing
         {
             bool ret = true;
 
-            switch (cmd)
+            if(_script != null)
             {
-                case PlayCommand.Start:
-                    bool ok = _needCompile ? Compile() : true;
-                    if (ok)
-                    {
-                        _startTime = DateTime.Now;
-                        btnPlay.Checked = true;
-                        _surface.InitSurface(_script);
-                    }
-                    else
-                    {
+                switch (cmd)
+                {
+                    case PlayCommand.Start:
+                        bool ok = _needCompile ? Compile() : true;
+                        if (ok)
+                        {
+                            _startTime = DateTime.Now;
+                            btnPlay.Checked = true;
+                            _surface.InitSurface(_script);
+                        }
+                        else
+                        {
+                            btnPlay.Checked = false;
+                            ret = false;
+                        }
+                        break;
+
+                    case PlayCommand.Stop:
                         btnPlay.Checked = false;
-                        ret = false;
-                    }
-                    break;
+                        break;
+                }
 
-                case PlayCommand.Stop:
-                    btnPlay.Checked = false;
-                    break;
+                btnPlay.BackColor = btnPlay.Checked ? UserSettings.TheSettings.SelectedColor : SystemColors.Control;
             }
-
-            btnPlay.BackColor = btnPlay.Checked ? UserSettings.TheSettings.SelectedColor : SystemColors.Control;
+            else
+            {
+                btnPlay.Checked = false;
+                ret = false;
+            }
 
             return ret;
         }

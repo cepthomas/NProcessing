@@ -1,31 +1,34 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Nebulator.Comm</name>
+        <name>Nebulator.Device</name>
     </assembly>
     <members>
-        <member name="P:Nebulator.Comm.CommInputEventArgs.Step">
+        <member name="T:Nebulator.Device.DeviceType">
+            <summary>Device type.</summary>
+        </member>
+        <member name="P:Nebulator.Device.DeviceInputEventArgs.Step">
             <summary>Received data.</summary>
         </member>
-        <member name="T:Nebulator.Comm.CommLogEventArgs.LogCategory">
+        <member name="T:Nebulator.Device.DeviceLogEventArgs.LogCategory">
             <summary>Category types.</summary>
         </member>
-        <member name="P:Nebulator.Comm.CommLogEventArgs.Category">
+        <member name="P:Nebulator.Device.DeviceLogEventArgs.Category">
             <summary>Category.</summary>
         </member>
-        <member name="P:Nebulator.Comm.CommLogEventArgs.Message">
+        <member name="P:Nebulator.Device.DeviceLogEventArgs.Message">
             <summary>Text to log.</summary>
         </member>
-        <member name="T:Nebulator.Comm.IComm">
+        <member name="T:Nebulator.Device.IDevice">
             <summary>Abstraction layer between low level protocols (e.g. midi, OSC) and Nebulator steps.</summary>
         </member>
-        <member name="E:Nebulator.Comm.IComm.CommLogEvent">
+        <member name="E:Nebulator.Device.IDevice.DeviceLogEvent">
             <summary>Request for logging service.</summary>
         </member>
-        <member name="P:Nebulator.Comm.IComm.CommName">
-            <summary>Comm name.</summary>
+        <member name="P:Nebulator.Device.IDevice.DeviceName">
+            <summary>Device name.</summary>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Init(System.String)">
+        <member name="M:Nebulator.Device.IDevice.Init(System.String)">
             <summary>
             Interfaces don't allow constructors so do this instead.
             Corresponds to the definition in the script.
@@ -33,89 +36,89 @@
             <param name="name"></param>
             <returns></returns>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Start">
+        <member name="M:Nebulator.Device.IDevice.Start">
             <summary>Start operation.</summary>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Stop">
+        <member name="M:Nebulator.Device.IDevice.Stop">
             <summary>Stop operation.</summary>
         </member>
-        <member name="M:Nebulator.Comm.IComm.Housekeep">
+        <member name="M:Nebulator.Device.IDevice.Housekeep">
             <summary>Background operations such as process any stop notes.</summary>
         </member>
-        <member name="T:Nebulator.Comm.NInput">
+        <member name="T:Nebulator.Device.NInput">
             <summary>Input specific version.</summary>
         </member>
-        <member name="E:Nebulator.Comm.NInput.CommInputEvent">
+        <member name="E:Nebulator.Device.NInput.DeviceInputEvent">
             <summary>Reporting a change to listeners.</summary>
         </member>
-        <member name="T:Nebulator.Comm.NOutput">
+        <member name="T:Nebulator.Device.NOutput">
             <summary>Output specific version.</summary>
         </member>
-        <member name="M:Nebulator.Comm.NOutput.Send(Nebulator.Comm.Step)">
-            <summary>Comm out processor.</summary>
+        <member name="M:Nebulator.Device.NOutput.Send(Nebulator.Device.Step)">
+            <summary>Device out processor.</summary>
             <param name="step"></param>
         </member>
-        <member name="M:Nebulator.Comm.NOutput.Kill(System.Nullable{System.Int32})">
+        <member name="M:Nebulator.Device.NOutput.Kill(System.Nullable{System.Int32})">
             <summary>Kill channel(s).</summary>
             <param name="channel">Specific channel or null for all.</param>
         </member>
-        <member name="T:Nebulator.Comm.Step">
+        <member name="T:Nebulator.Device.Step">
             <summary>
             Base class for representation of a received event or a compiled event to be sent.
             </summary>
         </member>
-        <member name="P:Nebulator.Comm.Step.Comm">
+        <member name="P:Nebulator.Device.Step.Device">
             <summary>Associated comm device to use.</summary>
         </member>
-        <member name="P:Nebulator.Comm.Step.ChannelNumber">
+        <member name="P:Nebulator.Device.Step.ChannelNumber">
             <summary>Channel number.</summary>
         </member>
-        <member name="M:Nebulator.Comm.Step.ToString">
+        <member name="M:Nebulator.Device.Step.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Comm.StepNoteOn">
+        <member name="T:Nebulator.Device.StepNoteOn">
             <summary>
             One note on.
             </summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOn.NoteNumber">
+        <member name="P:Nebulator.Device.StepNoteOn.NoteNumber">
             <summary>The note to play.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOn.Velocity">
+        <member name="P:Nebulator.Device.StepNoteOn.Velocity">
             <summary>The default volume.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOn.VelocityToPlay">
+        <member name="P:Nebulator.Device.StepNoteOn.VelocityToPlay">
             <summary>The possibly modified Volume.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOn.Duration">
+        <member name="P:Nebulator.Device.StepNoteOn.Duration">
             <summary>Time between note on/off. Default of 0 indicates note off generated by owner.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepNoteOn.Adjust(System.Double,System.Double)">
+        <member name="M:Nebulator.Device.StepNoteOn.Adjust(System.Double,System.Double)">
             <summary>Possibly make adjustments to values.</summary>
             <param name="masterVolume"></param>
             <param name="channelVolume"></param>
         </member>
-        <member name="M:Nebulator.Comm.StepNoteOn.ToString">
+        <member name="M:Nebulator.Device.StepNoteOn.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Comm.StepNoteOff">
+        <member name="T:Nebulator.Device.StepNoteOff">
             <summary>
             One note off.
             </summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOff.NoteNumber">
+        <member name="P:Nebulator.Device.StepNoteOff.NoteNumber">
             <summary>The note to stop.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOff.Velocity">
+        <member name="P:Nebulator.Device.StepNoteOff.Velocity">
             <summary>Velocity.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepNoteOff.Expiry">
+        <member name="P:Nebulator.Device.StepNoteOff.Expiry">
             <summary>When it's done in tocks - used by stop note chasing.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepNoteOff.ToString">
+        <member name="M:Nebulator.Device.StepNoteOff.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Comm.StepControllerChange">
+        <member name="T:Nebulator.Device.StepControllerChange">
             <summary>
             One controller change event. This supports
               - standard CC messages
@@ -123,77 +126,77 @@
               - notes that can be used as controller inputs
             </summary>
         </member>
-        <member name="P:Nebulator.Comm.StepControllerChange.ControllerId">
+        <member name="P:Nebulator.Device.StepControllerChange.ControllerId">
             <summary>Specific controller. See also specials in ControllerType.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepControllerChange.Value">
+        <member name="P:Nebulator.Device.StepControllerChange.Value">
             <summary>The payload. CC value, midi pitch value, note number.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepControllerChange.ToString">
+        <member name="M:Nebulator.Device.StepControllerChange.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepPatch.PatchNumber">
+        <member name="P:Nebulator.Device.StepPatch.PatchNumber">
             <summary>Specific patch.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepPatch.ToString">
+        <member name="M:Nebulator.Device.StepPatch.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Comm.StepInternal">
+        <member name="T:Nebulator.Device.StepInternal">
             <summary>Used for internal things that are not actually comm protocol.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepInternal.ScriptFunction">
+        <member name="P:Nebulator.Device.StepInternal.ScriptFunction">
             <summary>A function to call.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepInternal.ToString">
+        <member name="M:Nebulator.Device.StepInternal.ToString">
             <summary>For viewing pleasure.</summary>
         </member>
-        <member name="T:Nebulator.Comm.StepCollection">
+        <member name="T:Nebulator.Device.StepCollection">
             <summary>A collection of Steps.</summary>
         </member>
-        <member name="F:Nebulator.Comm.StepCollection._steps">
+        <member name="F:Nebulator.Device.StepCollection._steps">
             <summary>The main collection of Steps. The key is the time to send the list.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepCollection.Times">
+        <member name="P:Nebulator.Device.StepCollection.Times">
             <summary>Gets a collection of the list.</summary>
         </member>
-        <member name="P:Nebulator.Comm.StepCollection.MaxTick">
+        <member name="P:Nebulator.Device.StepCollection.MaxTick">
             <summary>The duration of the whole thing.</summary>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.AddStep(Nebulator.Common.Time,Nebulator.Comm.Step)">
+        <member name="M:Nebulator.Device.StepCollection.AddStep(Nebulator.Common.Time,Nebulator.Device.Step)">
             <summary>
             Add a step at the given time.
             </summary>
             <param name="time"></param>
             <param name="step"></param>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.Add(Nebulator.Comm.StepCollection)">
+        <member name="M:Nebulator.Device.StepCollection.Add(Nebulator.Device.StepCollection)">
             <summary>
             Concatenate another collection to this.
             </summary>
             <param name="stepsToAdd"></param>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.GetSteps(Nebulator.Common.Time)">
+        <member name="M:Nebulator.Device.StepCollection.GetSteps(Nebulator.Common.Time)">
             <summary>
             Get the steps for the given time.
             </summary>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.DeleteSteps(Nebulator.Common.Time)">
+        <member name="M:Nebulator.Device.StepCollection.DeleteSteps(Nebulator.Common.Time)">
             <summary>
             Delete the steps at the given time.
             </summary>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.Clear">
+        <member name="M:Nebulator.Device.StepCollection.Clear">
             <summary>
             Cleanse me.
             </summary>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.Dump">
+        <member name="M:Nebulator.Device.StepCollection.Dump">
             <summary>
             Utility dump 
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Nebulator.Comm.StepCollection.ToString">
+        <member name="M:Nebulator.Device.StepCollection.ToString">
             <summary>
             Display the content steps.
             </summary>
