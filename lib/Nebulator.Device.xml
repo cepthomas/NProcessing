@@ -7,13 +7,13 @@
         <member name="T:Nebulator.Device.DeviceType">
             <summary>Device type.</summary>
         </member>
+        <member name="T:Nebulator.Device.DeviceLogCategory">
+            <summary>Category types.</summary>
+        </member>
         <member name="P:Nebulator.Device.DeviceInputEventArgs.Step">
             <summary>Received data.</summary>
         </member>
-        <member name="T:Nebulator.Device.DeviceLogEventArgs.LogCategory">
-            <summary>Category types.</summary>
-        </member>
-        <member name="P:Nebulator.Device.DeviceLogEventArgs.Category">
+        <member name="P:Nebulator.Device.DeviceLogEventArgs.DeviceLogCategory">
             <summary>Category.</summary>
         </member>
         <member name="P:Nebulator.Device.DeviceLogEventArgs.Message">

@@ -606,7 +606,7 @@
             <returns>Tuple of Converted char (0 if not convertible) and keyCode(s).</returns>
         </member>
         <member name="M:Nebulator.Common.Utils.GetKeyState(System.Windows.Forms.Keys)">
-            <summary>Key state query. Based on https://stackoverflow.com/a/9356006.</summary>
+            <summary>Key state query. Based on https://stackoverflow.com/a/9356006. </summary>
             <param name="key">Which key.</param>
             <returns></returns>
         </member>
