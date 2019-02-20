@@ -46,13 +46,13 @@
             <summary>Background operations such as process any stop notes.</summary>
         </member>
         <member name="T:Nebulator.Device.NInput">
-            <summary>Input specific version.</summary>
+            <summary>Input specific version. Slight deviation from naming convention to fit our model.</summary>
         </member>
         <member name="E:Nebulator.Device.NInput.DeviceInputEvent">
             <summary>Reporting a change to listeners.</summary>
         </member>
         <member name="T:Nebulator.Device.NOutput">
-            <summary>Output specific version.</summary>
+            <summary>Output specific version. Slight deviation from naming convention to fit our model.</summary>
         </member>
         <member name="M:Nebulator.Device.NOutput.Send(Nebulator.Device.Step)">
             <summary>Device out processor.</summary>

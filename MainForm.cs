@@ -6,10 +6,9 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using NLog;
-using MoreLinq;
 using Nebulator.Common;
 using Nebulator.Script;
-using Markdig;
+
 
 namespace NProcessing
 {
@@ -53,9 +52,6 @@ namespace NProcessing
 
         /// <summary>The temp dir for channeling down runtime errors.</summary>
         string _compileTempDir = "";
-
-        /// <summary>Persisted internal values for current script file.</summary>
-        Bag _npVals = new Bag();
         #endregion
 
         #region Lifecycle
@@ -121,13 +117,6 @@ namespace NProcessing
             {
                 ProcessPlay(PlayCommand.Stop, false);
 
-                if(_script != null)
-                {
-                    // Save the project.
-                    _npVals.Clear();
-                    _npVals.Save();
-                }
-
                 // Save user settings.
                 SaveSettings();
             }
@@ -173,9 +162,6 @@ namespace NProcessing
             {
                 NebCompiler compiler = new NebCompiler();
 
-                // Save internal npp file vals now as they will be reloaded during compile.
-                _npVals.Save();
-
                 // Compile now.
                 _script = compiler.Execute(_fn);
 
@@ -185,7 +171,7 @@ namespace NProcessing
 
                 // Process errors. Some may be warnings.
                 _compileResults = compiler.Errors;
-                int errorCount = _compileResults.Count(w => w.ErrorType == ScriptError.ScriptErrorType.Error);
+                int errorCount = _compileResults.Count(w => w.ErrorType == ScriptErrorType.Error);
 
                 if (errorCount == 0 && _script != null)
                 {
@@ -219,7 +205,7 @@ namespace NProcessing
                 {
                     _logger.Log(new LogEventInfo()
                     {
-                        Level = r.ErrorType == ScriptError.ScriptErrorType.Warning ? LogLevel.Warn : LogLevel.Error,
+                        Level = r.ErrorType == ScriptErrorType.Warning ? LogLevel.Warn : LogLevel.Error,
                         Message = r.ToString()
                     });
                 });
@@ -369,7 +355,6 @@ namespace NProcessing
                 try
                 {
                     _logger.Info($"Reading np file: {fn}");
-                    _npVals = Bag.Load(fn.Replace(".np", ".npp"));
                     _fn = fn;
 
                     AddToRecentDefs(fn);
@@ -636,7 +621,7 @@ namespace NProcessing
 
                 f.Controls.Add(b);
 
-                string s = Markdown.ToHtml(File.ReadAllText(@"README.md"));
+                string s = Markdig.Markdown.ToHtml(File.ReadAllText(@"README.md"));
                 // Insert some style.
                 s = s.Insert(0, $"<style>body {{ background - color: {UserSettings.TheSettings.BackColor.Name}; }}</style>");
                 b.DocumentText = s;

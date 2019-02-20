@@ -129,6 +129,24 @@
             <param name="length"></param>
             <returns></returns>
         </member>
+        <member name="M:Nebulator.Common.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Immediately executes the given action on each element in the source sequence.
+            </summary>
+            <typeparam name="T">The type of the elements in the sequence</typeparam>
+            <param name="source">The sequence of elements</param>
+            <param name="action">The action to execute on each element</param>
+        </member>
+        <member name="M:Nebulator.Common.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
+            <summary>
+            Immediately executes the given action on each element in the source sequence.
+            Each element's index is used in the logic of the action.
+            </summary>
+            <typeparam name="T">The type of the elements in the sequence</typeparam>
+            <param name="source">The sequence of elements</param>
+            <param name="action">The action to execute on each element; the second parameter
+            of the action represents the index of the source element.</param>
+        </member>
         <member name="T:Nebulator.Common.LogClientNotificationTarget">
             <summary>Handles writes to the client.</summary>
         </member>
@@ -541,6 +559,9 @@
         </member>
         <member name="F:Nebulator.Common.Utils.UNKNOWN_STRING">
             <summary>General purpose marker.</summary>
+        </member>
+        <member name="F:Nebulator.Common.Utils.BORDER_WIDTH">
+            <summary>General UI.</summary>
         </member>
         <member name="M:Nebulator.Common.Utils.TestForNumber_KeyPress(System.Object,System.Windows.Forms.KeyPressEventArgs)">
             <summary>

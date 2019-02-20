@@ -128,6 +128,9 @@
         <member name="T:Nebulator.Script.ChannelState">
             <summary>Channel state.</summary>
         </member>
+        <member name="T:Nebulator.Script.DisplayType">
+            <summary>Display types.</summary>
+        </member>
         <member name="T:Nebulator.Script.NVariable">
             <summary>
             One bound variable.
@@ -145,8 +148,14 @@
         <member name="P:Nebulator.Script.NVariable.Max">
             <summary>Max value - optional.</summary>
         </member>
+        <member name="P:Nebulator.Script.NVariable.Tag">
+            <summary>For extra info. Makes me feel dirty.</summary>
+        </member>
         <member name="F:Nebulator.Script.NVariable.Changed">
-            <summary>Notify with new value.</summary>
+            <summary>Notify with new value. This represents a callback defined in a script.</summary>
+        </member>
+        <member name="E:Nebulator.Script.NVariable.ValueChangeEvent">
+            <summary>Reporting a change to internal listeners.</summary>
         </member>
         <member name="M:Nebulator.Script.NVariable.ToString">
             <summary>
@@ -208,7 +217,7 @@
             <summary>Current state for this channel.</summary>
         </member>
         <member name="P:Nebulator.Script.NChannel.Context">
-            <summary>Optional extra info fr this channel.</summary>
+            <summary>Optional extra info for this channel.</summary>
         </member>
         <member name="M:Nebulator.Script.NChannel.NextTime">
             <summary>
@@ -224,6 +233,22 @@
             <returns></returns>
         </member>
         <member name="M:Nebulator.Script.NChannel.ToString">
+            <summary>
+            For viewing pleasure.
+            </summary>
+        </member>
+        <member name="T:Nebulator.Script.NDisplay">
+            <summary>
+            One display output.
+            </summary>
+        </member>
+        <member name="P:Nebulator.Script.NDisplay.DisplayType">
+            <summary>The type of display.</summary>
+        </member>
+        <member name="P:Nebulator.Script.NDisplay.BoundVar">
+            <summary>The bound var.</summary>
+        </member>
+        <member name="M:Nebulator.Script.NDisplay.ToString">
             <summary>
             For viewing pleasure.
             </summary>
@@ -411,7 +436,7 @@
             <param name="name">UI name</param>
             <param name="devName">Device name</param>
             <param name="channelNum"></param>
-            <param name="context"></param>
+            <param name="context">Optional - used by synth. TODON2 hide?</param>
         </member>
         <member name="M:Nebulator.Script.ScriptCore.setWobbler(Nebulator.Script.NChannel,System.Double,System.Double,System.Double,System.Double)">
             <summary>
@@ -437,6 +462,13 @@
             Create a UI lever.
             </summary>
             <param name="bound"></param>
+        </member>
+        <member name="M:Nebulator.Script.ScriptCore.createDisplay(Nebulator.Script.NVariable,System.Int32)">
+            <summary>
+            Create a UI meter.
+            </summary>
+            <param name="bound"></param>
+            <param name="type"></param>
         </member>
         <member name="M:Nebulator.Script.ScriptCore.createSequence(System.Int32)">
             <summary>
@@ -578,14 +610,17 @@
         <member name="P:Nebulator.Script.ScriptCore.RuntimeSteps">
             <summary>Steps added by script functions at runtime e.g. sendSequence(). Script -> Main</summary>
         </member>
+        <member name="P:Nebulator.Script.ScriptCore.Variables">
+            <summary>All vars.</summary>
+        </member>
         <member name="P:Nebulator.Script.ScriptCore.Controllers">
             <summary>Control inputs.</summary>
         </member>
         <member name="P:Nebulator.Script.ScriptCore.Levers">
             <summary>Levers.</summary>
         </member>
-        <member name="P:Nebulator.Script.ScriptCore.Variables">
-            <summary>Levers.</summary>
+        <member name="P:Nebulator.Script.ScriptCore.Displays">
+            <summary>All displays.</summary>
         </member>
         <member name="P:Nebulator.Script.ScriptCore.Sequences">
             <summary>All sequences.</summary>
