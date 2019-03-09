@@ -602,32 +602,30 @@ namespace NProcessing
         /// </summary>
         void About_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form()
-            {
-                Text = "User Settings",
-                Size = new Size(800, 700),
-                StartPosition = FormStartPosition.Manual,
-                Location = new Point(200, 10),
-                FormBorderStyle = FormBorderStyle.SizableToolWindow,
-                ShowIcon = false,
-                ShowInTaskbar = false,
-            })
-            {
-                WebBrowser b = new WebBrowser()
-                {
-                    Dock = DockStyle.Fill,
-                    BackColor = UserSettings.TheSettings.BackColor,
-                };
+            // Main help file.
+            string mdText = File.ReadAllText(@"README.md");
 
-                f.Controls.Add(b);
+            // Put it together.
+            List<string> htmlText = new List<string>();
 
-                string s = Markdig.Markdown.ToHtml(File.ReadAllText(@"README.md"));
-                // Insert some style.
-                s = s.Insert(0, $"<style>body {{ background - color: {UserSettings.TheSettings.BackColor.Name}; }}</style>");
-                b.DocumentText = s;
+            // Boilerplate
+            htmlText.Add($"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            // CSS
+            htmlText.Add($"<style>body {{ background-color: {UserSettings.TheSettings.BackColor.Name}; font-family: \"Arial\", Helvetica, sans-serif; }}");
+            htmlText.Add($"</style></head><body>");
 
-                f.ShowDialog();
-            }
+            // Meat.
+            string mdHtml = string.Join(Environment.NewLine, mdText);
+            htmlText.Add(mdHtml);
+
+            // Bottom.
+            string ss = "<!-- Markdeep: --><style class=\"fallback\">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src=\"markdeep.min.js\" charset=\"utf-8\"></script><script src=\"https://casual-effects.com/markdeep/latest/markdeep.min.js\" charset=\"utf-8\"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=\"visible\")</script>";
+            htmlText.Add(ss);
+            htmlText.Add($"</body></html>");
+
+            string fn = Path.Combine(Path.GetTempPath(), "nprocessing.html");
+            File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
+            Process.Start(fn);
         }
         #endregion
     }
