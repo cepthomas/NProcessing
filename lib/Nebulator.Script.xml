@@ -216,9 +216,6 @@
         <member name="P:Nebulator.Script.NChannel.State">
             <summary>Current state for this channel.</summary>
         </member>
-        <member name="P:Nebulator.Script.NChannel.Context">
-            <summary>Optional extra info for this channel.</summary>
-        </member>
         <member name="M:Nebulator.Script.NChannel.NextTime">
             <summary>
             Get the next time.
@@ -429,14 +426,13 @@
             <param name="max"></param>
             <param name="handler">Optional callback function.</param>
         </member>
-        <member name="M:Nebulator.Script.ScriptCore.createChannel(System.String,System.String,System.Int32,System.Object)">
+        <member name="M:Nebulator.Script.ScriptCore.createChannel(System.String,System.String,System.Int32)">
             <summary>
             Normal factory.
             </summary>
             <param name="name">UI name</param>
             <param name="devName">Device name</param>
             <param name="channelNum"></param>
-            <param name="context">Optional - used by synth. TODON2 hide?</param>
         </member>
         <member name="M:Nebulator.Script.ScriptCore.setWobbler(Nebulator.Script.NChannel,System.Double,System.Double,System.Double,System.Double)">
             <summary>

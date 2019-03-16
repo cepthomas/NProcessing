@@ -464,7 +464,7 @@
             <summary>The scale definitions from ScriptDefinitions.md. Key is scale name, Value is list of constituent notes.</summary>
         </member>
         <member name="P:Nebulator.Common.ScriptDefinitions.NoteControl">
-            <summary>Helper for internals.</summary>
+            <summary>Helper for internals. Really should be separate classes - avoiding over-OOPing.</summary>
         </member>
         <member name="P:Nebulator.Common.ScriptDefinitions.PitchControl">
             <summary>Helper for internals.</summary>
