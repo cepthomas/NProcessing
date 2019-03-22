@@ -7,12 +7,14 @@ For lots more info see the [Wiki](https://github.com/cepthomas/NProcessing/wiki)
 
 # Bonus Stuff
 This project contains a bunch of components that are either recycled or created for this. Most could be stripped out for subsequent reuse.
+
 - A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - Multiple file change watcher.
 - General purpose embedded C# in memory compiler.
 
 # Third Party
 This application uses these excellent FOSS components:
+
 - SkiaSharp for graphics: [SkiaSharp](https://github.com/mono/SkiaSharp) (MIT). Waaaay faster than native GDI+.
 - Logging: [NLog](http://nlog-project.org/) (BSD 3-Clause).
 - [MoreLinq](https://morelinq.github.io) (MIT).

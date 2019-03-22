@@ -5,6 +5,19 @@ VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NProcessing", "NProcessing.csproj", "{1DF94326-7141-488A-A765-1B78CCE61BB3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Script", "Script\Script.csproj", "{12428B06-B76A-4906-A9FD-47AD25AB2D37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wiki", "Wiki", "{360C2E33-8A43-4F8D-8C7F-7B7A5C77880B}"
+	ProjectSection(SolutionItems) = preProject
+		NProcessing.wiki\_Sidebar.md = NProcessing.wiki\_Sidebar.md
+		NProcessing.wiki\Home.md = NProcessing.wiki\Home.md
+		NProcessing.wiki\Notes.md = NProcessing.wiki\Notes.md
+		NProcessing.wiki\Porting.md = NProcessing.wiki\Porting.md
+		NProcessing.wiki\ScriptApi.md = NProcessing.wiki\ScriptApi.md
+		NProcessing.wiki\ScriptSyntax.md = NProcessing.wiki\ScriptSyntax.md
+		NProcessing.wiki\WebApi.md = NProcessing.wiki\WebApi.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +28,10 @@ Global
 		{1DF94326-7141-488A-A765-1B78CCE61BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DF94326-7141-488A-A765-1B78CCE61BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DF94326-7141-488A-A765-1B78CCE61BB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12428B06-B76A-4906-A9FD-47AD25AB2D37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12428B06-B76A-4906-A9FD-47AD25AB2D37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12428B06-B76A-4906-A9FD-47AD25AB2D37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12428B06-B76A-4906-A9FD-47AD25AB2D37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
