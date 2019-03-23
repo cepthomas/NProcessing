@@ -117,92 +117,6 @@ namespace NProcessing.Script
             return target;
         }
 
-        // This is the original:
-        //static public PVector random2D()
-        //{
-        //    return random2D(null, null);
-        //}
-
-        //static public PVector random2D(PApplet parent)
-        //{
-        //    return random2D(null, parent);
-        //}
-
-        //static public PVector random2D(PVector target)
-        //{
-        //    return random2D(target, null);
-        //}
-
-        //static public PVector random2D(PVector target, PApplet parent)
-        //{
-
-        //    return (parent == null) ?
-        //           fromAngle((Math.random() * Math.PI * 2), target) :
-        //           fromAngle(parent.random(PConstants.TAU), target);
-        //}
-
-        //static public PVector random3D()
-        //{
-        //    return random3D(null, null);
-        //}
-
-        //static public PVector random3D(PApplet parent)
-        //{
-        //    return random3D(null, parent);
-        //}
-
-        //static public PVector random3D(PVector target)
-        //{
-        //    return random3D(target, null);
-        //}
-
-        //static public PVector random3D(PVector target, PApplet parent)
-        //{
-        //    double angle;
-        //    double vz;
-        //    if (parent == null)
-        //    {
-        //        angle = (Math.random() * Math.PI * 2);
-        //        vz = (Math.random() * 2 - 1);
-        //    }
-        //    else
-        //    {
-        //        angle = parent.random(PConstants.TWO_PI);
-        //        vz = parent.random(-1, 1);
-        //    }
-        //    double vx = (Math.Sqrt(1 - vz * vz) * Math.cos(angle));
-        //    double vy = (Math.Sqrt(1 - vz * vz) * Math.sin(angle));
-        //    if (target == null)
-        //    {
-        //        target = new PVector(vx, vy, vz);
-        //        //target.normalize(); // Should be unnecessary
-        //    }
-        //    else
-        //    {
-        //        target.set(vx, vy, vz);
-        //    }
-        //    return target;
-        //}
-
-        //static public PVector fromAngle(double angle)
-        //{
-        //    return fromAngle(angle,null);
-        //}
-
-        //static public PVector fromAngle(double angle, PVector target)
-        //{
-        //    if (target == null)
-        //    {
-        //        target = new PVector(Math.Cos(angle),Math.Sin(angle),0);
-        //    }
-        //    else
-        //    {
-        //        target.set(Math.Cos(angle),Math.Sin(angle),0);
-        //    }
-        //    return target;
-        //}
-
-
         public PVector copy()
         {
             return new PVector(x, y, z);
@@ -614,16 +528,6 @@ namespace NProcessing.Script
             }
             return ret;
         }
-
-        //public static bool operator ==(PVector v1, PVector v2)
-        //{
-        //    return (object)v1 != null && (object)v2 != null && v1.Equals(v2);
-        //}
-
-        //public static bool operator !=(PVector v1, PVector v2)
-        //{
-        //    return (object)v1 == null || (object)v2 == null || !v1.Equals(v2);
-        //}
 
         public override int GetHashCode()
         {

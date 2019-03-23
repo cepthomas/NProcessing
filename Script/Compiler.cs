@@ -8,8 +8,6 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Diagnostics;
 using NLog;
-////using Newtonsoft.Json;
-////using Newtonsoft.Json.Converters;
 
 
 namespace NProcessing.Script
@@ -25,7 +23,7 @@ namespace NProcessing.Script
         class FileContext
         {
             /// <summary>Current source file.</summary>
-            public string SourceFile { get; set; } = Utils.UNKNOWN_STRING;
+            public string SourceFile { get; set; } = "???";
 
             /// <summary>Current source line.</summary>
             public int LineNumber { get; set; } = 1;
@@ -56,10 +54,10 @@ namespace NProcessing.Script
         Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Starting directory.</summary>
-        string _baseDir = Utils.UNKNOWN_STRING;
+        string _baseDir = "???";
 
         /// <summary>Script info.</summary>
-        string _scriptName = Utils.UNKNOWN_STRING;
+        string _scriptName = "???";
 
         /// <summary>Accumulated lines to go in the constructor.</summary>
         List<string> _initLines = new List<string>();
@@ -84,7 +82,7 @@ namespace NProcessing.Script
 
             Errors.Clear();
 
-            if (npfn != Utils.UNKNOWN_STRING && File.Exists(npfn))
+            if (File.Exists(npfn))
             {
                 _logger.Info($"Compiling {npfn}.");
 
@@ -265,7 +263,7 @@ namespace NProcessing.Script
                     paths.Add(fullpath);
                 }
 
-                // Make it compile. Maybe try Roslyn again? For c#6+.
+                // Make it compile.
                 CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
                 CompilerResults cr = provider.CompileAssemblyFromFile(cp, paths.ToArray());
 
@@ -295,7 +293,7 @@ namespace NProcessing.Script
                     {
                         // The line should end with source line number: "//1234"
                         int origLineNum = 0; // defaults
-                        string origFileName = Utils.UNKNOWN_STRING;
+                        string origFileName = "???";
 
                         // Dig out the offending source code information.
                         string fpath = Path.GetFileName(err.FileName.ToLower());
@@ -435,17 +433,16 @@ namespace NProcessing.Script
     public class ScriptError
     {
         /// <summary>Where it came from.</summary>
- ////       [JsonConverter(typeof(StringEnumConverter))]
         public ScriptErrorType ErrorType { get; set; } = ScriptErrorType.None;
 
         /// <summary>Original source file.</summary>
-        public string SourceFile { get; set; } = Utils.UNKNOWN_STRING;
+        public string SourceFile { get; set; } = "???";
 
         /// <summary>Original source line number.</summary>
         public int LineNumber { get; set; } = 0;
 
         /// <summary>Content.</summary>
-        public string Message { get; set; } = Utils.UNKNOWN_STRING;
+        public string Message { get; set; } = "???";
 
         /// <summary>Readable.</summary>
         public override string ToString() => $"{ErrorType} {SourceFile}({LineNumber}): {Message}";

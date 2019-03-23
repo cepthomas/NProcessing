@@ -29,7 +29,7 @@ namespace NProcessing
         Surface _surface = new Surface();
 
         /// <summary>Current script file name.</summary>
-        string _fn = Utils.UNKNOWN_STRING;
+        string _fn = "";
 
         /// <summary>The current script.</summary>
         NpScript _script = null;
@@ -51,6 +51,9 @@ namespace NProcessing
 
         /// <summary>The temp dir for channeling down runtime errors.</summary>
         string _compileTempDir = "";
+
+        /// <summary>The user settings.</summary>
+        UserSettings _settings;
         #endregion
 
         #region Lifecycle
@@ -60,12 +63,11 @@ namespace NProcessing
         public MainForm()
         {
             // Need to load settings before creating controls in MainForm_Load().
-            string appDir = Utils.GetAppDataDir();
+            string appDir = GetAppDataDir();
             DirectoryInfo di = new DirectoryInfo(appDir);
             di.Create();
-            UserSettings.Load(appDir);
+            _settings = UserSettings.Load(appDir);
             InitializeComponent();
-//            toolStrip1.Renderer = new Common.CheckBoxRenderer(); // for checked color.
         }
 
         /// <summary>
@@ -73,32 +75,20 @@ namespace NProcessing
         /// </summary>
         void MainForm_Load(object sender, EventArgs e)
         {
-            txtView.Font = UserSettings.TheSettings.EditorFont;
-            txtView.BackColor = UserSettings.TheSettings.BackColor;
-
-
-            // btnSettings.Image = Utils.ColorizeBitmap(btnSettings.Image, UserSettings.TheSettings.IconColor);
-            // btnAbout.Image = Utils.ColorizeBitmap(btnAbout.Image, UserSettings.TheSettings.IconColor);
-            // fileDropDownButton.Image = Utils.ColorizeBitmap(fileDropDownButton.Image, UserSettings.TheSettings.IconColor);
-            // btnRewind.Image = Utils.ColorizeBitmap(btnRewind.Image, UserSettings.TheSettings.IconColor);
-            // btnCompile.Image = Utils.ColorizeBitmap(btnCompile.Image, UserSettings.TheSettings.IconColor);
-
-            // chkPlay.Image = Utils.ColorizeBitmap(chkPlay.Image, UserSettings.TheSettings.IconColor);
-            // chkPlay.BackColor = UserSettings.TheSettings.BackColor;
-            // chkPlay.FlatAppearance.CheckedBackColor = UserSettings.TheSettings.SelectedColor;
-            
+            txtView.Font = _settings.EditorFont;
+            txtView.BackColor = _settings.BackColor;
 
             btnClear.Click += (object _, EventArgs __) => { txtView.Clear(); };
             btnWrap.Click += (object _, EventArgs __) => { txtView.WordWrap = btnWrap.Checked; };
 
             // Init UI from settings
-            Location = new Point(UserSettings.TheSettings.MainFormInfo.X, UserSettings.TheSettings.MainFormInfo.Y);
-            Size = new Size(UserSettings.TheSettings.MainFormInfo.Width, UserSettings.TheSettings.MainFormInfo.Height);
+            Location = new Point(_settings.MainFormInfo.X, _settings.MainFormInfo.Y);
+            Size = new Size(_settings.MainFormInfo.Width, _settings.MainFormInfo.Height);
             WindowState = FormWindowState.Normal;
 
             _surface.Visible = true;
             _surface.Location = new Point(Right, Top);
-            _surface.TopMost = UserSettings.TheSettings.LockUi;
+            _surface.TopMost = _settings.LockUi;
 
             InitLogging();
 
@@ -108,7 +98,7 @@ namespace NProcessing
 
             _watcher.FileChangeEvent += Watcher_Changed;
 
-            Text = $"NProcessing {Utils.GetVersionString()} - No file loaded";
+            Text = $"NProcessing {GetVersionString()} - No file loaded";
 
             // Catches runtime errors during drawing.
             _surface.RuntimeErrorEvent += (object esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
@@ -164,7 +154,7 @@ namespace NProcessing
         {
             bool ok = true;
 
-            if (_fn == Utils.UNKNOWN_STRING)
+            if (_fn == "")
             {
                 _logger.Warn("No script file loaded.");
                 ok = false;
@@ -333,7 +323,7 @@ namespace NProcessing
             ScriptError err = null;
 
             // Locate the offending frame.
-            string srcFile = Utils.UNKNOWN_STRING;
+            string srcFile = "";
             int srcLine = -1;
             StackTrace st = new StackTrace(args.Exception, true);
             StackFrame sf = null;
@@ -395,7 +385,7 @@ namespace NProcessing
         /// </summary>
         void InitLogging()
         { 
-            string appDir = Utils.GetAppDataDir();
+            string appDir = GetAppDataDir();
 
             FileInfo fi = new FileInfo(Path.Combine(appDir, "log.txt"));
             if(fi.Exists && fi.Length > 100000)
@@ -424,7 +414,7 @@ namespace NProcessing
                     txtView.SelectedText = "";
                 }
 
-                txtView.SelectionBackColor = UserSettings.TheSettings.BackColor;
+                txtView.SelectionBackColor = _settings.BackColor;
 
                 txtView.AppendText(s);
                 txtView.ScrollToCaret();
@@ -452,11 +442,11 @@ namespace NProcessing
                 RichTextBox tv = new RichTextBox()
                 {
                     Dock = DockStyle.Fill,
-                    Font = UserSettings.TheSettings.EditorFont
+                    Font = _settings.EditorFont
                 };
                 f.Controls.Add(tv);
 
-                string appDir = Utils.GetAppDataDir();
+                string appDir = GetAppDataDir();
                 string logFilename = Path.Combine(appDir, "log.txt");
                 File.ReadAllLines(logFilename).ForEach(l => tv.AppendText(l + Environment.NewLine));
 
@@ -512,7 +502,7 @@ namespace NProcessing
                 bool ok = Compile();
                 SetCompileStatus(ok);
 
-                Text = $"NProcessing {Utils.GetVersionString()} - {fn}";
+                Text = $"NProcessing {GetVersionString()} - {fn}";
             }
             catch (Exception ex)
             {
@@ -532,7 +522,7 @@ namespace NProcessing
             ToolStripItemCollection menuItems = recentToolStripMenuItem.DropDownItems;
             menuItems.Clear();
 
-            UserSettings.TheSettings.RecentFiles.ForEach(f =>
+            _settings.RecentFiles.ForEach(f =>
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(f, null, new EventHandler(Recent_Click));
                 menuItems.Add(menuItem);
@@ -547,7 +537,23 @@ namespace NProcessing
         {
             if (File.Exists(fn))
             {
-                UserSettings.TheSettings.RecentFiles.UpdateMru(fn);
+                // First check if it's already in there.
+                for (int i = 0; i < _settings.RecentFiles.Count; i++)
+                {
+                    if (fn == _settings.RecentFiles[i])
+                    {
+                        // Remove from current location so we can stuff it back in later.
+                        _settings.RecentFiles.Remove(_settings.RecentFiles[i]);
+                    }
+                }
+
+                // Insert at the front and trim the tail.
+                _settings.RecentFiles.Insert(0, fn);
+                while (_settings.RecentFiles.Count > 20)
+                {
+                    _settings.RecentFiles.RemoveAt(_settings.RecentFiles.Count - 1);
+                }
+
                 PopulateRecentMenu();
             }
         }
@@ -592,9 +598,9 @@ namespace NProcessing
         /// </summary>
         void SaveSettings()
         {
-            UserSettings.TheSettings.MainFormInfo.FromForm(this);
+            _settings.MainFormInfo.FromForm(this);
 
-            UserSettings.TheSettings.Save();
+            _settings.Save();
         }
 
         /// <summary>
@@ -617,7 +623,7 @@ namespace NProcessing
                 {
                     Dock = DockStyle.Fill,
                     PropertySort = PropertySort.NoSort,
-                    SelectedObject = UserSettings.TheSettings
+                    SelectedObject = _settings
                 };
 
                 // Detect changes of interest.
@@ -638,7 +644,7 @@ namespace NProcessing
 
                 // Always safe to update these.
                 SetUiTimerPeriod();
-                _surface.TopMost = UserSettings.TheSettings.LockUi;
+                _surface.TopMost = _settings.LockUi;
 
                 SaveSettings();
             }
@@ -680,7 +686,7 @@ namespace NProcessing
                         break;
                 }
 
-                btnPlay.BackColor = btnPlay.Checked ? UserSettings.TheSettings.SelectedColor : SystemColors.Control;
+                btnPlay.BackColor = btnPlay.Checked ? _settings.SelectedColor : SystemColors.Control;
             }
             else
             {
@@ -735,7 +741,7 @@ namespace NProcessing
             // Boilerplate
             htmlText.Add($"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             // CSS
-            htmlText.Add($"<style>body {{ background-color: {UserSettings.TheSettings.BackColor.Name}; font-family: \"Arial\", Helvetica, sans-serif; }}");
+            htmlText.Add($"<style>body {{ background-color: {_settings.BackColor.Name}; font-family: \"Arial\", Helvetica, sans-serif; }}");
             htmlText.Add($"</style></head><body>");
 
             // Meat.
@@ -750,6 +756,25 @@ namespace NProcessing
             string fn = Path.Combine(Path.GetTempPath(), "nprocessing.html");
             File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
             Process.Start(fn);
+        }
+
+        /// <summary>
+        /// Returns a string with the application version information.
+        /// </summary>
+        string GetVersionString()
+        {
+            Version ver = typeof(Utils).Assembly.GetName().Version;
+            return $"{ver.Major}.{ver.Minor}.{ver.Build}";
+        }
+
+        /// <summary>
+        /// Get the user app dir.
+        /// </summary>
+        /// <returns></returns>
+        string GetAppDataDir()
+        {
+            string localdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            return Path.Combine(localdir, "NProcessing");
         }
         #endregion
     }

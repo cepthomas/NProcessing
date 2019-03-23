@@ -19,11 +19,6 @@ namespace NProcessing.Script
     /// </summary>
     public static class Utils
     {
-        #region Constants
-        /// <summary>General purpose marker.</summary>
-        public const string UNKNOWN_STRING = "???";
-        #endregion
-
         #region System utils
         /// <summary>General purpose decoder for keys. Because windows makes it kind of difficult.</summary>
         /// <param name="key"></param>

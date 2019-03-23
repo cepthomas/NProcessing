@@ -39,15 +39,6 @@ namespace NProcessing
         [DisplayName("Editor Font"), Description("The font to use for editors etc."), Browsable(true)]
         public Font EditorFont { get; set; } = new Font("Consolas", 9);
 
-        [DisplayName("Control Font"), Description("The font to use for controls."), Browsable(true)]
-        public Font ControlFont { get; set; } = new Font("Microsoft Sans Serif", 9, FontStyle.Bold);
-
-        [DisplayName("Icon Color"), Description("The color used for icons."), Browsable(true)]
-        public Color IconColor { get; set; } = Color.Purple;
-
-        [DisplayName("Control Color"), Description("The color used for styling control surfaces."), Browsable(true)]
-        public Color ControlColor { get; set; } = Color.Yellow;
-
         [DisplayName("Selected Color"), Description("The color used for selections."), Browsable(true)]
         public Color SelectedColor { get; set; } = Color.Violet;
 
@@ -68,11 +59,8 @@ namespace NProcessing
 
         #region Fields
         /// <summary>The file name.</summary>
-        string _fn = Utils.UNKNOWN_STRING;
+        string _fn = "";
         #endregion
-
-        /// <summary>Current global user settings.</summary>
-        public static UserSettings TheSettings { get; set; } = new UserSettings();
 
         /// <summary>Default constructor.</summary>
         public UserSettings()
@@ -88,29 +76,28 @@ namespace NProcessing
         }
 
         /// <summary>Create object from file.</summary>
-        public static void Load(string appDir)
+        public static UserSettings Load(string appDir)
         {
-            TheSettings = null;
+            UserSettings settings = null;
+
             string fn = Path.Combine(appDir, "settings.json");
 
             if(File.Exists(fn))
             {
                 string json = File.ReadAllText(fn);
-                TheSettings = JsonConvert.DeserializeObject<UserSettings>(json);
+                settings = JsonConvert.DeserializeObject<UserSettings>(json);
 
                 // Clean up any bad file names.
-                TheSettings.RecentFiles.RemoveAll(f => !File.Exists(f));
-
-                TheSettings._fn = fn;
+                settings.RecentFiles.RemoveAll(f => !File.Exists(f));
             }
             else
             {
-                // Doesn't exist, create a new one.
-                TheSettings = new UserSettings
-                {
-                    _fn = fn
-                };
+                settings = new UserSettings(); // default
             }
+
+            settings._fn = fn;
+
+            return settings;
         }
         #endregion
     }

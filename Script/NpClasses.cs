@@ -343,7 +343,7 @@ namespace NProcessing.Script
 
         public override string ToString()
         {
-            string sact = Utils.UNKNOWN_STRING;
+            string sact = "???";
             switch (_action)
             {
                 case CLICK: sact = "CLICK"; break;

@@ -37,9 +37,6 @@ namespace NProcessing.Script
 
         /// <summary>Rendered bitmap for display when painting.</summary>
         System.Drawing.Bitmap _bitmap = null;
-
-        ///// <summary>For metrics.</summary>
-        //TimingAnalyzer _tanDraw = new TimingAnalyzer() { SampleSize = 10 };
         #endregion
 
         #region Lifecycle
@@ -55,8 +52,6 @@ namespace NProcessing.Script
             // Create the control.
             _skcontrol = new SKControl();
             Controls.Add(_skcontrol);
-
-            // ResizeRedraw = true;
         }
 
         /// <summary>
@@ -137,17 +132,9 @@ namespace NProcessing.Script
                     _script.pMouseY = _script.mouseY;
                     _script._redraw = false;
 
-                    //_tanDraw.Arm();
-
                     // Execute the user script code.
                     _script.frameCount++;
                     _script.draw();
-
-                    //if (_tanDraw.Grab())
-                    //{
-                    //    _logger.Info("UI tan: " + _tanDraw.ToString());
-                    //    _logger.Info(string.Join(" ", _tanDraw.Times.ConvertAll(t => t.ToString("0.00"))));
-                    //}
                 }
                 catch (Exception ex)
                 {

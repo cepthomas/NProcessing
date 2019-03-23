@@ -79,50 +79,15 @@ namespace NProcessing.Script
         #endregion
 
         #region Properties - dynamic things shared between host and script at runtime
-        // /// <summary>Main -> Script</summary>
-        // public Time StepTime { get; set; } = new Time();
-
         /// <summary>Main -> Script</summary>
         public bool Playing { get; set; } = false;
 
         /// <summary>Main -> Script</summary>
         public double RealTime { get; set; } = 0.0;
 
-        // /// <summary>Main -> Script -> Main</summary>
-        // public double Speed { get; set; } = 0.0;
-
-        // /// <summary>Main -> Script -> Main</summary>
-        // public double Volume { get; set; } = 0;
-
         /// <summary>Main -> Script -> Main</summary>
         public int FrameRate { get; set; } = 0;
-
-        // /// <summary>Steps added by script functions at runtime e.g. sendSequence(). Script -> Main</summary>
-        // public StepCollection RuntimeSteps { get; private set; } = new StepCollection();
         #endregion
-
-        // #region Properties - things defined in the script that MainForm needs
-        // /// <summary>All vars.</summary>
-        // public List<NVariable> Variables { get; set; } = new List<NVariable>();
-
-        // /// <summary>Control inputs.</summary>
-        // public List<NController> Controllers { get; set; } = new List<NController>();
-
-        // /// <summary>Levers.</summary>
-        // public List<NController> Levers { get; set; } = new List<NController>();
-
-        // /// <summary>All displays.</summary>
-        // public List<NDisplay> Displays { get; set; } = new List<NDisplay>();
-
-        // /// <summary>All sequences.</summary>
-        // public List<NSequence> Sequences { get; set; } = new List<NSequence>();
-
-        // /// <summary>All sections.</summary>
-        // public List<NSection> Sections { get; set; } = new List<NSection>();
-
-        // /// <summary>All channels.</summary>
-        // public List<NChannel> Channels { get; set; } = new List<NChannel>();
-        // #endregion
 
         #region Lifecycle
         /// <summary>
