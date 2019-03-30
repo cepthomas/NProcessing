@@ -1,7 +1,7 @@
 
 ///// Tester for Processing workalike.
 
-$load "utils.np";
+#import "utils.np";
 
 public override void setup()
 {

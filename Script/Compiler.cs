@@ -132,7 +132,7 @@ namespace NProcessing.Script
         }
 
         /// <summary>
-        /// Parse one file. This is recursive to support nested $load.
+        /// Parse one file. This is recursive to support nested #import.
         /// </summary>
         /// <param name="pcont">The parse context.</param>
         /// <returns>True if a valid file.</returns>
@@ -175,9 +175,9 @@ namespace NProcessing.Script
                     string cline = pos >= 0 ? s.Substring(0, pos) : s;
 
                     // Test for nested files
-                    // $load "path\name.np"
-                    // $load "include path\split file name.np"
-                    if(s.StartsWith("$load"))
+                    // #import "path\name.np"
+                    // #import "include path\split file name.np"
+                    if(s.StartsWith("#import"))
                     {
                         List<string> parts = s.SplitByTokens("\";");
                         string fn = parts.Last();
@@ -194,7 +194,7 @@ namespace NProcessing.Script
                             Errors.Add(new ScriptError()
                             {
                                 ErrorType = ScriptErrorType.Error,
-                                Message = $"Invalid $load: {fn}",
+                                Message = $"Invalid #import: {fn}",
                                 SourceFile = pcont.SourceFile,
                                 LineNumber = pcont.LineNumber
                             });
