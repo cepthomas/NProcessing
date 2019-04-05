@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using NBagOfTricks;
 
 
 // Processing emulation script stuff.
@@ -162,8 +163,8 @@ namespace NProcessing.Script
         {
             x1 -= width / 2;
             y1 -= height / 2;
-            angle1 = Utils.RadiansToDegrees(angle1);
-            angle2 = Utils.RadiansToDegrees(angle2);
+            angle1 = MathUtils.RadiansToDegrees(angle1);
+            angle2 = MathUtils.RadiansToDegrees(angle2);
             SKPath path = new SKPath();
             SKRect rect = new SKRect((float)x1, (float)y1, (float)x2, (float)y2);
             path.AddArc(rect, (float)angle1, (float)angle2);
@@ -721,8 +722,8 @@ namespace NProcessing.Script
         public int abs(int val) { return Math.Abs(val); }
         public double abs(double val) { return Math.Abs(val); }
         public int ceil(double val) { return (int)Math.Ceiling(val); }
-        public double constrain(double val, double min, double max) { return Utils.Constrain(val, min, max); }
-        public int constrain(int val, int min, int max) { return Utils.Constrain(val, min, max); }
+        public double constrain(double val, double min, double max) { return MathUtils.Constrain(val, min, max); }
+        public int constrain(int val, int min, int max) { return MathUtils.Constrain(val, min, max); }
         public double dist(double x1, double y1, double x2, double y2) { return Math.Sqrt(sq(x1 - x2) + sq(y1 - y2)); }
         public double dist(double x1, double y1, double z1, double x2, double y2, double z2) { return Math.Sqrt(sq(x1 - x2) + sq(y1 - y2) + sq(z1 - z2)); }
         public double exp(double exponent) { return Math.Exp(exponent); }

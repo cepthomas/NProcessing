@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using SkiaSharp;
+using NBagOfTricks;
 
 
 namespace NProcessing.Script

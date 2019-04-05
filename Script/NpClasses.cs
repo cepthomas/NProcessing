@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text;
 using SkiaSharp;
+using NBagOfTricks;
+
 
 // Processing API stuff.
 
@@ -85,10 +87,10 @@ namespace NProcessing.Script
         void FromHSB(double h, double s, double b, double a)
         {
             // Normalize input values.
-            Hue = Utils.Map(h, 0, _max1, 0, 1.0);
-            Saturation = Utils.Map(s, 0, _max2, 0, 1.0);
-            Brightness = Utils.Map(b, 0, _max3, 0, 1.0);
-            A = (int)Utils.Map(a, 0, _maxA, 0, 255);
+            Hue = MathUtils.Map(h, 0, _max1, 0, 1.0);
+            Saturation = MathUtils.Map(s, 0, _max2, 0, 1.0);
+            Brightness = MathUtils.Map(b, 0, _max3, 0, 1.0);
+            A = (int)MathUtils.Map(a, 0, _maxA, 0, 255);
 
             // Convert them.
             R = G = B = (int)(Brightness * 255.0 + 0.5);
@@ -134,10 +136,10 @@ namespace NProcessing.Script
         void FromRGB(int r, int g, int b, int a)
         {
             // Normalize input values.
-            R = Utils.Map(r, 0, (int)_max1, 0, 255);
-            G = Utils.Map(g, 0, (int)_max2, 0, 255);
-            B = Utils.Map(b, 0, (int)_max3, 0, 255);
-            A = (int)Utils.Map(a, 0, _maxA, 0, 255);
+            R = MathUtils.Map(r, 0, (int)_max1, 0, 255);
+            G = MathUtils.Map(g, 0, (int)_max2, 0, 255);
+            B = MathUtils.Map(b, 0, (int)_max3, 0, 255);
+            A = (int)MathUtils.Map(a, 0, _maxA, 0, 255);
 
             // Calc corresponding values.
             double cmax = (R > G) ? R : G;

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NLog;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using NBagOfTricks;
 
 
 namespace NProcessing.Script
@@ -297,7 +298,7 @@ namespace NProcessing.Script
                 _script.keyIsPressed = false;
 
                 // Decode character, maybe.
-                var v = Utils.KeyToChar(e.KeyCode, e.Modifiers);
+                var v = KeyUtils.KeyToChar(e.KeyCode, e.Modifiers);
                 ProcessKeys(v);
 
                 if (_script.key != 0)
@@ -321,7 +322,7 @@ namespace NProcessing.Script
                 _script.keyIsPressed = false;
 
                 // Decode character, maybe.
-                var v = Utils.KeyToChar(e.KeyCode, e.Modifiers);
+                var v = KeyUtils.KeyToChar(e.KeyCode, e.Modifiers);
                 ProcessKeys(v);
 
                 if (_script.key != 0)

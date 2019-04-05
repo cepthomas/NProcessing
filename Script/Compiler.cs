@@ -8,6 +8,7 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Diagnostics;
 using NLog;
+using NBagOfTricks;
 
 
 namespace NProcessing.Script
@@ -244,6 +245,7 @@ namespace NProcessing.Script
                 cp.ReferencedAssemblies.Add("System.Windows.Forms.dll");
                 cp.ReferencedAssemblies.Add("System.Data.dll");
                 cp.ReferencedAssemblies.Add("SkiaSharp.dll");
+                cp.ReferencedAssemblies.Add("NBagOfTricks.dll");
                 cp.ReferencedAssemblies.Add("NProcessing.Script.dll");
 
                 // Add the generated source files.
@@ -259,7 +261,7 @@ namespace NProcessing.Script
                     FileContext ci = _filesToCompile[genFn];
                     string fullpath = Path.Combine(TempDir, genFn);
                     File.Delete(fullpath);
-                    File.WriteAllLines(fullpath, Utils.FormatSourceCode(ci.CodeLines));
+                    File.WriteAllLines(fullpath, MiscUtils.FormatSourceCode(ci.CodeLines));
                     paths.Add(fullpath);
                 }
 
@@ -397,6 +399,7 @@ namespace NProcessing.Script
                 "using System.Drawing;",
                 "using System.Windows.Forms;",
                 "using SkiaSharp;",
+                "using NBagOfTricks;",
                 "using NProcessing;",
                 "using NProcessing.Script;",
                 "namespace NProcessing.UserScript",

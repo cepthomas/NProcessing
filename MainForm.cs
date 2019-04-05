@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using NLog;
+using NBagOfTricks;
 using NProcessing.Script;
 
 
@@ -63,7 +64,7 @@ namespace NProcessing
         public MainForm()
         {
             // Need to load settings before creating controls in MainForm_Load().
-            string appDir = GetAppDataDir();
+            string appDir = MiscUtils.GetAppDataDir("NProcessing");
             DirectoryInfo di = new DirectoryInfo(appDir);
             di.Create();
             _settings = UserSettings.Load(appDir);
@@ -98,7 +99,7 @@ namespace NProcessing
 
             _watcher.FileChangeEvent += Watcher_Changed;
 
-            Text = $"NProcessing {GetVersionString()} - No file loaded";
+            Text = $"NProcessing {MiscUtils.GetVersionString()} - No file loaded";
 
             // Catches runtime errors during drawing.
             _surface.RuntimeErrorEvent += (object esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
@@ -385,7 +386,7 @@ namespace NProcessing
         /// </summary>
         void InitLogging()
         { 
-            string appDir = GetAppDataDir();
+            string appDir = MiscUtils.GetAppDataDir("NProcessing");
 
             FileInfo fi = new FileInfo(Path.Combine(appDir, "log.txt"));
             if(fi.Exists && fi.Length > 100000)
@@ -446,7 +447,7 @@ namespace NProcessing
                 };
                 f.Controls.Add(tv);
 
-                string appDir = GetAppDataDir();
+                string appDir = MiscUtils.GetAppDataDir("NProcessing");
                 string logFilename = Path.Combine(appDir, "log.txt");
                 File.ReadAllLines(logFilename).ForEach(l => tv.AppendText(l + Environment.NewLine));
 
@@ -502,7 +503,7 @@ namespace NProcessing
                 bool ok = Compile();
                 SetCompileStatus(ok);
 
-                Text = $"NProcessing {GetVersionString()} - {fn}";
+                Text = $"NProcessing {MiscUtils.GetVersionString()} - {fn}";
             }
             catch (Exception ex)
             {
@@ -756,25 +757,6 @@ namespace NProcessing
             string fn = Path.Combine(Path.GetTempPath(), "nprocessing.html");
             File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
             Process.Start(fn);
-        }
-
-        /// <summary>
-        /// Returns a string with the application version information.
-        /// </summary>
-        string GetVersionString()
-        {
-            Version ver = typeof(Utils).Assembly.GetName().Version;
-            return $"{ver.Major}.{ver.Minor}.{ver.Build}";
-        }
-
-        /// <summary>
-        /// Get the user app dir.
-        /// </summary>
-        /// <returns></returns>
-        string GetAppDataDir()
-        {
-            string localdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localdir, "NProcessing");
         }
         #endregion
     }

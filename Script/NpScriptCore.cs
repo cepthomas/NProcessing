@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using SkiaSharp;
 using NLog;
+using NBagOfTricks;
 
 
 namespace NProcessing.Script
