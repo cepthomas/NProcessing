@@ -81,9 +81,6 @@ namespace NProcessing.Script
 
         #region Properties - dynamic things shared between host and script at runtime
         /// <summary>Main -> Script</summary>
-        public bool Playing { get; set; } = false;
-
-        /// <summary>Main -> Script</summary>
         public double RealTime { get; set; } = 0.0;
 
         /// <summary>Main -> Script -> Main</summary>

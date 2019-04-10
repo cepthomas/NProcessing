@@ -280,7 +280,6 @@ namespace NProcessing
         /// </summary>
         void InitRuntime()
         {
-            _script.Playing = btnPlay.Checked;
             _script.RealTime = (float)(DateTime.Now - _startTime).TotalSeconds;
             _script.FrameRate = _frameRate;
         }
