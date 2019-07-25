@@ -47,6 +47,15 @@ namespace NProcessing
 
         [DisplayName("Lock UI"), Description("Forces UI to always topmost."), Browsable(true)]
         public bool LockUi { get; set; } = false;
+
+        [DisplayName("Midi Input"), Description("Valid device if handling midi input."), Browsable(true)]
+        public string MidiIn { get; set; } = "";
+
+        [DisplayName("Midi Output"), Description("Valid device if passing midi input through."), Browsable(true)]
+        public string MidiOut { get; set; } = "";
+
+        [DisplayName("Virtual Keyboard"), Description("Show or hide the virtual keyboard."), Browsable(true)]
+        public bool Vkey { get; set; } = false;
         #endregion
 
         #region Persisted non-editable properties
@@ -61,11 +70,6 @@ namespace NProcessing
         /// <summary>The file name.</summary>
         string _fn = "";
         #endregion
-
-        /// <summary>Default constructor.</summary>
-        public UserSettings()
-        {
-        }
 
         #region Persistence
         /// <summary>Save object to file.</summary>

@@ -782,5 +782,9 @@ namespace NProcessing.Script
         public void randomSeed(int seed) { _rand = new Random(seed); }
         #endregion
         #endregion
+
+        #region Custom added
+        public virtual void midiEvent(MidiEvent evt) { }
+        #endregion
     }
 }

@@ -1,7 +1,6 @@
 
 
 // Partial implementation of https://en.wikipedia.org/wiki/L-system and http://benvan.co.uk/lsys/
-// Graphics only, audio to come later.
 
 // Variables
 int _bcolor = 100;

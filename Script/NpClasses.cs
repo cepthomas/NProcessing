@@ -361,4 +361,45 @@ namespace NProcessing.Script
             return $"MouseEvent: sact:{sact} _x:{_x} _y:{_y} count:{_count} button:{_button}";
         }
     }
+
+    /// <summary>
+    /// Custom midi data class.
+    /// </summary>
+    public class MidiEvent
+    {
+        const int PITCH_CONTROL = 1000; // same as main app
+
+        protected int _channel;
+        protected int _note;
+        protected int _velocity;
+        protected int _controller;
+        protected int _value;
+
+        public bool isNoteOn() { return _channel > 0 && _note > 0 && _velocity > 0; }
+        public bool isNoteOff() { return _channel > 0 && _note > 0 && _velocity == 0; }
+        public bool isController() { return _channel > 0 && _controller > 0 && _value > 0; }
+        public bool isPitch() { return _channel > 0 && _controller == PITCH_CONTROL && _value > 0; }
+
+        public int getChannel() { return _channel; }
+        public int getNote() { return _note; }
+        public int getVelocity() { return _velocity; }
+        public int getController() { return _controller; }
+        public int getValue() { return _value; }
+        public int getPitch() { return _value; }
+
+        public MidiEvent(int channel, int note, int velocity, int controller, int value)
+        {
+            _channel = channel;
+            _note = note;
+            _velocity = velocity;
+            _controller = controller;
+            _value = value;
+        }
+
+        public override string ToString()
+        {
+            return $"MidiEvent: channel:{_channel} note:{_note} velocity:{_velocity} controller:{_controller} value:{_value}";
+        }
+    }
+
 }

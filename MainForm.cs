@@ -6,16 +6,18 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using NLog;
+//using NAudio.Midi;
 using NBagOfTricks;
+using NBagOfTricks.UI;
 using NProcessing.Script;
-
+using System.Collections.Concurrent;
 
 namespace NProcessing
 {
     public partial class MainForm : Form
     {
         #region Enums
-        /// <summary>Internal status.</summary>
+        /// <summary>Internal control status.</summary>
         enum PlayCommand { Start, Stop }
         #endregion
 
@@ -24,7 +26,7 @@ namespace NProcessing
         Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Fast timer.</summary>
-        MmTimerEx _timer = new MmTimerEx();
+        MmTimerEx _mmtimer = new MmTimerEx();
 
         /// <summary>Surface child form.</summary>
         Surface _surface = new Surface();
@@ -55,6 +57,24 @@ namespace NProcessing
 
         /// <summary>The user settings.</summary>
         UserSettings _settings;
+
+        /// <summary>Measure how fast we be. Delayed instantiation as it is a slow process.</summary>
+        PerformanceCounter _cpuPerf = null;
+
+        /// <summary>Show how fast we be.</summary>
+        Meter _cpuMeter = null;
+
+        /// <summary>Midi input device.</summary>
+        NpMidiInput _midiIn = null;
+
+        /// <summary>Midi output device.</summary>
+        NpMidiOutput _midiOut = null;
+
+        /// <summary>Show all traffic.</summary>
+        bool _monitorMidi = true;
+
+        /// <summary>Midi event queue.</summary>
+        ConcurrentQueue<MidiEvent> _midiEvents = new ConcurrentQueue<MidiEvent>();
         #endregion
 
         #region Lifecycle
@@ -82,7 +102,9 @@ namespace NProcessing
             btnClear.Click += (object _, EventArgs __) => { txtView.Clear(); };
             btnWrap.Click += (object _, EventArgs __) => { txtView.WordWrap = btnWrap.Checked; };
 
-            // Init UI from settings
+            InitLogging();
+
+            ///// Init UI //////
             Location = new Point(_settings.MainFormInfo.X, _settings.MainFormInfo.Y);
             Size = new Size(_settings.MainFormInfo.Width, _settings.MainFormInfo.Height);
             WindowState = FormWindowState.Normal;
@@ -91,7 +113,61 @@ namespace NProcessing
             _surface.Location = new Point(Right, Top);
             _surface.TopMost = _settings.LockUi;
 
-            InitLogging();
+            ///// CPU meter /////
+            _cpuMeter = new Meter()
+            {
+                Label = "cpu",
+                ControlColor = Color.Red,
+                MeterType = MeterType.ContinuousLine,
+                Orientation = Orientation.Horizontal,
+                Minimum = 0,
+                Maximum = 50,
+                Width = 50,
+                Height = toolStrip1.Height,
+            };
+
+            // This took too long to find out:
+            //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
+            _cpuMeter.MinimumSize = _cpuMeter.Size;
+
+            toolStrip1.Items.Add(new ToolStripControlHost(_cpuMeter));
+
+            ////// Init midi stuff //////
+            if (_settings.MidiIn != "")
+            {
+                _midiIn = new NpMidiInput();
+                if(_midiIn.Init(_settings.MidiIn))
+                {
+                    _midiIn.InputEvent += MidiIn_InputEvent;
+                    _midiIn.LogEvent += Midi_LogEvent;
+                }
+                else
+                {
+                    _midiIn = null;
+                }
+            }
+
+            if (_settings.MidiOut != "" && _midiIn != null)
+            {
+                _midiOut = new NpMidiOutput();
+                if (_midiOut.Init(_settings.MidiOut))
+                {
+                    _midiOut.LogEvent += Midi_LogEvent;
+                }
+                else
+                {
+                    _midiOut = null;
+                }
+            }
+
+            if (_settings.Vkey)
+            {
+                vkey.KeyboardEvent += Vkey_KeyboardEvent;
+            }
+            else
+            {
+                vkey.Hide();
+            }
 
             PopulateRecentMenu();
 
@@ -105,9 +181,13 @@ namespace NProcessing
             _surface.RuntimeErrorEvent += (object esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
 
             // Fast timer.
-            _timer.TimerElapsedEvent += TimerElapsedEvent;
+            _mmtimer.TimerElapsedEvent += TimerElapsedEvent;
             SetUiTimerPeriod();
-            _timer.Start();
+            _mmtimer.Start();
+
+            // Slow timer.
+            timer1.Interval = 500;
+            timer1.Start();
         }
 
         /// <summary>
@@ -124,7 +204,7 @@ namespace NProcessing
             }
             catch (Exception ex)
             {
-                _logger.Error($"Couldn't save the file: {ex.Message}.");
+                _logger.Error($"Something failed during shut down: {ex.Message}.");
             }
         }
 
@@ -136,9 +216,15 @@ namespace NProcessing
         {
             if (disposing)
             {
-                _timer?.Stop();
-                _timer?.Dispose();
-                _timer = null;
+                _mmtimer?.Stop();
+                _mmtimer?.Dispose();
+                _mmtimer = null;
+
+                _midiIn?.Dispose();
+                _midiIn = null;
+
+                _midiOut?.Dispose();
+                _midiOut = null;
 
                 components?.Dispose();
             }
@@ -246,6 +332,13 @@ namespace NProcessing
             {
                 if (_script != null)
                 {
+                    // Process any events.
+                    while(_midiEvents.TryDequeue(out MidiEvent mevt))
+                    {
+                        _script.midiEvent(mevt);
+                    }
+
+                    // Update the view.
                     NextDraw(e);
                 }
             });
@@ -376,6 +469,69 @@ namespace NProcessing
             }
 
             return err;
+        }
+        #endregion
+
+        #region Midi
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Midi_LogEvent(object sender, NpMidiLogEventArgs e)
+        {
+            // Route all events through log.
+
+            switch (e.Category)
+            {
+                case NpMidiLogEventArgs.LogCategory.Error:
+                    _logger.Error(e.Message);
+                    break;
+
+                case NpMidiLogEventArgs.LogCategory.Info:
+                    _logger.Info(e.Message);
+                    break;
+
+                case NpMidiLogEventArgs.LogCategory.Recv:
+                    if (_monitorMidi)
+                    {
+                        _logger.Info($"RCV: {e.Message}");
+                    }
+                    break;
+
+                case NpMidiLogEventArgs.LogCategory.Send:
+                    if (_monitorMidi)
+                    {
+                        _logger.Info($"SND: {e.Message}");
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MidiIn_InputEvent(object sender, NpMidiInputEventArgs e)
+        {
+            MidiEvent mevt = new MidiEvent(e.MidiEvent.ChannelNumber, e.MidiEvent.NoteNumber,
+                e.MidiEvent.Velocity, e.MidiEvent.ControllerId, e.MidiEvent.ControllerValue);
+
+            _midiEvents.Enqueue(mevt);
+        }
+
+        /// <summary>
+        /// Handle virtual keyboard events.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Vkey_KeyboardEvent(object sender, NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs e)
+        {
+            MidiEvent mevt = new MidiEvent(e.ChannelNumber, e.NoteId,
+                e.Velocity, -1, -1);
+
+            _midiEvents.Enqueue(mevt);
         }
         #endregion
 
@@ -724,7 +880,7 @@ namespace NProcessing
             // Convert fps to msec per frame.
             double framesPerMsec = (double)_frameRate / 1000;
             double msecPerFrame = 1 / framesPerMsec;
-            _timer.SetTimer("UI", (int)msecPerFrame);
+            _mmtimer.SetTimer("UI", (int)msecPerFrame);
         }
 
         /// <summary>
@@ -732,8 +888,40 @@ namespace NProcessing
         /// </summary>
         void About_Click(object sender, EventArgs e)
         {
+            // Make some markdown.
+            List<string> mdText = new List<string>
+            {
+                // Device info.
+                "# Your Devices",
+                "## Midi Input"
+            };
+
+            if (NAudio.Midi.MidiIn.NumberOfDevices > 0)
+            {
+                for (int device = 0; device < NAudio.Midi.MidiIn.NumberOfDevices; device++)
+                {
+                    mdText.Add($"- {NAudio.Midi.MidiIn.DeviceInfo(device).ProductName}");
+                }
+            }
+            else
+            {
+                mdText.Add($"- None");
+            }
+            mdText.Add("## Midi Output");
+            if (NAudio.Midi.MidiOut.NumberOfDevices > 0)
+            {
+                for (int device = 0; device < NAudio.Midi.MidiOut.NumberOfDevices; device++)
+                {
+                    mdText.Add($"- {NAudio.Midi.MidiOut.DeviceInfo(device).ProductName}");
+                }
+            }
+            else
+            {
+                mdText.Add($"- None");
+            }
+
             // Main help file.
-            string mdText = File.ReadAllText(@"README.md");
+            mdText.Add(File.ReadAllText(@"README.md"));
 
             // Put it together.
             List<string> htmlText = new List<string>();
@@ -756,6 +944,27 @@ namespace NProcessing
             string fn = Path.Combine(Path.GetTempPath(), "nprocessing.html");
             File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
             Process.Start(fn);
+        }
+
+        /// <summary>
+        /// Update cpu display.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Timer1_Tick(object sender, EventArgs e)
+        {
+            // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
+            // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
+            // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
+
+            if (_cpuPerf == null)
+            {
+                _cpuPerf = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            }
+            else
+            {
+                _cpuMeter.AddValue(_cpuPerf.NextValue());
+            }
         }
         #endregion
     }

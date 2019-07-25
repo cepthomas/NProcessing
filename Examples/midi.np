@@ -1,0 +1,57 @@
+
+// Added midi input to control display. Inspired by http://www.musanim.com.
+
+// Variables
+int _bcolor = 100;
+// int _angle = -3963;
+
+
+// The lines to draw.
+//List<Point> lines = new List<Point>();
+
+public override void setup()
+{
+    size(600, 600);
+
+    print("setup()");
+    noLoop();
+
+    redraw();
+}
+
+public override void draw()
+{
+    background(_bcolor, 100, 200);
+
+    // for (var i = 0; i < lines.Count; i += 2)
+    // {
+    //     var a = lines[i];
+    //     var b = lines[i + 1];
+    //     line(a.X, a.Y, b.X, b.Y);
+    // }
+}
+
+public override void midiEvent(MidiEvent evt)
+{
+
+    // public class MidiEvent
+    // public isNoteOn() { return _channel > 0 && _note > 0 && _velocity > 0; }
+    // public isNoteOff() { return _channel > 0 && _note > 0 && _velocity == 0; }
+    // public isController() { return _channel > 0 && _controller > 0 && _value > 0; }
+    // public isPitch() { return _channel > 0 && _controller == PITCH_CONTROL && _value > 0; }
+
+    // public int getChannel() { return _channel; }
+    // public int getNote() { return _note; }
+    // public int getVelocity() { return _velocity; }
+    // public int getController() { return _controller; }
+    // public int getValue() { return _value; }
+    // public int getPitch() { return _value; }
+}
+
+public override void mouseClicked()
+{
+    background(mouseX % 255, 100, 200);
+
+    // genLSys(-1.359672, -0.138235, mouseX, 14.11);
+    // redraw();
+}
