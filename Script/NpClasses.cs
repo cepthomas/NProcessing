@@ -272,134 +272,35 @@ namespace NProcessing.Script
     }
 
     /// <summary>
-    /// Port of Processing java class.
-    /// </summary>
-    public class Event
-    {
-        public int getAction() { return _action; }
-        public int getModifiers() { return _modifiers; }
-        public int getFlavor() { return _flavor; }
-        public object getNativeObject() { return _nativeObject; }
-        public long getMillis() { return _millis; }
-        public bool isShiftDown() { return (_modifiers & SHIFT) != 0; }
-        public bool isControlDown() { return (_modifiers & CTRL) != 0; }
-        public bool isMetaDown() { return (_modifiers & META) != 0; }
-        public bool isAltDown() { return (_modifiers & ALT) != 0; }
-
-        public const int SHIFT = 1 << 0;
-        public const int CTRL = 1 << 1;
-        public const int META = 1 << 2;
-        public const int ALT = 1 << 3;
-        public const int KEY = 1;
-        public const int MOUSE = 2;
-        public const int TOUCH = 3;
-
-        protected object _nativeObject;
-        protected long _millis;
-        protected int _action;
-        protected int _modifiers;
-        protected int _flavor;
-
-        public Event(object nativeObject, long millis, int action, int modifiers)
-        {
-            _nativeObject = nativeObject;
-            _millis = millis;
-            _action = action;
-            _modifiers = modifiers;
-        }
-    }
-
-    /// <summary>
-    /// Port of Processing java class.
-    /// </summary>
-    public class MouseEvent : Event
-    {
-        public int getX() { return _x; }
-        public int getY() { return _y; }
-        public int getButton() { return _button; }
-        public int getCount() { return _count; }
-
-        public const int PRESS = 1;
-        public const int RELEASE = 2;
-        public const int CLICK = 3;
-        public const int DRAG = 4;
-        public const int MOVE = 5;
-        public const int ENTER = 6;
-        public const int EXIT = 7;
-        public const int WHEEL = 8;
-
-        protected int _x;
-        protected int _y;
-        protected int _button;
-        protected int _count;
-
-        public MouseEvent(object nativeObject, long millis, int action, int modifiers, int x, int y, int button, int count) :
-            base(nativeObject, millis, action, modifiers)
-        {
-            _flavor = MOUSE;
-            _x = x;
-            _y = y;
-            _button = button;
-            _count = count;
-        }
-
-        public override string ToString()
-        {
-            string sact = "???";
-            switch (_action)
-            {
-                case CLICK: sact = "CLICK"; break;
-                case DRAG: sact = "DRAG"; break;
-                case ENTER: sact = "ENTER"; break;
-                case EXIT: sact = "EXIT"; break;
-                case MOVE: sact = "MOVE"; break;
-                case PRESS: sact = "PRESS"; break;
-                case RELEASE: sact = "RELEASE"; break;
-                case WHEEL: sact = "WHEEL"; break;
-            }
-
-            return $"MouseEvent: sact:{sact} _x:{_x} _y:{_y} count:{_count} button:{_button}";
-        }
-    }
-
-    /// <summary>
     /// Custom midi data class.
     /// </summary>
-    public class MidiEvent
+    public class PMidiEvent
     {
         const int PITCH_CONTROL = 1000; // same as main app
 
-        protected int _channel;
-        protected int _note;
-        protected int _velocity;
-        protected int _controller;
-        protected int _value;
+        public int channel { get; set; } = -1;
+        public int note { get; set; } = -1;
+        public int velocity { get; set; } = -1;
+        public int controller { get; set; } = -1;
+        public int value { get; set; } = -1;
 
-        public bool isNoteOn() { return _channel > 0 && _note > 0 && _velocity > 0; }
-        public bool isNoteOff() { return _channel > 0 && _note > 0 && _velocity == 0; }
-        public bool isController() { return _channel > 0 && _controller > 0 && _value > 0; }
-        public bool isPitch() { return _channel > 0 && _controller == PITCH_CONTROL && _value > 0; }
+        public bool isNoteOn { get { return channel > 0 && note > 0 && velocity > 0; } }
+        public bool isNoteOff { get { return channel > 0 && note > 0 && velocity == 0; } }
+        public bool isController { get { return channel > 0 && controller > 0 && value > 0; } }
+        public bool isPitch { get { return channel > 0 && controller == PITCH_CONTROL && value > 0; } }
 
-        public int getChannel() { return _channel; }
-        public int getNote() { return _note; }
-        public int getVelocity() { return _velocity; }
-        public int getController() { return _controller; }
-        public int getValue() { return _value; }
-        public int getPitch() { return _value; }
-
-        public MidiEvent(int channel, int note, int velocity, int controller, int value)
+        public PMidiEvent(int channel, int note, int velocity, int controller, int value)
         {
-            _channel = channel;
-            _note = note;
-            _velocity = velocity;
-            _controller = controller;
-            _value = value;
+            this.channel = channel;
+            this.note = note;
+            this.velocity = velocity;
+            this.controller = controller;
+            this.value = value;
         }
 
         public override string ToString()
         {
-            return $"MidiEvent: channel:{_channel} note:{_note} velocity:{_velocity} controller:{_controller} value:{_value}";
+            return $"PMidiEvent: channel:{channel} note:{note} velocity:{velocity} controller:{controller} value:{value}";
         }
     }
-
 }

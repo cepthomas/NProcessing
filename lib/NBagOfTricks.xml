@@ -476,6 +476,9 @@
             Virtual keyboard control borrowed from Leslie Sanford with extras.
             </summary>
         </member>
+        <member name="P:NBagOfTricks.UI.VirtualKeyboard.ShowNoteNames">
+            <summary>Draw the names on the keys.</summary>
+        </member>
         <member name="T:NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs">
             <summary>Device has received something.</summary>
         </member>
@@ -487,16 +490,6 @@
         </member>
         <member name="P:NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs.Velocity">
             <summary>Midi velocity. 0 means note off.</summary>
-        </member>
-        <member name="P:NBagOfTricks.UI.VirtualKeyboard.KeySize">
-            <summary>
-            General width of the keyboard.
-            </summary>
-        </member>
-        <member name="P:NBagOfTricks.UI.VirtualKeyboard.KeyHeight">
-            <summary>
-            General height of the keyboard.
-            </summary>
         </member>
         <member name="F:NBagOfTricks.UI.VirtualKeyboard._keys">
             <summary>All the created piano keys.</summary>
@@ -515,6 +508,13 @@
         <member name="M:NBagOfTricks.UI.VirtualKeyboard.Keyboard_Load(System.Object,System.EventArgs)">
             <summary>
             Initialize everything.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:NBagOfTricks.UI.VirtualKeyboard.Keyboard_Resize(System.Object,System.EventArgs)">
+            <summary>
+            
             </summary>
             <param name="sender"></param>
             <param name="e"></param>
@@ -578,6 +578,9 @@
         </member>
         <member name="F:NBagOfTricks.UI.VirtualKey._owner">
             <summary>Hook to owner.</summary>
+        </member>
+        <member name="F:NBagOfTricks.UI.VirtualKey._noteNames">
+            <summary>For showing names.</summary>
         </member>
         <member name="P:NBagOfTricks.UI.VirtualKey.IsPressed">
             <summary>Key status.</summary>

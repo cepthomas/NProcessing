@@ -74,7 +74,10 @@ namespace NProcessing
         bool _monitorMidi = true;
 
         /// <summary>Midi event queue.</summary>
-        ConcurrentQueue<MidiEvent> _midiEvents = new ConcurrentQueue<MidiEvent>();
+        ConcurrentQueue<PMidiEvent> _midiEvents = new ConcurrentQueue<PMidiEvent>();
+
+        /// <summary>Optional midi piano.</summary>
+        Form _piano = null;
         #endregion
 
         #region Lifecycle
@@ -125,11 +128,9 @@ namespace NProcessing
                 Width = 50,
                 Height = toolStrip1.Height,
             };
-
-            // This took too long to find out:
+            // This took way too long to find out:
             //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
             _cpuMeter.MinimumSize = _cpuMeter.Size;
-
             toolStrip1.Items.Add(new ToolStripControlHost(_cpuMeter));
 
             ////// Init midi stuff //////
@@ -162,11 +163,7 @@ namespace NProcessing
 
             if (_settings.Vkey)
             {
-                vkey.KeyboardEvent += Vkey_KeyboardEvent;
-            }
-            else
-            {
-                vkey.Hide();
+                CreatePiano();
             }
 
             PopulateRecentMenu();
@@ -188,6 +185,13 @@ namespace NProcessing
             // Slow timer.
             timer1.Interval = 500;
             timer1.Start();
+
+            // Look for filename passed in.
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Count() > 1)
+            {
+                OpenFile(args[1]);
+            }
         }
 
         /// <summary>
@@ -225,6 +229,9 @@ namespace NProcessing
 
                 _midiOut?.Dispose();
                 _midiOut = null;
+
+                _piano?.Dispose();
+                _piano = null;
 
                 components?.Dispose();
             }
@@ -333,7 +340,7 @@ namespace NProcessing
                 if (_script != null)
                 {
                     // Process any events.
-                    while(_midiEvents.TryDequeue(out MidiEvent mevt))
+                    while(_midiEvents.TryDequeue(out PMidiEvent mevt))
                     {
                         _script.midiEvent(mevt);
                     }
@@ -515,23 +522,41 @@ namespace NProcessing
         /// <param name="e"></param>
         void MidiIn_InputEvent(object sender, NpMidiInputEventArgs e)
         {
-            MidiEvent mevt = new MidiEvent(e.MidiEvent.ChannelNumber, e.MidiEvent.NoteNumber,
+            PMidiEvent mevt = new PMidiEvent(e.MidiEvent.ChannelNumber, e.MidiEvent.NoteNumber,
                 e.MidiEvent.Velocity, e.MidiEvent.ControllerId, e.MidiEvent.ControllerValue);
-
             _midiEvents.Enqueue(mevt);
         }
 
         /// <summary>
-        /// Handle virtual keyboard events.
+        /// Make a floating midi piano.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Vkey_KeyboardEvent(object sender, NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs e)
+        void CreatePiano()
         {
-            MidiEvent mevt = new MidiEvent(e.ChannelNumber, e.NoteId,
-                e.Velocity, -1, -1);
+            _piano = new Form()
+            {
+                Text = "Virtual Keyboard",
+                Size = new Size(864, 100),
+                StartPosition = FormStartPosition.Manual,
+                Location = new Point(200, 200),
+                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                //ShowIcon = false,
+                //ShowInTaskbar = false
+            };
 
-            _midiEvents.Enqueue(mevt);
+            VirtualKeyboard vkey = new VirtualKeyboard()
+            {
+                Dock = DockStyle.Fill,
+                ShowNoteNames = true,
+            };
+
+            vkey.KeyboardEvent += (_, e) =>
+            {
+                PMidiEvent mevt = new PMidiEvent(e.ChannelNumber, e.NoteId, e.Velocity, -1, -1);
+                _midiEvents.Enqueue(mevt);
+            };
+
+            _piano.Controls.Add(vkey);
+            _piano.Show();
         }
         #endregion
 

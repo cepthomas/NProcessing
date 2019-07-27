@@ -1,57 +1,63 @@
 
-// Added midi input to control display. Inspired by http://www.musanim.com.
+// Use midi input to control display. Inspired by http://www.musanim.com.
 
-// Variables
+// 60 is Middle C
+const int MIN_NOTE = 48; // C3
+const int MAX_NOTE = 72; // C5
+
+int[] _notes = new int[MAX_NOTE - MIN_NOTE + 1];
 int _bcolor = 100;
-// int _angle = -3963;
 
-
-// The lines to draw.
-//List<Point> lines = new List<Point>();
 
 public override void setup()
 {
-    size(600, 600);
-
     print("setup()");
-    noLoop();
 
-    redraw();
+    size(600, 600);
+    colorMode(HSB, 360, 100, 100);
+    noStroke();
 }
 
 public override void draw()
 {
-    background(_bcolor, 100, 200);
+    background(_bcolor, 128, 100);
 
-    // for (var i = 0; i < lines.Count; i += 2)
-    // {
-    //     var a = lines[i];
-    //     var b = lines[i + 1];
-    //     line(a.X, a.Y, b.X, b.Y);
-    // }
+    int dy = height / (_notes.Count() + 1);
+
+    for (int i = 0; i < _notes.Count(); i++)
+    {
+        if(_notes[i] > 0)
+        {
+            int y = i * dy;
+            stroke(y, _notes[i], 100);
+            strokeWeight(dy);
+            line(10, y, width - 10, y);
+            _notes[i]--;
+        }
+    }
 }
 
-public override void midiEvent(MidiEvent evt)
+public override void midiEvent(PMidiEvent evt)
 {
+    print(evt);
 
-    // public class MidiEvent
-    // public isNoteOn() { return _channel > 0 && _note > 0 && _velocity > 0; }
-    // public isNoteOff() { return _channel > 0 && _note > 0 && _velocity == 0; }
-    // public isController() { return _channel > 0 && _controller > 0 && _value > 0; }
-    // public isPitch() { return _channel > 0 && _controller == PITCH_CONTROL && _value > 0; }
-
-    // public int getChannel() { return _channel; }
-    // public int getNote() { return _note; }
-    // public int getVelocity() { return _velocity; }
-    // public int getController() { return _controller; }
-    // public int getValue() { return _value; }
-    // public int getPitch() { return _value; }
+    if(evt.channel == 1)
+    {
+        if(evt.isNoteOn && evt.note >= MIN_NOTE && evt.note <= MAX_NOTE)
+        {
+            _notes[evt.note - MIN_NOTE] = evt.velocity;
+            print("ON", evt.velocity);
+        }
+        else if(evt.isNoteOff && evt.note >= MIN_NOTE && evt.note <= MAX_NOTE)
+        {
+            _notes[evt.note - MIN_NOTE] = 0;
+            print("OFF");
+        }
+    }
 }
 
 public override void mouseClicked()
 {
-    background(mouseX % 255, 100, 200);
-
-    // genLSys(-1.359672, -0.138235, mouseX, 14.11);
-    // redraw();
+    _bcolor = (int)map(mouseX, 0, width, 0, 255);
+    //redraw();
 }

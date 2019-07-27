@@ -784,7 +784,7 @@ namespace NProcessing.Script
         #endregion
 
         #region Custom added
-        public virtual void midiEvent(MidiEvent evt) { }
+        public virtual void midiEvent(PMidiEvent evt) { }
         #endregion
     }
 }

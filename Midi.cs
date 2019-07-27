@@ -236,7 +236,6 @@ namespace NProcessing
         #endregion
     }
 
-
     /// <summary>
     /// Midi output handler.
     /// </summary>
@@ -403,7 +402,4 @@ namespace NProcessing
         }
         #endregion
     }
-
-
-
 }

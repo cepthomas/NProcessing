@@ -33,15 +33,9 @@
             this.btnWrap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.txtView = new System.Windows.Forms.RichTextBox();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.vkey = new NBagOfTricks.UI.VirtualKeyboard();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -51,7 +45,7 @@
             this.toolsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(840, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(673, 24);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -121,7 +115,7 @@
             this.toolStripSeparator2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(840, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(673, 25);
             this.toolStrip1.TabIndex = 17;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -184,42 +178,13 @@
             this.txtView.BackColor = System.Drawing.SystemColors.Window;
             this.txtView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtView.Location = new System.Drawing.Point(0, 0);
+            this.txtView.Location = new System.Drawing.Point(0, 49);
             this.txtView.Name = "txtView";
             this.txtView.ReadOnly = true;
-            this.txtView.Size = new System.Drawing.Size(840, 430);
+            this.txtView.Size = new System.Drawing.Size(673, 360);
             this.txtView.TabIndex = 18;
             this.txtView.Text = "";
             this.txtView.WordWrap = false;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.IsSplitterFixed = true;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.txtView);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.vkey);
-            this.splitContainer1.Size = new System.Drawing.Size(840, 531);
-            this.splitContainer1.SplitterDistance = 430;
-            this.splitContainer1.TabIndex = 19;
-            // 
-            // vkey
-            // 
-            this.vkey.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.vkey.KeyHeight = 100;
-            this.vkey.KeySize = 10;
-            this.vkey.Location = new System.Drawing.Point(0, 0);
-            this.vkey.Name = "vkey";
-            this.vkey.Size = new System.Drawing.Size(840, 97);
-            this.vkey.TabIndex = 0;
             // 
             // timer1
             // 
@@ -232,8 +197,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(840, 580);
-            this.Controls.Add(this.splitContainer1);
+            this.ClientSize = new System.Drawing.Size(673, 409);
+            this.Controls.Add(this.txtView);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -247,10 +212,6 @@
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -273,8 +234,6 @@
         private System.Windows.Forms.RichTextBox txtView;
         private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private NBagOfTricks.UI.VirtualKeyboard vkey;
         private System.Windows.Forms.Timer timer1;
     }
 }
