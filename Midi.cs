@@ -7,10 +7,10 @@ using NBagOfTricks;
 namespace NProcessing
 {
     /// <summary>
-    /// Generic container for all things midi for scripter consumption.
+    /// Midi has received something.
     /// If a property is -1 that indicates invalid or not pertinent e.g a controller event doesn't have velocity.
     /// </summary>
-    public class NpMidiEvent
+    public class NpMidiEventArgs : EventArgs
     {
         /// <summary>Channel number.</summary>
         public int ChannelNumber { get; set; } = -1;
@@ -31,26 +31,6 @@ namespace NProcessing
         public const int PITCH_CONTROL = 1000;
     }
 
-    /// <summary>Midi has received something.</summary>
-    public class NpMidiInputEventArgs : EventArgs
-    {
-        /// <summary>Received data.</summary>
-        public NpMidiEvent MidiEvent { get; set; } = null;
-    }
-
-    /// <summary>Midi wants to say something.</summary>
-    public class NpMidiLogEventArgs : EventArgs
-    {
-        /// <summary>Category types.</summary>
-        public enum LogCategory { Info, Send, Recv, Error }
-
-        /// <summary>Category.</summary>
-        public LogCategory Category { get; set; } = LogCategory.Info;
-
-        /// <summary>Text to log.</summary>
-        public string Message { get; set; } = null;
-    }
-
     /// <summary>
     /// Midi input handler.
     /// </summary>
@@ -64,12 +44,14 @@ namespace NProcessing
         bool _disposed = false;
         #endregion
 
+        #region Properties
+        /// <summary>Something to tell the client.</summary>
+        public string ErrorInfo { get; set; } = "";
+        #endregion
+
         #region Events
         /// <summary>Handler for message arrived.</summary>
-        public event EventHandler<NpMidiInputEventArgs> InputEvent;
-
-        /// <summary>Request for logging service.</summary>
-        public event EventHandler<NpMidiLogEventArgs> LogEvent;
+        public event EventHandler<NpMidiEventArgs> InputEvent;
         #endregion
 
         #region Lifecycle
@@ -107,14 +89,14 @@ namespace NProcessing
 
                     if(_mdev == null)
                     {
-                        LogMsg(NpMidiLogEventArgs.LogCategory.Error, $"Invalid midi input: {name}");
+                        ErrorInfo = $"Invalid midi input: {name}";
                         inited = false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogMsg(NpMidiLogEventArgs.LogCategory.Error, $"Init midi in failed: {ex.Message}");
+                ErrorInfo = $"Init midi in failed: {ex.Message}";
                 inited = false;
             }
 
@@ -155,14 +137,14 @@ namespace NProcessing
         {
             // Decode the message. We only care about a few.
             MidiEvent me = MidiEvent.FromRawMessage(e.RawMessage);
-            NpMidiEvent mevt = null;
+            NpMidiEventArgs mevt = null;
 
             switch (me.CommandCode)
             {
                 case MidiCommandCode.NoteOn:
                     {
                         NoteOnEvent evt = me as NoteOnEvent;
-                        mevt = new NpMidiEvent() 
+                        mevt = new NpMidiEventArgs() 
                         {
                             ChannelNumber = evt.Channel,
                             NoteNumber = evt.NoteNumber,
@@ -174,7 +156,7 @@ namespace NProcessing
                 case MidiCommandCode.NoteOff:
                     {
                         NoteEvent evt = me as NoteEvent;
-                        mevt = new NpMidiEvent() 
+                        mevt = new NpMidiEventArgs() 
                         {
                             ChannelNumber = evt.Channel,
                             NoteNumber = evt.NoteNumber,
@@ -186,7 +168,7 @@ namespace NProcessing
                 case MidiCommandCode.ControlChange:
                     {
                         ControlChangeEvent evt = me as ControlChangeEvent;
-                        mevt = new NpMidiEvent() 
+                        mevt = new NpMidiEventArgs() 
                         {
                             ChannelNumber = evt.Channel,
                             ControllerId = (int)evt.Controller,
@@ -198,10 +180,10 @@ namespace NProcessing
                 case MidiCommandCode.PitchWheelChange:
                     {
                         PitchWheelChangeEvent evt = me as PitchWheelChangeEvent;
-                        mevt = new NpMidiEvent() 
+                        mevt = new NpMidiEventArgs() 
                         {
                             ChannelNumber = evt.Channel,
-                            ControllerId = NpMidiEvent.PITCH_CONTROL,
+                            ControllerId = NpMidiEventArgs.PITCH_CONTROL,
                             ControllerValue = evt.Pitch
                         };
                     }
@@ -211,9 +193,7 @@ namespace NProcessing
             if (mevt != null)
             {
                 // Pass it up for handling.
-                NpMidiInputEventArgs args = new NpMidiInputEventArgs() { MidiEvent = mevt };
-                InputEvent?.Invoke(this, args);
-                LogMsg(NpMidiLogEventArgs.LogCategory.Recv, mevt.ToString());
+                InputEvent?.Invoke(this, mevt);
             }
             // else ignore??
         }
@@ -223,15 +203,7 @@ namespace NProcessing
         /// </summary>
         void NpMidiIn_ErrorReceived(object sender, MidiInMessageEventArgs e)
         {
-            LogMsg(NpMidiLogEventArgs.LogCategory.Error, $"Message:0x{e.RawMessage:X8}");
-        }
-
-        /// <summary>Ask host to do something with this.</summary>
-        /// <param name="cat"></param>
-        /// <param name="msg"></param>
-        void LogMsg(NpMidiLogEventArgs.LogCategory cat, string msg)
-        {
-            LogEvent?.Invoke(this, new NpMidiLogEventArgs() { Category = cat, Message = msg });
+            // do something> log? $"Message:0x{e.RawMessage:X8}");
         }
         #endregion
     }
@@ -252,9 +224,9 @@ namespace NProcessing
         bool _disposed = false;
         #endregion
 
-        #region Events
-        /// <summary>Request for logging service.</summary>
-        public event EventHandler<NpMidiLogEventArgs> LogEvent;
+        #region Properties
+        /// <summary>Something to tell the client.</summary>
+        public string ErrorInfo { get; set; } = "";
         #endregion
 
         #region Lifecycle
@@ -285,14 +257,14 @@ namespace NProcessing
 
                     if(_mdev == null)
                     {
-                        LogMsg(NpMidiLogEventArgs.LogCategory.Error, $"Invalid midi output: {name}");
+                        ErrorInfo = $"Invalid midi output: {name}";
                         inited = false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogMsg(NpMidiLogEventArgs.LogCategory.Error, $"Init midi out failed: {ex.Message}");
+                ErrorInfo = $"Init midi out failed: {ex.Message}";
                 inited = false;
             }
 
@@ -329,48 +301,78 @@ namespace NProcessing
         /// Send a midi message.
         /// </summary>
         /// <param name="mevt"></param>
-        public void Send(NpMidiEvent mevt)
+        /// <returns></returns>
+        public bool Send(NpMidiEventArgs mevt)
         {
-            // Critical code section.
-            lock (_lock)
+            bool ok = true;
+
+            if(mevt.Velocity >= 0)
             {
-                if(_mdev != null)
+                SendNote(mevt.ChannelNumber, mevt.NoteNumber, mevt.Velocity);
+            }
+            else if(mevt.ControllerId >= 0)
+            {
+                SendController(mevt.ChannelNumber, mevt.ControllerId, mevt.ControllerValue);
+            }
+            else
+            {
+                ok = false;
+            }
+
+            return ok;
+        }
+
+        /// <summary>
+        /// Send a note midi message.
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="note"></param>
+        /// <param name="velocity"></param>
+        public void SendNote(int channel, int note, int velocity)
+        {
+            if (_mdev != null)
+            {
+                lock (_lock)
                 {
-                    int msg = 0;
+                    NoteEvent evt = new NoteEvent(0,
+                        channel,
+                        velocity > 0 ? MidiCommandCode.NoteOn : MidiCommandCode.NoteOff,
+                        note,
+                        velocity);
+                    int msg = evt.GetAsShortMessage();
+                    _mdev.Send(msg);
+                }
+            }
+        }
 
-                    if(mevt.Velocity >= 0)
-                    {
-                        NoteEvent evt = new NoteEvent(0,
-                            mevt.ChannelNumber,
-                            mevt.Velocity > 0 ? MidiCommandCode.NoteOn : MidiCommandCode.NoteOff,
-                            mevt.NoteNumber,
-                            mevt.Velocity);
-                        msg = evt.GetAsShortMessage();
-
-                    }
-                    else if(mevt.ControllerId == NpMidiEvent.PITCH_CONTROL)
+        /// <summary>
+        /// Send a controller/pitch midi message.
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        public void SendController(int channel, int id, int value)
+        {
+            if (_mdev != null)
+            {
+                lock (_lock)
+                {
+                    if (id == NpMidiEventArgs.PITCH_CONTROL)
                     {
                         PitchWheelChangeEvent pevt = new PitchWheelChangeEvent(0,
-                            mevt.ChannelNumber,
-                            mevt.ControllerValue);
-                        msg = pevt.GetAsShortMessage();
-                        
+                            channel,
+                            value);
+                        int msg = pevt.GetAsShortMessage();
+                        _mdev.Send(msg);
                     }
-                    else if(mevt.ControllerId >= 0)
+                    else
                     {
                         ControlChangeEvent nevt = new ControlChangeEvent(0,
-                            mevt.ChannelNumber,
-                            (MidiController)mevt.ControllerId,
-                            mevt.ControllerValue);
-                        msg = nevt.GetAsShortMessage();
-                        
-                    }
-                    // else unknown???
-
-                    if(msg != 0)
-                    {
+                            channel,
+                            (MidiController)id,
+                            value);
+                        int msg = nevt.GetAsShortMessage();
                         _mdev.Send(msg);
-                        LogMsg(NpMidiLogEventArgs.LogCategory.Send, mevt.ToString());
                     }
                 }
             }
@@ -383,22 +385,8 @@ namespace NProcessing
         {
             for (int i = 0; i < 16; i++)
             {
-                Send(new NpMidiEvent()
-                {
-                    ChannelNumber = i + 1,
-                    ControllerId = (int)MidiController.AllNotesOff
-                });
+                SendController(i + 1, (int)MidiController.AllNotesOff, 0);
             }
-        }
-        #endregion
-
-        #region Private functions
-        /// <summary>Ask host to do something with this.</summary>
-        /// <param name="cat"></param>
-        /// <param name="msg"></param>
-        void LogMsg(NpMidiLogEventArgs.LogCategory cat, string msg)
-        {
-            LogEvent?.Invoke(this, new NpMidiLogEventArgs() { Category = cat, Message = msg });
         }
         #endregion
     }

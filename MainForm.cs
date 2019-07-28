@@ -70,11 +70,8 @@ namespace NProcessing
         /// <summary>Midi output device.</summary>
         NpMidiOutput _midiOut = null;
 
-        /// <summary>Show all traffic.</summary>
-        bool _monitorMidi = true;
-
         /// <summary>Midi event queue.</summary>
-        ConcurrentQueue<PMidiEvent> _midiEvents = new ConcurrentQueue<PMidiEvent>();
+        ConcurrentQueue<PMidiEvent> _pmidiEvents = new ConcurrentQueue<PMidiEvent>();
 
         /// <summary>Optional midi piano.</summary>
         Form _piano = null;
@@ -99,6 +96,8 @@ namespace NProcessing
         /// </summary>
         void MainForm_Load(object sender, EventArgs e)
         {
+            bool ok = true;
+
             txtView.Font = _settings.EditorFont;
             txtView.BackColor = _settings.BackColor;
 
@@ -133,38 +132,7 @@ namespace NProcessing
             _cpuMeter.MinimumSize = _cpuMeter.Size;
             toolStrip1.Items.Add(new ToolStripControlHost(_cpuMeter));
 
-            ////// Init midi stuff //////
-            if (_settings.MidiIn != "")
-            {
-                _midiIn = new NpMidiInput();
-                if(_midiIn.Init(_settings.MidiIn))
-                {
-                    _midiIn.InputEvent += MidiIn_InputEvent;
-                    _midiIn.LogEvent += Midi_LogEvent;
-                }
-                else
-                {
-                    _midiIn = null;
-                }
-            }
-
-            if (_settings.MidiOut != "" && _midiIn != null)
-            {
-                _midiOut = new NpMidiOutput();
-                if (_midiOut.Init(_settings.MidiOut))
-                {
-                    _midiOut.LogEvent += Midi_LogEvent;
-                }
-                else
-                {
-                    _midiOut = null;
-                }
-            }
-
-            if (_settings.Vkey)
-            {
-                CreatePiano();
-            }
+            ok = InitMidi();
 
             PopulateRecentMenu();
 
@@ -188,7 +156,7 @@ namespace NProcessing
 
             // Look for filename passed in.
             string[] args = Environment.GetCommandLineArgs();
-            if (args.Count() > 1)
+            if (ok && args.Count() > 1)
             {
                 OpenFile(args[1]);
             }
@@ -340,7 +308,7 @@ namespace NProcessing
                 if (_script != null)
                 {
                     // Process any events.
-                    while(_midiEvents.TryDequeue(out PMidiEvent mevt))
+                    while(_pmidiEvents.TryDequeue(out PMidiEvent mevt))
                     {
                         _script.midiEvent(mevt);
                     }
@@ -481,38 +449,47 @@ namespace NProcessing
 
         #region Midi
         /// <summary>
-        /// 
+        /// Init midi stuff.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Midi_LogEvent(object sender, NpMidiLogEventArgs e)
+        bool InitMidi()
         {
-            // Route all events through log.
+            bool valid = true;
 
-            switch (e.Category)
+            if (_settings.MidiIn != "")
             {
-                case NpMidiLogEventArgs.LogCategory.Error:
-                    _logger.Error(e.Message);
-                    break;
-
-                case NpMidiLogEventArgs.LogCategory.Info:
-                    _logger.Info(e.Message);
-                    break;
-
-                case NpMidiLogEventArgs.LogCategory.Recv:
-                    if (_monitorMidi)
-                    {
-                        _logger.Info($"RCV: {e.Message}");
-                    }
-                    break;
-
-                case NpMidiLogEventArgs.LogCategory.Send:
-                    if (_monitorMidi)
-                    {
-                        _logger.Info($"SND: {e.Message}");
-                    }
-                    break;
+                _midiIn = new NpMidiInput();
+                if (_midiIn.Init(_settings.MidiIn))
+                {
+                    _midiIn.InputEvent += MidiIn_InputEvent;
+                }
+                else
+                {
+                    _logger.Error(_midiIn.ErrorInfo);
+                    _midiIn = null;
+                    valid = false;
+                }
             }
+
+            if (_settings.MidiOut != "")
+            {
+                _midiOut = new NpMidiOutput();
+                if (_midiOut.Init(_settings.MidiOut))
+                {
+                }
+                else
+                {
+                    _logger.Error(_midiOut.ErrorInfo);
+                    _midiOut = null;
+                    valid = false;
+                }
+            }
+
+            if (_settings.Vkey)
+            {
+                CreatePiano();
+            }
+
+            return valid;
         }
 
         /// <summary>
@@ -520,11 +497,15 @@ namespace NProcessing
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MidiIn_InputEvent(object sender, NpMidiInputEventArgs e)
+        void MidiIn_InputEvent(object sender, NpMidiEventArgs e)
         {
-            PMidiEvent mevt = new PMidiEvent(e.MidiEvent.ChannelNumber, e.MidiEvent.NoteNumber,
-                e.MidiEvent.Velocity, e.MidiEvent.ControllerId, e.MidiEvent.ControllerValue);
-            _midiEvents.Enqueue(mevt);
+            PMidiEvent mevt = new PMidiEvent(e.ChannelNumber, e.NoteNumber, e.Velocity, e.ControllerId, e.ControllerValue);
+            _pmidiEvents.Enqueue(mevt);
+
+            if(_midiOut != null) // pass-thru?
+            {
+                _midiOut.Send(e);
+            }
         }
 
         /// <summary>
@@ -551,8 +532,13 @@ namespace NProcessing
 
             vkey.KeyboardEvent += (_, e) =>
             {
-                PMidiEvent mevt = new PMidiEvent(e.ChannelNumber, e.NoteId, e.Velocity, -1, -1);
-                _midiEvents.Enqueue(mevt);
+                NpMidiEventArgs mevt = new NpMidiEventArgs()
+                {
+                    ChannelNumber = e.ChannelNumber,
+                    NoteNumber = e.NoteId,
+                    Velocity = e.Velocity
+                };
+                MidiIn_InputEvent(vkey, mevt);
             };
 
             _piano.Controls.Add(vkey);
@@ -812,7 +798,7 @@ namespace NProcessing
                 pg.PropertyValueChanged += (sdr, args) =>
                 {
                     string p = args.ChangedItem.PropertyDescriptor.Name;
-                    ctrls |= (p.Contains("Font") | p.Contains("Color"));
+                    ctrls |= p.Contains("Font") | p.Contains("Color") | p.Contains("Midi");
                 };
 
                 f.Controls.Add(pg);
@@ -820,7 +806,7 @@ namespace NProcessing
 
                 if (ctrls)
                 {
-                    MessageBox.Show("UI changes require a restart to take effect.");
+                    MessageBox.Show("These changes require a restart to take effect.");
                 }
 
                 // Always safe to update these.
