@@ -21,28 +21,12 @@ public override void setup()
     print("setup()");
 
     size(600, 600);
-    //colorMode(HSB, 360, 100, 100);
     colorMode(HSB, 100);
-    //colorMode(RGB, 100);
     noStroke();
 }
 
 public override void draw()
 {
-
-    // for (int x = 0; x < 100; x++)
-    // {
-    //     for (int y = 0; y < 100; y++)
-    //     {
-    //         stroke(x, y, 100);
-    //         point(x, y);
-    //     }
-    // }
-    // return;
-
-
-
-
     background(_bcolor, 100, 100);
 
     int dy = height / (_notes.Count() + 1);
@@ -62,20 +46,15 @@ public override void draw()
 
 public override void midiEvent(PMidiEvent evt)
 {
-    print(evt);
+    // print(evt);
 
     if(evt.channel == 1)
     {
         if(evt.isNoteOn && evt.note >= MIN_NOTE && evt.note <= MAX_NOTE)
         {
             _notes[evt.note - MIN_NOTE] = evt.velocity;
-            print("ON", evt.velocity);
+            // print("ON", evt.velocity);
         }
-        // else if(evt.isNoteOff && evt.note >= MIN_NOTE && evt.note <= MAX_NOTE)
-        // {
-        //     _notes[evt.note - MIN_NOTE] = 0;
-        //     print("OFF");
-        // }
     }
 }
 

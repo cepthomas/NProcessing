@@ -530,6 +530,10 @@ namespace NProcessing
                 ShowNoteNames = true,
             };
 
+            // Get the icon.
+            Bitmap bm = new Bitmap(Properties.Resources.glyphicons_327_piano);
+            _piano.Icon = Icon.FromHandle(bm.GetHicon());
+
             vkey.KeyboardEvent += (_, e) =>
             {
                 NpMidiEventArgs mevt = new NpMidiEventArgs()

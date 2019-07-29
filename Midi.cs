@@ -251,11 +251,14 @@ namespace NProcessing
                 {
                     for (int device = 0; device < MidiOut.NumberOfDevices && _mdev == null; device++)
                     {
-                        _mdev = new MidiOut(device);
-                        inited = true;
+                        if (name == MidiOut.DeviceInfo(device).ProductName)
+                        {
+                            _mdev = new MidiOut(device);
+                            inited = true;
+                        }
                     }
 
-                    if(_mdev == null)
+                    if (_mdev == null)
                     {
                         ErrorInfo = $"Invalid midi output: {name}";
                         inited = false;
