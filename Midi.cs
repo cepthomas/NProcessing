@@ -13,19 +13,19 @@ namespace NProcessing
     public class NpMidiEventArgs : EventArgs
     {
         /// <summary>Channel number.</summary>
-        public int ChannelNumber { get; set; } = -1;
+        public int channel { get; set; } = -1;
 
-        /// <summary>The note to play.</summary>
-        public int NoteNumber { get; set; } = -1;
+        /// <summary>The note number to play.</summary>%
+        public int note { get; set; } = -1;
 
         /// <summary>The volume.</summary>
-        public int Velocity { get; set; } = -1;
+        public int velocity { get; set; } = -1;
 
         /// <summary>Specific controller.</summary>
-        public int ControllerId { get; set; } = -1;
+        public int controllerId { get; set; } = -1;
 
         /// <summary>The controller payload.</summary>
-        public int ControllerValue { get; set; } = -1;
+        public int controllerValue { get; set; } = -1;
 
         /// <summary>Special id to carry pitch info.</summary>
         public const int PITCH_CONTROL = 1000;
@@ -146,9 +146,9 @@ namespace NProcessing
                         NoteOnEvent evt = me as NoteOnEvent;
                         mevt = new NpMidiEventArgs() 
                         {
-                            ChannelNumber = evt.Channel,
-                            NoteNumber = evt.NoteNumber,
-                            Velocity = evt.Velocity
+                            channel = evt.Channel,
+                            note = evt.NoteNumber,
+                            velocity = evt.Velocity
                         };
                     }
                     break;
@@ -158,9 +158,9 @@ namespace NProcessing
                         NoteEvent evt = me as NoteEvent;
                         mevt = new NpMidiEventArgs() 
                         {
-                            ChannelNumber = evt.Channel,
-                            NoteNumber = evt.NoteNumber,
-                            Velocity = 0
+                            channel = evt.Channel,
+                            note = evt.NoteNumber,
+                            velocity = 0
                         };
                     }
                     break;
@@ -170,9 +170,9 @@ namespace NProcessing
                         ControlChangeEvent evt = me as ControlChangeEvent;
                         mevt = new NpMidiEventArgs() 
                         {
-                            ChannelNumber = evt.Channel,
-                            ControllerId = (int)evt.Controller,
-                            ControllerValue = evt.ControllerValue
+                            channel = evt.Channel,
+                            controllerId = (int)evt.Controller,
+                            controllerValue = evt.ControllerValue
                         };
                     }
                     break;
@@ -182,9 +182,9 @@ namespace NProcessing
                         PitchWheelChangeEvent evt = me as PitchWheelChangeEvent;
                         mevt = new NpMidiEventArgs() 
                         {
-                            ChannelNumber = evt.Channel,
-                            ControllerId = NpMidiEventArgs.PITCH_CONTROL,
-                            ControllerValue = evt.Pitch
+                            channel = evt.Channel,
+                            controllerId = NpMidiEventArgs.PITCH_CONTROL,
+                            controllerValue = evt.Pitch
                         };
                     }
                     break;
@@ -309,13 +309,13 @@ namespace NProcessing
         {
             bool ok = true;
 
-            if(mevt.Velocity >= 0)
+            if(mevt.velocity >= 0)
             {
-                SendNote(mevt.ChannelNumber, mevt.NoteNumber, mevt.Velocity);
+                SendNote(mevt.channel, mevt.note, mevt.velocity);
             }
-            else if(mevt.ControllerId >= 0)
+            else if(mevt.controllerId >= 0)
             {
-                SendController(mevt.ChannelNumber, mevt.ControllerId, mevt.ControllerValue);
+                SendController(mevt.channel, mevt.controllerId, mevt.controllerValue);
             }
             else
             {

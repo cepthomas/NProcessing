@@ -123,7 +123,7 @@ namespace NProcessing
                 MeterType = MeterType.ContinuousLine,
                 Orientation = Orientation.Horizontal,
                 Minimum = 0,
-                Maximum = 50,
+                Maximum = 100,
                 Width = 50,
                 Height = toolStrip1.Height,
             };
@@ -499,7 +499,7 @@ namespace NProcessing
         /// <param name="e"></param>
         void MidiIn_InputEvent(object sender, NpMidiEventArgs e)
         {
-            PMidiEvent mevt = new PMidiEvent(e.ChannelNumber, e.NoteNumber, e.Velocity, e.ControllerId, e.ControllerValue);
+            PMidiEvent mevt = new PMidiEvent(e.channel, e.note, e.velocity, e.controllerId, e.controllerValue);
             _pmidiEvents.Enqueue(mevt);
 
             if(_midiOut != null) // pass-thru?
@@ -518,10 +518,10 @@ namespace NProcessing
                 Text = "Virtual Keyboard",
                 Size = new Size(864, 100),
                 StartPosition = FormStartPosition.Manual,
-                Location = new Point(200, 200),
+                Location = new Point(Left, Bottom + 20),
                 FormBorderStyle = FormBorderStyle.FixedToolWindow,
-                //ShowIcon = false,
-                //ShowInTaskbar = false
+                ShowIcon = false,
+                ShowInTaskbar = false
             };
 
             VirtualKeyboard vkey = new VirtualKeyboard()
@@ -530,7 +530,7 @@ namespace NProcessing
                 ShowNoteNames = true,
             };
 
-            // Get the icon.
+            // Set the icon.
             Bitmap bm = new Bitmap(Properties.Resources.glyphicons_327_piano);
             _piano.Icon = Icon.FromHandle(bm.GetHicon());
 
@@ -538,14 +538,15 @@ namespace NProcessing
             {
                 NpMidiEventArgs mevt = new NpMidiEventArgs()
                 {
-                    ChannelNumber = e.ChannelNumber,
-                    NoteNumber = e.NoteId,
-                    Velocity = e.Velocity
+                    channel = e.ChannelNumber,
+                    note = e.NoteId,
+                    velocity = e.Velocity
                 };
                 MidiIn_InputEvent(vkey, mevt);
             };
 
             _piano.Controls.Add(vkey);
+            _piano.TopMost = true;
             _piano.Show();
         }
         #endregion
@@ -978,7 +979,8 @@ namespace NProcessing
             }
             else
             {
-                _cpuMeter.AddValue(_cpuPerf.NextValue());
+                float val = _cpuPerf.NextValue();
+                _cpuMeter.AddValue(val);
             }
         }
         #endregion
