@@ -4,6 +4,51 @@
         <name>NBagOfTricks</name>
     </assembly>
     <members>
+        <member name="T:NBagOfTricks.Dumper">
+            <summary>
+            Dumps: objects, dictionaries of objects, or lists of objects.
+            Output format is modified json.
+            </summary>
+        </member>
+        <member name="F:NBagOfTricks.Dumper._writer">
+            <summary>Output writer.</summary>
+        </member>
+        <member name="F:NBagOfTricks.Dumper._indent">
+            <summary>Output indent.</summary>
+        </member>
+        <member name="F:NBagOfTricks.Dumper._indentSize">
+            <summary>Output indent size.</summary>
+        </member>
+        <member name="M:NBagOfTricks.Dumper.#ctor(System.IO.TextWriter)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="writer">Output stream</param>
+        </member>
+        <member name="M:NBagOfTricks.Dumper.Write(System.Object)">
+            <summary>
+            Top level writer.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:NBagOfTricks.Dumper.Write(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Write a dictionary of objects.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:NBagOfTricks.Dumper.Write(System.Collections.Generic.List{System.Object})">
+            <summary>
+            Write a list of objects.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:NBagOfTricks.Dumper.WriteIndented(System.String)">
+            <summary>
+            Common output formatter.
+            </summary>
+            <param name="s"></param>
+        </member>
         <member name="T:NBagOfTricks.UI.MeterType">
             <summary>Display types.</summary>
         </member>
