@@ -58,12 +58,6 @@ namespace NProcessing
         /// <summary>The user settings.</summary>
         UserSettings _settings;
 
-        /// <summary>Measure how fast we be. Delayed instantiation as it is a slow process.</summary>
-        PerformanceCounter _cpuPerf = null;
-
-        /// <summary>Show how fast we be.</summary>
-        Meter _cpuMeter = null;
-
         /// <summary>Midi input device.</summary>
         NpMidiInput _midiIn = null;
 
@@ -116,21 +110,16 @@ namespace NProcessing
             _surface.TopMost = _settings.LockUi;
 
             ///// CPU meter /////
-            _cpuMeter = new Meter()
+            CpuMeter cpuMeter = new CpuMeter()
             {
-                Label = "cpu",
-                ControlColor = Color.Red,
-                MeterType = MeterType.ContinuousLine,
-                Orientation = Orientation.Horizontal,
-                Minimum = 0,
-                Maximum = 100,
                 Width = 50,
                 Height = toolStrip1.Height,
+                ControlColor = Color.Red
             };
             // This took way too long to find out:
             //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
-            _cpuMeter.MinimumSize = _cpuMeter.Size;
-            toolStrip1.Items.Add(new ToolStripControlHost(_cpuMeter));
+            cpuMeter.MinimumSize = cpuMeter.Size;
+            toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
 
             ok = InitMidi();
 
@@ -969,19 +958,6 @@ namespace NProcessing
         /// <param name="e"></param>
         void Timer1_Tick(object sender, EventArgs e)
         {
-            // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
-            // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
-            // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
-
-            if (_cpuPerf == null)
-            {
-                _cpuPerf = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            }
-            else
-            {
-                float val = _cpuPerf.NextValue();
-                _cpuMeter.AddValue(val);
-            }
         }
         #endregion
     }
