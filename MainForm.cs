@@ -211,6 +211,8 @@ namespace NProcessing
             }
             else
             {
+                _script?.ResetVars();
+
                 Compiler compiler = new Compiler();
 
                 // Compile now.

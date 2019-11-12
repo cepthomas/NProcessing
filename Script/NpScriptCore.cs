@@ -89,6 +89,22 @@ namespace NProcessing.Script
 
         #region Lifecycle
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        public NpScript()
+        {
+            ResetVars();
+        }
+
+        /// <summary>
+        /// Ugly way to deal with static vars in color class. TODO fix this.
+        /// </summary>
+        public void ResetVars()
+        {
+            Script.color.ResetMode();
+        }
+
+        /// <summary>
         /// Resource clean up.
         /// </summary>
         public void Dispose()

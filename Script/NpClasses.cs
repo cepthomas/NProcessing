@@ -42,6 +42,15 @@ namespace NProcessing.Script
             _max3 = max3;
             _maxA = maxA;
         }
+
+        public static void ResetMode()
+        {
+            _mode = NpScript.RGB;
+            _max1 = 255;
+            _max2 = 255;
+            _max3 = 255;
+            _maxA = 255;
+        }
         #endregion
 
         #region Properties
