@@ -9,7 +9,8 @@ using System.Windows.Forms;
 using NLog;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
-using NBagOfTricks;
+using NBagOfTricks.Utils;
+using NBagOfTricks.UI;
 
 
 namespace NProcessing.Script

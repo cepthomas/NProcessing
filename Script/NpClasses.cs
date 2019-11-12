@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text;
 using SkiaSharp;
-using NBagOfTricks;
+using NBagOfTricks.Utils;
 
 
 // Processing API stuff.

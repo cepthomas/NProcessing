@@ -8,7 +8,7 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Diagnostics;
 using NLog;
-using NBagOfTricks;
+using NBagOfTricks.Utils;
 
 
 namespace NProcessing.Script
