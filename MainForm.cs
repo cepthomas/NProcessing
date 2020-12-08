@@ -113,7 +113,7 @@ namespace NProcessing
             {
                 Width = 50,
                 Height = toolStrip1.Height,
-                ControlColor = Color.Red
+                DrawColor = Color.Red
             };
             // This took way too long to find out:
             //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
