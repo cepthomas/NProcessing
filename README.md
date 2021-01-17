@@ -17,6 +17,3 @@ This application uses these excellent FOSS components:
 - NAudio DLL for midi and modified controls: [NAudio](https://github.com/naudio/NAudio) (Microsoft Public License).
 - Main icon: [Charlotte Schmidt](http://pattedemouche.free.fr/) (Copyright © 2009 of Charlotte Schmidt).
 - Button icons: [Glyphicons Free](http://glyphicons.com/) (CC BY 3.0).
-
-# License
-https://github.com/cepthomas/NProcessing/blob/master/LICENSE
