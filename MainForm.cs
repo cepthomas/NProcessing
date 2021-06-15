@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using NLog;
-using NBagOfTricks.Utils;
+using NBagOfTricks;
 using NBagOfTricks.UI;
 using NProcessing.Script;
 using System.Collections.Concurrent;

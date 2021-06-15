@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NProcessing.Script</RootNamespace>
     <AssemblyName>NProcessing.Script</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
@@ -36,6 +36,9 @@
   <ItemGroup>
     <Reference Include="NBagOfTricks">
       <HintPath>..\lib\NBagOfTricks.dll</HintPath>
+    </Reference>
+    <Reference Include="NBagOfTricks.UI">
+      <HintPath>..\lib\NBagOfTricks.UI.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.6.0\lib\net45\NLog.dll</HintPath>

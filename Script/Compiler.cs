@@ -8,7 +8,7 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Diagnostics;
 using NLog;
-using NBagOfTricks.Utils;
+using NBagOfTricks;
 
 
 namespace NProcessing.Script
@@ -261,7 +261,7 @@ namespace NProcessing.Script
                     FileContext ci = _filesToCompile[genFn];
                     string fullpath = Path.Combine(TempDir, genFn);
                     File.Delete(fullpath);
-                    File.WriteAllLines(fullpath, MiscUtils.FormatSourceCode(ci.CodeLines));
+                    File.WriteAllLines(fullpath, Tools.FormatSourceCode(ci.CodeLines));
                     paths.Add(fullpath);
                 }
 

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
-using NBagOfTricks.Utils;
+using NBagOfTricks;
 
 
 // Processing emulation script stuff.

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using NLog;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
-using NBagOfTricks.Utils;
+using NBagOfTricks;
 using NBagOfTricks.UI;
 
 
