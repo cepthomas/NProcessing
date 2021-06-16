@@ -22,13 +22,13 @@ namespace NProcessing
 
         #region Fields
         /// <summary>My logger.</summary>
-        Logger _logger = LogManager.GetCurrentClassLogger();
+        readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Fast timer.</summary>
         MmTimerEx _mmtimer = new MmTimerEx();
 
         /// <summary>Surface child form.</summary>
-        Surface _surface = new Surface();
+        readonly Surface _surface = new Surface();
 
         /// <summary>Current script file name.</summary>
         string _fn = "";
@@ -46,7 +46,7 @@ namespace NProcessing
         List<ScriptError> _compileResults = new List<ScriptError>();
 
         /// <summary>Detect changed script files.</summary>
-        MultiFileWatcher _watcher = new MultiFileWatcher();
+        readonly MultiFileWatcher _watcher = new MultiFileWatcher();
 
         /// <summary>Files that have been changed externally or have runtime errors - requires a recompile.</summary>
         bool _needCompile = false;
@@ -55,7 +55,7 @@ namespace NProcessing
         string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
-        UserSettings _settings;
+        readonly UserSettings _settings;
 
         /// <summary>Midi input device.</summary>
         NpMidiInput _midiIn = null;
@@ -64,7 +64,7 @@ namespace NProcessing
         NpMidiOutput _midiOut = null;
 
         /// <summary>Midi event queue.</summary>
-        ConcurrentQueue<PMidiEvent> _pmidiEvents = new ConcurrentQueue<PMidiEvent>();
+        readonly ConcurrentQueue<PMidiEvent> _pmidiEvents = new ConcurrentQueue<PMidiEvent>();
 
         /// <summary>Optional midi piano.</summary>
         Form _piano = null;
@@ -927,29 +927,9 @@ namespace NProcessing
             }
 
             // Main help file.
-            mdText.Add(File.ReadAllText(@"README.md"));
+            mdText.AddRange(File.ReadAllLines(@"README.md"));
 
-            // Put it together.
-            List<string> htmlText = new List<string>();
-
-            // Boilerplate
-            htmlText.Add($"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            // CSS
-            htmlText.Add($"<style>body {{ background-color: {_settings.BackColor.Name}; font-family: \"Arial\", Helvetica, sans-serif; }}");
-            htmlText.Add($"</style></head><body>");
-
-            // Meat.
-            string mdHtml = string.Join(Environment.NewLine, mdText);
-            htmlText.Add(mdHtml);
-
-            // Bottom.
-            string ss = "<!-- Markdeep: --><style class=\"fallback\">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src=\"markdeep.min.js\" charset=\"utf-8\"></script><script src=\"https://casual-effects.com/markdeep/latest/markdeep.min.js\" charset=\"utf-8\"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=\"visible\")</script>";
-            htmlText.Add(ss);
-            htmlText.Add($"</body></html>");
-
-            string fn = Path.Combine(Path.GetTempPath(), "nprocessing.html");
-            File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
-            Process.Start(fn);
+            Tools.MarkdownToHtml(mdText, "lightcyan", "helvetica", true);
         }
 
         /// <summary>
