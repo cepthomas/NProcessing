@@ -77,7 +77,7 @@ namespace NProcessing
         public MainForm()
         {
             // Need to load settings before creating controls in MainForm_Load().
-            string appDir = MiscUtils.GetAppDataDir("NProcessing");
+            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
             DirectoryInfo di = new DirectoryInfo(appDir);
             di.Create();
             _settings = UserSettings.Load(appDir);
@@ -547,7 +547,7 @@ namespace NProcessing
         /// </summary>
         void InitLogging()
         { 
-            string appDir = MiscUtils.GetAppDataDir("NProcessing");
+            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
 
             FileInfo fi = new FileInfo(Path.Combine(appDir, "log.txt"));
             if(fi.Exists && fi.Length > 100000)
@@ -608,7 +608,7 @@ namespace NProcessing
                 };
                 f.Controls.Add(tv);
 
-                string appDir = MiscUtils.GetAppDataDir("NProcessing");
+                string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
                 string logFilename = Path.Combine(appDir, "log.txt");
                 File.ReadAllLines(logFilename).ForEach(l => tv.AppendText(l + Environment.NewLine));
 

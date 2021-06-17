@@ -13,7 +13,7 @@ This application uses these excellent FOSS components:
 - SkiaSharp for graphics: [SkiaSharp](https://github.com/mono/SkiaSharp) (MIT). Waaaay faster than native GDI+.
 - Logging: [NLog](http://nlog-project.org/) (BSD 3-Clause).
 - [MoreLinq](https://morelinq.github.io) (MIT).
-- Json processor: [Newtonsoft](https://github.com/JamesNK/Newtonsoft.Json) (MIT) Note - uses 9.0.1 - don't update!
+- Json processor: [Newtonsoft](https://github.com/JamesNK/Newtonsoft.Json) (MIT).
 - NAudio DLL for midi and modified controls: [NAudio](https://github.com/naudio/NAudio) (Microsoft Public License).
 - Main icon: [Charlotte Schmidt](http://pattedemouche.free.fr/) (Copyright © 2009 of Charlotte Schmidt).
 - Button icons: [Glyphicons Free](http://glyphicons.com/) (CC BY 3.0).
