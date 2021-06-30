@@ -564,11 +564,11 @@ namespace NProcessing.Script
         #region Color - Setting
         //public void background(int rgb) { NotImpl(nameof(background)); }
         //public void background(int rgb, double alpha) { NotImpl(nameof(background)); }
-        public void background(double gray) { _bgColor = SafeColor(gray, gray, gray, 255); if (_canvas != null) _canvas.Clear(_bgColor); }
-        public void background(double gray, double alpha) { _bgColor = SafeColor(gray, gray, gray, alpha); if (_canvas != null) _canvas.Clear(_bgColor); }
-        public void background(double v1, double v2, double v3) { color c = new color(v1, v2, v3, 255); _bgColor = c.NativeColor; if (_canvas != null) _canvas.Clear(_bgColor); }
-        public void background(double v1, double v2, double v3, double alpha) { color c = new color(v1, v2, v3, alpha); _bgColor = c.NativeColor; if (_canvas != null) _canvas.Clear(_bgColor); }
-        public void background(PImage img) { if (_canvas != null) _canvas.DrawBitmap(img.bmp, new SKRect(0, 0, width, height)); }
+        public void background(double gray) { _bgColor = SafeColor(gray, gray, gray, 255); _canvas.Clear(_bgColor); }
+        public void background(double gray, double alpha) { _bgColor = SafeColor(gray, gray, gray, alpha); _canvas.Clear(_bgColor); }
+        public void background(double v1, double v2, double v3) { color c = new color(v1, v2, v3, 255); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
+        public void background(double v1, double v2, double v3, double alpha) { color c = new color(v1, v2, v3, alpha); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
+        public void background(PImage img) { _canvas.DrawBitmap(img.bmp, new SKRect(0, 0, width, height)); }
         public void colorMode(int mode, double max = 255) { NProcessing.Script.color.SetMode(mode, max, max, max, max); }
         public void colorMode(int mode, int max1, int max2, int max3, int maxA = 255) { NProcessing.Script.color.SetMode(mode, max1, max2, max3, maxA); }
         //public void fill(int rgb) { NotImpl(nameof(fill)); }
@@ -582,6 +582,7 @@ namespace NProcessing.Script
         public void noStroke() { _pen.StrokeWidth = 0; }
         //public void stroke(int rgb) { NotImpl(nameof(stroke)); }
         //public void stroke(int rgb, float alpha) { NotImpl(nameof(stroke)); }
+        public void stroke(color clr) { _pen.Color = clr.NativeColor; }
         public void stroke(double gray) { _pen.Color = SafeColor(gray, gray, gray, 255); }
         public void stroke(double gray, double alpha) { _pen.Color = SafeColor(gray, gray, gray, alpha); }
         public void stroke(double v1, double v2, double v3) { color c = new color(v1, v2, v3, 255); _pen.Color = c.NativeColor; }

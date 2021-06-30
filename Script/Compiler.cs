@@ -169,7 +169,7 @@ namespace NProcessing.Script
 
                 for (pcont.LineNumber = 1; pcont.LineNumber <= sourceLines.Count; pcont.LineNumber++)
                 {
-                    string s = sourceLines[pcont.LineNumber - 1].Trim();
+                    string s = sourceLines[pcont.LineNumber - 1];
 
                     // Remove any comments.
                     int pos = s.IndexOf("//");
@@ -206,7 +206,7 @@ namespace NProcessing.Script
                         if (cline != "")
                         {
                             // Store the whole line with line number tacked on. This is easier than trying to maintain a bunch of source<>compiled mappings.
-                            pcont.CodeLines.Add($"{cline} //{pcont.LineNumber}");
+                            pcont.CodeLines.Add($"        {cline} //{pcont.LineNumber}");
                         }
                     }
                 }
@@ -261,7 +261,7 @@ namespace NProcessing.Script
                     FileContext ci = _filesToCompile[genFn];
                     string fullpath = Path.Combine(TempDir, genFn);
                     File.Delete(fullpath);
-                    File.WriteAllLines(fullpath, Tools.FormatSourceCode(ci.CodeLines));
+                    File.WriteAllLines(fullpath, ci.CodeLines);
                     paths.Add(fullpath);
                 }
 
@@ -367,12 +367,12 @@ namespace NProcessing.Script
 
             // Collected init stuff goes in a constructor.
             // Reference to current script so nested classes have access to it. Processing uses java which would not require this minor hack.
-            codeLines.Add("protected static NpScript s;");
-            codeLines.Add($"public {_scriptName}() : base()");
-            codeLines.Add("{");
-            codeLines.Add("s = this;");
-            _initLines.ForEach(l => codeLines.Add(l));
-            codeLines.Add("}");
+            codeLines.Add($"        protected static NpScript s;");
+            codeLines.Add($"        public {_scriptName}() : base()");
+            codeLines.Add( "        {");
+            codeLines.Add( "            s = this;");
+            _initLines.ForEach(l => codeLines.Add("            " + l));
+            codeLines.Add( "        }");
 
             // Bottom stuff.
             codeLines.AddRange(GenBottomOfFile());
@@ -404,8 +404,8 @@ namespace NProcessing.Script
                 "using NProcessing.Script;",
                 "namespace NProcessing.UserScript",
                 "{",
-                $"public partial class {_scriptName} : NpScript",
-                "{"
+               $"    public partial class {_scriptName} : NpScript",
+                "    {"
             };
 
             return codeLines;
@@ -420,7 +420,7 @@ namespace NProcessing.Script
             // Create the common contents.
             List<string> codeLines = new List<string>
             {
-                "}",
+                "    }",
                 "}"
             };
 
