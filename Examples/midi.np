@@ -1,13 +1,6 @@
 
 // Use midi input to control display. 
 
-
-// MIDI_IN = "MPK mini";
-// MIDI_OUT = "loopMIDI Port 1";
-// GS_MIDI_OUT = "Microsoft GS Wavetable Synth";
-
-
-
 // Middle C is 60.
 const int MIN_NOTE = 48; // C3
 const int MAX_NOTE = 72; // C5

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Drawing.Design;
 using Newtonsoft.Json;
+using NAudio.Midi;
 
 
 namespace NProcessing
@@ -36,26 +37,48 @@ namespace NProcessing
     public class UserSettings
     {
         #region Persisted editable properties
-        [DisplayName("Editor Font"), Description("The font to use for editors etc."), Browsable(true)]
+        [DisplayName("Editor Font")]
+        [Description("The font to use for editors etc.")]
+        [Browsable(true)]
         public Font EditorFont { get; set; } = new Font("Consolas", 9);
 
-        [DisplayName("Selected Color"), Description("The color used for selections."), Browsable(true)]
+        [DisplayName("Selected Color")]
+        [Description("The color used for selections.")]
+        [Browsable(true)]
         public Color SelectedColor { get; set; } = Color.Violet;
 
-        [DisplayName("Background Color"), Description("The color used for overall background."), Browsable(true)]
+        [DisplayName("Background Color")]
+        [Description("The color used for overall background.")]
+        [Browsable(true)]
         public Color BackColor { get; set; } = Color.AliceBlue;
 
-        [DisplayName("Lock UI"), Description("Forces UI to always topmost."), Browsable(true)]
+        [DisplayName("Lock UI")]
+        [Description("Forces UI to always topmost.")]
+        [Browsable(true)]
         public bool LockUi { get; set; } = false;
 
-        [DisplayName("Midi Input"), Description("Valid device if handling midi input."), Browsable(true)]
-        public string MidiIn { get; set; } = "";
+        [DisplayName("Midi Input")]
+        [Description("Valid device if handling midi input.")]
+        [Browsable(true)]
+        [TypeConverter(typeof(FixedListTypeConverter))]
+        public string MidiInDevice { get; set; } = "";
 
-        [DisplayName("Midi Output"), Description("Valid device if passing midi input through."), Browsable(true)]
-        public string MidiOut { get; set; } = "";
+        [DisplayName("Midi Output")]
+        [Description("Valid device if passing midi input through.")]
+        [Browsable(true)]
+        [TypeConverter(typeof(FixedListTypeConverter))]
+        public string MidiOutDevice { get; set; } = "";
 
-        [DisplayName("Virtual Keyboard"), Description("Show or hide the virtual keyboard."), Browsable(true)]
+        [DisplayName("Virtual Keyboard")]
+        [Description("Show or hide the virtual keyboard.")]
+        [Browsable(true)]
         public bool Vkey { get; set; } = false;
+
+        [DisplayName("CPU Meter")]
+        [Description("Show a CPU usage meter. Note that this slows start up a bit.")]
+        [Browsable(true)]
+        public bool CpuMeter { get; set; } = true;
+
         #endregion
 
         #region Persisted non-editable properties
@@ -105,4 +128,39 @@ namespace NProcessing
         }
         #endregion
     }
+
+    /// <summary>Converter for selecting property value from known lists.</summary>
+    public class FixedListTypeConverter : TypeConverter
+    {
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context) { return true; }
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) { return true; }
+
+        // Get the specific list based on the property name.
+        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+        {
+            List<string> rec = null;
+
+            switch (context.PropertyDescriptor.Name)
+            {
+                case "MidiInDevice":
+                    rec = new List<string>();
+                    for (int devindex = 0; devindex < MidiIn.NumberOfDevices; devindex++)
+                    {
+                        rec.Add(MidiIn.DeviceInfo(devindex).ProductName);
+                    }
+                    break;
+
+                case "MidiOutDevice":
+                    rec = new List<string>();
+                    for (int devindex = 0; devindex < MidiOut.NumberOfDevices; devindex++)
+                    {
+                        rec.Add(MidiOut.DeviceInfo(devindex).ProductName);
+                    }
+                    break;
+            }
+
+            return new StandardValuesCollection(rec);
+        }
+    }
+
 }

@@ -110,16 +110,20 @@ namespace NProcessing
             _surface.TopMost = _settings.LockUi;
 
             ///// CPU meter /////
-            CpuMeter cpuMeter = new CpuMeter()
+            if (_settings.CpuMeter)
             {
-                Width = 50,
-                Height = toolStrip1.Height,
-                DrawColor = Color.Red
-            };
-            // This took way too long to find out:
-            //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
-            cpuMeter.MinimumSize = cpuMeter.Size;
-            toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
+                CpuMeter cpuMeter = new CpuMeter()
+                {
+                    Width = 50,
+                    Height = toolStrip1.Height,
+                    DrawColor = Color.Red
+                };
+                // This took way too long to find out:
+                //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
+                cpuMeter.MinimumSize = cpuMeter.Size;
+                cpuMeter.Enable = true;
+                toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
+            }
 
             ok = InitMidi();
 
@@ -445,10 +449,10 @@ namespace NProcessing
         {
             bool valid = true;
 
-            if (_settings.MidiIn != "")
+            if (_settings.MidiInDevice != "")
             {
                 _midiIn = new NpMidiInput();
-                if (_midiIn.Init(_settings.MidiIn))
+                if (_midiIn.Init(_settings.MidiInDevice))
                 {
                     _midiIn.InputEvent += MidiIn_InputEvent;
                 }
@@ -460,10 +464,10 @@ namespace NProcessing
                 }
             }
 
-            if (_settings.MidiOut != "")
+            if (_settings.MidiOutDevice != "")
             {
                 _midiOut = new NpMidiOutput();
-                if (_midiOut.Init(_settings.MidiOut))
+                if (_midiOut.Init(_settings.MidiOutDevice))
                 {
                 }
                 else
@@ -933,7 +937,7 @@ namespace NProcessing
         }
 
         /// <summary>
-        /// Update cpu display.
+        /// Updates.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
