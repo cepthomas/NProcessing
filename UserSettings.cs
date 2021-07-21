@@ -13,69 +13,57 @@ using NAudio.Midi;
 
 namespace NProcessing
 {
-    /// <summary>
-    /// General purpose container for persistence.
-    /// </summary>
-    [Serializable]
-    public class FormInfo
-    {
-        public int X { get; set; } = 50;
-        public int Y { get; set; } = 50;
-        public int Width { get; set; } = 1000;
-        public int Height { get; set; } = 700;
-
-        public void FromForm(Form f)
-        {
-            X = f.Location.X;
-            Y = f.Location.Y;
-            Width = f.Width;
-            Height = f.Height;
-        }
-    }
-
     [Serializable]
     public class UserSettings
     {
         #region Persisted editable properties
         [DisplayName("Editor Font")]
         [Description("The font to use for editors etc.")]
+        [Category("Cosmetics")]
         [Browsable(true)]
         public Font EditorFont { get; set; } = new Font("Consolas", 9);
 
         [DisplayName("Selected Color")]
         [Description("The color used for selections.")]
+        [Category("Cosmetics")]
         [Browsable(true)]
         public Color SelectedColor { get; set; } = Color.Violet;
 
         [DisplayName("Background Color")]
         [Description("The color used for overall background.")]
+        [Category("Cosmetics")]
         [Browsable(true)]
         public Color BackColor { get; set; } = Color.AliceBlue;
 
         [DisplayName("Lock UI")]
         [Description("Forces UI to always topmost.")]
+        [Category("Cosmetics")]
         [Browsable(true)]
         public bool LockUi { get; set; } = false;
 
         [DisplayName("Midi Input")]
         [Description("Valid device if handling midi input.")]
+        [Category("Devices")]
         [Browsable(true)]
         [TypeConverter(typeof(FixedListTypeConverter))]
         public string MidiInDevice { get; set; } = "";
 
         [DisplayName("Midi Output")]
         [Description("Valid device if passing midi input through.")]
+        [Category("Devices")]
         [Browsable(true)]
         [TypeConverter(typeof(FixedListTypeConverter))]
         public string MidiOutDevice { get; set; } = "";
 
         [DisplayName("Virtual Keyboard")]
         [Description("Show or hide the virtual keyboard.")]
+        [Category("Devices")]
         [Browsable(true)]
         public bool Vkey { get; set; } = false;
 
         [DisplayName("CPU Meter")]
         [Description("Show a CPU usage meter. Note that this slows start up a bit.")]
+        [Category("Devices")]
         [Browsable(true)]
         public bool CpuMeter { get; set; } = true;
 
@@ -129,6 +117,24 @@ namespace NProcessing
         #endregion
     }
 
+    /// <summary>General purpose container for persistence.</summary>
+    [Serializable]
+    public class FormInfo
+    {
+        public int X { get; set; } = 50;
+        public int Y { get; set; } = 50;
+        public int Width { get; set; } = 1000;
+        public int Height { get; set; } = 700;
+
+        public void FromForm(Form f)
+        {
+            X = f.Location.X;
+            Y = f.Location.Y;
+            Width = f.Width;
+            Height = f.Height;
+        }
+    }
+
     /// <summary>Converter for selecting property value from known lists.</summary>
     public class FixedListTypeConverter : TypeConverter
     {
@@ -162,5 +168,4 @@ namespace NProcessing
             return new StandardValuesCollection(rec);
         }
     }
-
 }
