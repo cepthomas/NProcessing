@@ -5,11 +5,12 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 using NLog;
 using NBagOfTricks;
 using NBagOfTricks.UI;
 using NProcessing.Script;
-using System.Collections.Concurrent;
+
 
 namespace NProcessing
 {
@@ -25,7 +26,7 @@ namespace NProcessing
         readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Fast timer.</summary>
-        MmTimerEx _mmtimer = new MmTimerEx();
+        MmTimerEx _mmTimer = new MmTimerEx();
 
         /// <summary>Surface child form.</summary>
         readonly Surface _surface = new Surface();
@@ -134,9 +135,8 @@ namespace NProcessing
             _surface.RuntimeErrorEvent += (object esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
 
             // Fast timer.
-            _mmtimer.TimerElapsedEvent += TimerElapsedEvent;
             SetUiTimerPeriod();
-            _mmtimer.Start();
+            _mmTimer.Start();
 
             // Slow timer.
             timer1.Interval = 500;
@@ -157,7 +157,7 @@ namespace NProcessing
         {
             try
             {
-                ProcessPlay(PlayCommand.Stop, false);
+                ProcessPlay(PlayCommand.Stop);
 
                 // Save user settings.
                 SaveSettings();
@@ -176,9 +176,9 @@ namespace NProcessing
         {
             if (disposing)
             {
-                _mmtimer?.Stop();
-                _mmtimer?.Dispose();
-                _mmtimer = null;
+                _mmTimer?.Stop();
+                _mmTimer?.Dispose();
+                _mmTimer = null;
 
                 _midiIn?.Dispose();
                 _midiIn = null;
@@ -250,7 +250,7 @@ namespace NProcessing
                 {
                     _logger.Warn("Compile failed.");
                     ok = false;
-                    ProcessPlay(PlayCommand.Stop, false);
+                    ProcessPlay(PlayCommand.Stop);
                     SetCompileStatus(false);
                 }
 
@@ -290,7 +290,7 @@ namespace NProcessing
         /// <summary>
         /// Multimedia timer tick handler.
         /// </summary>
-        void TimerElapsedEvent(object sender, MmTimerEx.TimerEventArgs e)
+        void MmTimerCallback(double totalElapsed, double periodElapsed)
         {
             // Kick over to main UI thread.
             BeginInvoke((MethodInvoker)delegate ()
@@ -304,7 +304,7 @@ namespace NProcessing
                     }
 
                     // Update the view.
-                    NextDraw(e);
+                    NextDraw();
                 }
             });
         }
@@ -313,11 +313,11 @@ namespace NProcessing
         /// Output next frame.
         /// </summary>
         /// <param name="e">Information about updates required.</param>
-        void NextDraw(MmTimerEx.TimerEventArgs e)
+        void NextDraw()
         {
             InitRuntime();
 
-            if (e.ElapsedTimers.Contains("UI") && btnPlay.Checked && !_needCompile)
+            if (btnPlay.Checked && !_needCompile)
             {
                 try
                 {
@@ -360,7 +360,7 @@ namespace NProcessing
         /// <param name="args"></param>
         void ScriptRuntimeError(Surface.RuntimeErrorEventArgs args)
         {
-            ProcessPlay(PlayCommand.Stop, false);
+            ProcessPlay(PlayCommand.Stop);
             SetCompileStatus(false);
 
             ScriptError err = ProcessScriptRuntimeError(args, _compileTempDir);
@@ -741,7 +741,7 @@ namespace NProcessing
         /// </summary>
         void Play_Click(object sender, EventArgs e)
         {
-            ProcessPlay(btnPlay.Checked ? PlayCommand.Start : PlayCommand.Stop, true);
+            ProcessPlay(btnPlay.Checked ? PlayCommand.Start : PlayCommand.Stop);
         }
 
         /// <summary>
@@ -750,7 +750,7 @@ namespace NProcessing
         void Compile_Click(object sender, EventArgs e)
         {
             Compile();
-            ProcessPlay(PlayCommand.Stop, true);
+            ProcessPlay(PlayCommand.Stop);
         }
         #endregion
 
@@ -818,9 +818,8 @@ namespace NProcessing
         /// Update everything per param.
         /// </summary>
         /// <param name="cmd">The command.</param>
-        /// <param name="userAction">Something the user did.</param>
         /// <returns>Indication of success.</returns>
-        bool ProcessPlay(PlayCommand cmd, bool userAction)
+        bool ProcessPlay(PlayCommand cmd)
         {
             bool ret = true;
 
@@ -829,7 +828,7 @@ namespace NProcessing
                 switch (cmd)
                 {
                     case PlayCommand.Start:
-                        bool ok = _needCompile ? Compile() : true;
+                        bool ok = !_needCompile || Compile();
                         if (ok)
                         {
                             _startTime = DateTime.Now;
@@ -871,7 +870,7 @@ namespace NProcessing
             if(e.KeyCode == Keys.Space)
             {
                 // Handle start/stop toggle.
-                ProcessPlay(btnPlay.Checked ? PlayCommand.Stop : PlayCommand.Start, true);
+                ProcessPlay(btnPlay.Checked ? PlayCommand.Stop : PlayCommand.Start);
                 e.Handled = true;
             }
         }
@@ -886,7 +885,8 @@ namespace NProcessing
             // Convert fps to msec per frame.
             double framesPerMsec = (double)_frameRate / 1000;
             double msecPerFrame = 1 / framesPerMsec;
-            _mmtimer.SetTimer("UI", (int)msecPerFrame);
+            int period = msecPerFrame > 1.0 ? (int)Math.Round(msecPerFrame) : 1;
+            _mmTimer.SetTimer(period, MmTimerCallback);
         }
 
         /// <summary>
