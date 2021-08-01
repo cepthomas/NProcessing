@@ -12,67 +12,96 @@ double minH = 0;
 double maxH = 0;
 bool curves = true;
 
-public override void setup() {
-  size(500,500);
-  minW = padding;
-  maxW = width - padding;
-  minH = padding;
-  maxH = height - padding;
-//  newDoodle(); // TODO this won't work so fix!
+// klunky way to make this example work with my model - probably should fix some time
+bool go = false;
+
+public override void setup()
+{
+    size(500,500);
+
+    minW = padding;
+    maxW = width - padding;
+    minH = padding;
+    maxH = height - padding;
+
+    //newDoodle(); // can't draw in setup. OK?
 }
 
-public override void draw() {
-  // do nothing - things only happen at start & on mouse press
+public override void draw()
+{
+    // NOT: do nothing - things only happen at start & on mouse press
+
+    if(go)
+    {
+        newDoodle();
+        go = false;
+    }
 }
 
-public override void mousePressed() {
-  newDoodle();
-  curves = !curves;
+public override void mousePressed()
+{
+    //NOT: newDoodle();
+    go = true;
+    curves = !curves;
 }
 
 /*
 Make a new algorithmic squiggle
 */
-void newDoodle() {
-  background(0);
-  shapes = round(random(5,10));
-  for (int i=0; i<shapes; i++) {
-    stroke(randomBrightColor());
-    strokeWeight(random(3,10));
-    double r = random(0,1.0);
-    if (r<0.25) { // 25% chance to draw a circle
-      fill(random(0,255), random(0,255), random(0,255), random(0,255));
-      double size = random(width/8, width/4);
-      ellipse(random(minW,maxW), random(minH,maxH), size, size);
-    } else { // otherwise draw a 2-4 vertex line
-      int vertices = round(random(5.0,10.0));
-      beginShape();
-      fill(0,0); // transparent fill
-      for (int j=0; j<vertices; j++) {
-        if (curves) {
-          //curveVertex(random(minW,maxW), random(minH,maxH));
-        } else {
-          vertex(random(minW,maxW), random(minH,maxH));
+void newDoodle()
+{
+    background(50);
+    shapes = round(random(5,10));
+    for (int i=0; i<shapes; i++)
+    {
+        stroke(randomBrightColor());
+        strokeWeight(random(3,10));
+        double r = random(0,1.0);
+        if (r<0.25)   // 25% chance to draw a circle
+        {
+            fill(random(0,255), random(0,255), random(0,255), random(0,255));
+            double size = random(width/8, width/4);
+            ellipse(random(minW,maxW), random(minH,maxH), size, size);
         }
-      }
-      endShape();
+        else     // otherwise draw a 2-4 vertex line
+        {
+            int vertices = round(random(5.0,10.0));
+            beginShape();
+            fill(0,0); // transparent fill
+            for (int j=0; j<vertices; j++)
+            {
+                if (curves)
+                {
+                    //curveVertex(random(minW,maxW), random(minH,maxH));
+                }
+                else
+                {
+                    vertex(random(minW,maxW), random(minH,maxH));
+                }
+            }
+            endShape();
+        }
     }
-  }
 }
 
-color randomBrightColor() {
-  double r = random(0,255);
-  double g = random(0,255);
-  double b = random(0,255);
- 
-  // boost colors to be brighter if over a threshold
-  if (r > 70) {
-    r = r+50;
-  }
-  if (g > 70) {
-    g = g+50;
-  }  if (b > 70) {
-    b = b+50;
-  }
-  return color(r,g,b);
+color randomBrightColor()
+{
+    double r = random(0,255);
+    double g = random(0,255);
+    double b = random(0,255);
+
+    // boost colors to be brighter if over a threshold
+    if (r > 70)
+    {
+        r = r+50;
+    }
+    if (g > 70)
+    {
+        g = g+50;
+    }
+    if (b > 70)
+    {
+        b = b+50;
+    }
+    return color(r,g,b);
 }

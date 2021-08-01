@@ -97,7 +97,7 @@ namespace NProcessing.Script
         }
 
         /// <summary>
-        /// Ugly way to deal with static vars in color class. TODO fix this.
+        /// Ugly way to deal with static vars in color class.
         /// </summary>
         public void ResetVars()
         {
