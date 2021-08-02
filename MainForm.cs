@@ -61,9 +61,6 @@ namespace NProcessing
         /// <summary>Midi input device.</summary>
         NpMidiInput _midiIn = null;
 
-        /// <summary>Midi output device.</summary>
-        NpMidiOutput _midiOut = null;
-
         /// <summary>Midi event queue.</summary>
         readonly ConcurrentQueue<PMidiEvent> _pmidiEvents = new ConcurrentQueue<PMidiEvent>();
 
@@ -186,9 +183,6 @@ namespace NProcessing
 
                 _midiIn?.Dispose();
                 _midiIn = null;
-
-                _midiOut?.Dispose();
-                _midiOut = null;
 
                 _piano?.Dispose();
                 _piano = null;
@@ -464,20 +458,6 @@ namespace NProcessing
                 }
             }
 
-            if (_settings.MidiOutDevice != "")
-            {
-                _midiOut = new NpMidiOutput();
-                if (_midiOut.Init(_settings.MidiOutDevice))
-                {
-                }
-                else
-                {
-                    _logger.Error(_midiOut.ErrorInfo);
-                    _midiOut = null;
-                    valid = false;
-                }
-            }
-
             if (_settings.Vkey)
             {
                 CreatePiano();
@@ -495,11 +475,6 @@ namespace NProcessing
         {
             PMidiEvent mevt = new PMidiEvent(e.channel, e.note, e.velocity, e.controllerId, e.controllerValue);
             _pmidiEvents.Enqueue(mevt);
-
-            if(_midiOut != null) // pass-thru?
-            {
-                _midiOut.Send(e);
-            }
         }
 
         /// <summary>

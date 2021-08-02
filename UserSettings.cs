@@ -48,13 +48,6 @@ namespace NProcessing
         [TypeConverter(typeof(FixedListTypeConverter))]
         public string MidiInDevice { get; set; } = "";
 
-        [DisplayName("Midi Output")]
-        [Description("Valid device if passing midi input through.")]
-        [Category("Devices")]
-        [Browsable(true)]
-        [TypeConverter(typeof(FixedListTypeConverter))]
-        public string MidiOutDevice { get; set; } = "";
-
         [DisplayName("Virtual Keyboard")]
         [Description("Show or hide the virtual keyboard.")]
         [Category("Devices")]
