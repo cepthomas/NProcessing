@@ -82,7 +82,7 @@ namespace NProcessing.Script
         {
             double angle = (_rand.NextDouble() * Math.PI * 2);
 
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(Math.Cos(angle), Math.Sin(angle), 0);
             }
@@ -105,7 +105,7 @@ namespace NProcessing.Script
             double vx = (Math.Sqrt(1 - vz * vz) * Math.Cos(angle));
             double vy = (Math.Sqrt(1 - vz * vz) * Math.Sin(angle));
 
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(vx, vy, vz);
                 //target.normalize(); // Should be unnecessary
@@ -131,7 +131,7 @@ namespace NProcessing.Script
 
         public double[] get(double[] target)
         {
-            if (target == null)
+            if (target is null)
             {
                 return new double[] { x, y, z };
             }
@@ -190,7 +190,7 @@ namespace NProcessing.Script
 
         static public PVector add(PVector v1, PVector v2, PVector target)
         {
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
             }
@@ -232,7 +232,7 @@ namespace NProcessing.Script
 
         static public PVector sub(PVector v1, PVector v2, PVector target)
         {
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
             }
@@ -259,7 +259,7 @@ namespace NProcessing.Script
 
         static public PVector mult(PVector v, double n, PVector target)
         {
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(v.x * n, v.y * n, v.z * n);
             }
@@ -286,7 +286,7 @@ namespace NProcessing.Script
 
         static public PVector div(PVector v, double n, PVector target)
         {
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(v.x / n, v.y / n, v.z / n);
             }
@@ -339,7 +339,7 @@ namespace NProcessing.Script
             double crossY = z * v.x - v.z * x;
             double crossZ = x * v.y - v.x * y;
 
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(crossX, crossY, crossZ);
             }
@@ -357,7 +357,7 @@ namespace NProcessing.Script
             double crossY = v1.z * v2.x - v2.z * v1.x;
             double crossZ = v1.x * v2.y - v2.x * v1.y;
 
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector(crossX, crossY, crossZ);
             }
@@ -382,7 +382,7 @@ namespace NProcessing.Script
 
         public PVector normalize(PVector target)
         {
-            if (target == null)
+            if (target is null)
             {
                 target = new PVector();
             }
@@ -508,7 +508,7 @@ namespace NProcessing.Script
 
         public double[] array()
         {
-            if (_array == null)
+            if (_array is null)
             {
                 _array = new double[3];
             }

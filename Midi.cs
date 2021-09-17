@@ -75,7 +75,7 @@ namespace NProcessing
 
                 if(name != "")
                 {
-                    for (int device = 0; device < MidiIn.NumberOfDevices && _mdev == null; device++)
+                    for (int device = 0; device < MidiIn.NumberOfDevices && _mdev is null; device++)
                     {
                         if(name == MidiIn.DeviceInfo(device).ProductName)
                         {
@@ -87,7 +87,7 @@ namespace NProcessing
                         }
                     }
 
-                    if(_mdev == null)
+                    if(_mdev is null)
                     {
                         ErrorInfo = $"Invalid midi input: {name}";
                         inited = false;

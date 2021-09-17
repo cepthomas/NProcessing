@@ -91,7 +91,7 @@ namespace NProcessing.Script
             if (_script != null && (_script._loop || _script._redraw))
             {
                 // Check for resize or init.
-                if(_bitmap == null || _bitmap.Width != _script.width || _bitmap.Height != _script.height)
+                if(_bitmap is null || _bitmap.Width != _script.width || _bitmap.Height != _script.height)
                 {
                     if (_bitmap != null)
                     {
