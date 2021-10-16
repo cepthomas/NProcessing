@@ -12,7 +12,7 @@ using NBagOfTricks.UI;
 using NProcessing.Script;
 
 
-namespace NProcessing
+namespace NProcessing.App
 {
     public partial class MainForm : Form
     {

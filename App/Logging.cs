@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NLog;
 using NLog.Targets;
 
-namespace NProcessing
+namespace NProcessing.App
 {
     /// <summary>Handles writes to the client.</summary>
     [Target("ClientWindow")]

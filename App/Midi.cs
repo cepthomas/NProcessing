@@ -4,7 +4,7 @@ using NAudio.Midi;
 using NBagOfTricks;
 
 
-namespace NProcessing
+namespace NProcessing.App
 {
     /// <summary>
     /// Midi has received something.

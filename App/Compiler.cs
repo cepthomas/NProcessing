@@ -9,9 +9,10 @@ using System.Reflection;
 using System.Diagnostics;
 using NLog;
 using NBagOfTricks;
+using NProcessing.Script;
 
 
-namespace NProcessing.Script
+namespace NProcessing.App
 {
     /// <summary>
     /// Parses/compiles *.np file(s).

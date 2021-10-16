@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using NAudio.Midi;
 
 
-namespace NProcessing
+namespace NProcessing.App
 {
     [Serializable]
     public class UserSettings

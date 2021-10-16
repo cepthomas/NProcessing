@@ -72,7 +72,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compiler.cs" />
     <Compile Include="NpClasses.cs" />
     <Compile Include="NpScriptCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
