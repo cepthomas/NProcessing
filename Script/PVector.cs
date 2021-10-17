@@ -490,7 +490,7 @@ namespace NProcessing.Script
             // http://www.cppreference.com/wiki/c/math/acos
             if (amt <= -1)
             {
-                return NpScript.PI;
+                return ScriptBase.PI;
             }
             else if (amt >= 1)
             {

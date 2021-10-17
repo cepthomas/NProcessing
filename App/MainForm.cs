@@ -12,6 +12,9 @@ using NBagOfTricks.UI;
 using NProcessing.Script;
 
 
+//TODOneb nullable
+
+
 namespace NProcessing.App
 {
     public partial class MainForm : Form
@@ -35,7 +38,7 @@ namespace NProcessing.App
         string _fn = "";
 
         /// <summary>The current script.</summary>
-        NpScript _script = null;
+        ScriptBase _script = null;
 
         /// <summary>Frame rate in fps.</summary>
         int _frameRate = 30;
@@ -89,13 +92,8 @@ namespace NProcessing.App
         {
             bool ok = true;
 
-            txtView.Font = _settings.EditorFont;
-            txtView.BackColor = _settings.BackColor;
-
-            btnClear.Click += (object _, EventArgs __) => { txtView.Clear(); };
-            btnWrap.Click += (object _, EventArgs __) => { txtView.WordWrap = btnWrap.Checked; };
-
             InitLogging();
+            _logger.Info("============================ Starting up ===========================");
 
             ///// Init UI //////
             Location = new Point(_settings.MainFormInfo.X, _settings.MainFormInfo.Y);
@@ -105,6 +103,12 @@ namespace NProcessing.App
             _surface.Visible = true;
             _surface.Location = new Point(Right, Top);
             _surface.TopMost = _settings.LockUi;
+
+            // The rest of the controls.
+            textViewer.WordWrap = false;
+            textViewer.BackColor = _settings.BackColor;
+            textViewer.Colors.Add(" E ", Color.LightPink);
+            textViewer.Colors.Add(" W ", Color.Plum);
 
             ///// CPU meter /////
             if (_settings.CpuMeter)
@@ -121,6 +125,12 @@ namespace NProcessing.App
                 cpuMeter.Enable = true;
                 toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
             }
+
+            btnClear.Click += (object _, EventArgs __) => { textViewer.Clear(); };
+
+            btnWrap.Checked = _settings.WordWrap;
+            textViewer.WordWrap = btnWrap.Checked;
+            btnWrap.Click += (object _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; };
 
             ok = InitMidi();
 
@@ -500,7 +510,7 @@ namespace NProcessing.App
             };
 
             // Set the icon.
-            Bitmap bm = new Bitmap(Properties.Resources.glyphicons_327_piano);
+            Bitmap bm = new Bitmap(global::App.Properties.Resources.glyphicons_327_piano);
             _piano.Icon = Icon.FromHandle(bm.GetHicon());
 
             vkey.KeyboardEvent += (_, e) =>
@@ -542,23 +552,13 @@ namespace NProcessing.App
         /// <summary>
         /// A message from the logger to display to the user.
         /// </summary>
+        /// <param name="level">Level.</param>
         /// <param name="msg">The message.</param>
-        void Log_ClientNotification(string msg)
+        void Log_ClientNotification(LogLevel level, string msg)
         {
             BeginInvoke((MethodInvoker)delegate ()
             {
-                string s = $"{msg}{Environment.NewLine}";
-
-                if (txtView.TextLength > 5000)
-                {
-                    txtView.Select(0, 1000);
-                    txtView.SelectedText = "";
-                }
-
-                txtView.SelectionBackColor = _settings.BackColor;
-
-                txtView.AppendText(s);
-                txtView.ScrollToCaret();
+                textViewer.AddLine(msg);
             });
         }
 
@@ -569,30 +569,38 @@ namespace NProcessing.App
         /// <param name="e"></param>
         void LogShow_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form()
+            using Form f = new()
             {
                 Text = "Log Viewer",
                 Size = new Size(900, 600),
+                BackColor = _settings.BackColor,
                 StartPosition = FormStartPosition.Manual,
                 Location = new Point(20, 20),
-                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                FormBorderStyle = FormBorderStyle.SizableToolWindow,
                 ShowIcon = false,
                 ShowInTaskbar = false
-            })
+            };
+
+            TextViewer tv = new()
             {
-                RichTextBox tv = new RichTextBox()
-                {
-                    Dock = DockStyle.Fill,
-                    Font = _settings.EditorFont
-                };
-                f.Controls.Add(tv);
+                Dock = DockStyle.Fill,
+                WordWrap = true,
+                MaxText = 50000
+            };
 
-                string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-                string logFilename = Path.Combine(appDir, "log.txt");
-                File.ReadAllLines(logFilename).ForEach(l => tv.AppendText(l + Environment.NewLine));
+            tv.Colors.Add(" E ", Color.LightPink);
+            tv.Colors.Add(" W ", Color.Plum);
+            //tv.Colors.Add(" SND???:", Color.LightGreen);
+            f.Controls.Add(tv);
 
-                f.ShowDialog();
+            string appDir = MiscUtils.GetAppDataDir("Nebulator", "Ephemera");
+            string logFileName = Path.Combine(appDir, "log.txt");
+            using (new WaitCursor())
+            {
+                File.ReadAllLines(logFileName).ForEach(l => tv.AddLine(l)); //TODO still a little broken.
             }
+
+            f.ShowDialog();
         }
         #endregion
 

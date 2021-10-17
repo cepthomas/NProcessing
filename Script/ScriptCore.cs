@@ -12,7 +12,7 @@ using NBagOfTricks;
 
 namespace NProcessing.Script
 {
-    public partial class NpScript : IDisposable
+    public partial class ScriptBase : IDisposable
     {
         #region Fields - internal
         /// <summary>My logger.</summary>
@@ -91,7 +91,7 @@ namespace NProcessing.Script
         /// <summary>
         /// Constructor.
         /// </summary>
-        public NpScript()
+        public ScriptBase()
         {
             ResetVars();
         }

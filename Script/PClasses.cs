@@ -20,7 +20,7 @@ namespace NProcessing.Script
     {
         #region Storage for some globals
         /// <summary>Color mode: RGB or HSB, corresponding to Red/Green/Blue and Hue/Saturation/Brightness.</summary>
-        static int _mode = NpScript.RGB;
+        static int _mode = ScriptBase.RGB;
 
         /// <summary>Range for the red or hue depending on the current color mode.</summary>
         static double _max1 = 255;
@@ -45,7 +45,7 @@ namespace NProcessing.Script
 
         public static void ResetMode()
         {
-            _mode = NpScript.RGB;
+            _mode = ScriptBase.RGB;
             _max1 = 255;
             _max2 = 255;
             _max3 = 255;
@@ -72,7 +72,7 @@ namespace NProcessing.Script
 
         public color(double v1, double v2, double v3, double a = 255)
         {
-            if (_mode == NpScript.HSB)
+            if (_mode == ScriptBase.HSB)
             {
                 FromHSB(v1, v2, v3, a);
             }

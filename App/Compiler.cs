@@ -74,9 +74,9 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="npfn">Fully qualified path to topmost file.</param>
         /// <returns>The newly minted script object or null if failed.</returns>
-        public NpScript Execute(string npfn)
+        public ScriptBase Execute(string npfn)
         {
-            NpScript script = null;
+            ScriptBase script = null;
 
             // Reset everything.
             _filesToCompile.Clear();
@@ -223,9 +223,9 @@ namespace NProcessing.App
         /// Top level compiler.
         /// </summary>
         /// <returns>Compiled script</returns>
-        NpScript Compile()
+        ScriptBase Compile()
         {
-            NpScript script = null;
+            ScriptBase script = null;
 
             try // many ways to go wrong...
             {
@@ -277,11 +277,11 @@ namespace NProcessing.App
                     // Bind to the script interface.
                     foreach (Type t in assy.GetTypes())
                     {
-                        if (t.BaseType != null && t.BaseType.Name == "NpScript")
+                        if (t.BaseType != null && t.BaseType.Name == "ScriptBase")
                         {
                             // We have a good script file. Create the executable object.
                             Object o = Activator.CreateInstance(t);
-                            script = o as NpScript;
+                            script = o as ScriptBase;
                         }
                     }
 
@@ -358,7 +358,7 @@ namespace NProcessing.App
         }
 
         /// <summary>
-        /// Create the file containing all the nebulator glue.
+        /// Create the file containing all the glue.
         /// </summary>
         /// <returns></returns>
         List<string> GenMainFileContents()
@@ -368,7 +368,7 @@ namespace NProcessing.App
 
             // Collected init stuff goes in a constructor.
             // Reference to current script so nested classes have access to it. Processing uses java which would not require this minor hack.
-            codeLines.Add($"        protected static NpScript s;");
+            codeLines.Add($"        protected static ScriptBase s;");
             codeLines.Add($"        public {_scriptName}() : base()");
             codeLines.Add( "        {");
             codeLines.Add( "            s = this;");
@@ -405,7 +405,7 @@ namespace NProcessing.App
                 "using NProcessing.Script;",
                 "namespace NProcessing.UserScript",
                 "{",
-               $"    public partial class {_scriptName} : NpScript",
+               $"    public partial class {_scriptName} : ScriptBase",
                 "    {"
             };
 

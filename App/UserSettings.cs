@@ -7,8 +7,10 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Drawing.Design;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using NAudio.Midi;
+using NBagOfTricks;
 
 
 namespace NProcessing.App
@@ -17,26 +19,22 @@ namespace NProcessing.App
     public class UserSettings
     {
         #region Persisted editable properties
-        [DisplayName("Editor Font")]
-        [Description("The font to use for editors etc.")]
-        [Category("Cosmetics")]
-        [Browsable(true)]
-        public Font EditorFont { get; set; } = new Font("Consolas", 9);
-
         [DisplayName("Selected Color")]
         [Description("The color used for selections.")]
         [Category("Cosmetics")]
         [Browsable(true)]
+        [JsonConverter(typeof(JsonColorConverter))]
         public Color SelectedColor { get; set; } = Color.Violet;
 
         [DisplayName("Background Color")]
         [Description("The color used for overall background.")]
         [Category("Cosmetics")]
         [Browsable(true)]
+        [JsonConverter(typeof(JsonColorConverter))]
         public Color BackColor { get; set; } = Color.AliceBlue;
 
         [DisplayName("Lock UI")]
-        [Description("Forces UI to always topmost.")]
+        [Description("Forces UI to be topmost.")]
         [Category("Cosmetics")]
         [Browsable(true)]
         public bool LockUi { get; set; } = false;
@@ -54,15 +52,39 @@ namespace NProcessing.App
         [Browsable(true)]
         public bool Vkey { get; set; } = false;
 
+        [DisplayName("Work Path")]
+        [Description("Where you keep your neb files.")]
+        [Category("Functionality")]
+        [Browsable(true)]
+        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+        public string WorkPath { get; set; } = "";
+
+        [DisplayName("Auto Compile")]
+        [Description("Compile current file when change detected.")]
+        [Category("Functionality")]
+        [Browsable(true)]
+        public bool AutoCompile { get; set; } = true;
+
+        [DisplayName("Ignore Warnings")]
+        [Description("Ignore warnings otherwise treat them as errors.")]
+        [Category("Functionality")]
+        [Browsable(true)]
+        public bool IgnoreWarnings { get; set; } = true;
+
         [DisplayName("CPU Meter")]
         [Description("Show a CPU usage meter. Note that this slows start up a bit.")]
-        [Category("Devices")]
+        [Category("Functionality")]
         [Browsable(true)]
         public bool CpuMeter { get; set; } = true;
-
         #endregion
 
         #region Persisted non-editable properties
+        [Browsable(false)]
+        public bool Valid { get; set; } = false;
+
+        [Browsable(false)]
+        public bool WordWrap { get; set; } = false;
+
         [Browsable(false)]
         public FormInfo MainFormInfo { get; set; } = new FormInfo();
 
@@ -79,8 +101,10 @@ namespace NProcessing.App
         /// <summary>Save object to file.</summary>
         public void Save()
         {
-            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            JsonSerializerOptions opts = new() { WriteIndented = true };
+            string json = JsonSerializer.Serialize(this, opts);
             File.WriteAllText(_fn, json);
+
         }
 
         /// <summary>Create object from file.</summary>
@@ -90,17 +114,25 @@ namespace NProcessing.App
 
             string fn = Path.Combine(appDir, "settings.json");
 
-            if(File.Exists(fn))
+            if (File.Exists(fn))
             {
                 string json = File.ReadAllText(fn);
-                settings = JsonConvert.DeserializeObject<UserSettings>(json);
-
-                // Clean up any bad file names.
-                settings.RecentFiles.RemoveAll(f => !File.Exists(f));
+                var jobj = JsonSerializer.Deserialize<UserSettings>(json);
+                if (jobj is not null)
+                {
+                    settings = jobj;
+                    settings._fn = fn;
+                    settings.Valid = true;
+                }
             }
             else
             {
-                settings = new UserSettings(); // default
+                // Doesn't exist, create a new one.
+                settings = new UserSettings()
+                {
+                    _fn = fn,
+                    Valid = true
+                };
             }
 
             settings._fn = fn;

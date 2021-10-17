@@ -7,12 +7,13 @@ namespace NProcessing.App
 {
     /// <summary>Handles writes to the client.</summary>
     [Target("ClientWindow")]
-    public sealed class LogClientNotificationTarget : TargetWithLayout
+    public class LogClientNotificationTarget : TargetWithLayout
     {
         #region Event Generation
         /// <summary>Definition of delegate for event handler.</summary>
+        /// <param name="level">Client might care about this</param>
         /// <param name="msg">The message to send</param>
-        public delegate void ClientNotificationEventHandler(string msg);
+        public delegate void ClientNotificationEventHandler(LogLevel level, string msg);
 
         /// <summary>The event handler for messages back to the client.</summary>
         public static event ClientNotificationEventHandler ClientNotification;
@@ -22,19 +23,10 @@ namespace NProcessing.App
         /// <param name="logEvent">Describes the event.</param>
         protected override void Write(LogEventInfo logEvent)
         {
-            if (ClientNotification != null)
-            {
-                string preamble = "";
-                if (logEvent.Level == LogLevel.Fatal || logEvent.Level == LogLevel.Error)
-                {
-                    preamble = "ERROR: ";
-                }
-                else if (logEvent.Level == LogLevel.Warn)
-                {
-                    preamble = "WARNING: ";
-                }
-                ClientNotification(preamble + logEvent.Message);
-            }
+            // Could do some preprocessing here...
+
+            var slog = Layout.Render(logEvent);
+            ClientNotification?.Invoke(logEvent.Level, slog);
         }
     }
 }

@@ -5,10 +5,16 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using System.Windows.Forms;
+
 using NLog;
 using SkiaSharp;
-using SkiaSharp.Views.Desktop;
+
+//using SkiaSharp.Views.Desktop;
+
+
+
 using NBagOfTricks;
 using NBagOfTricks.UI;
 
@@ -32,10 +38,10 @@ namespace NProcessing.Script
         Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>The embedded drawing control.</summary>
-        SKControl _skcontrol = null;
+//        SKControl _skcontrol = null;
 
         /// <summary>The current script.</summary>
-        NpScript _script = null;
+        ScriptBase _script = null;
 
         /// <summary>Rendered bitmap for display when painting.</summary>
         System.Drawing.Bitmap _bitmap = null;
@@ -52,8 +58,8 @@ namespace NProcessing.Script
             UpdateStyles();
 
             // Create the control.
-            _skcontrol = new SKControl();
-            Controls.Add(_skcontrol);
+//            _skcontrol = new SKControl();
+//            Controls.Add(_skcontrol);
         }
 
         /// <summary>
@@ -71,7 +77,7 @@ namespace NProcessing.Script
         /// Update per new script object.
         /// </summary>
         /// <param name="script"></param>
-        public void InitSurface(NpScript script)
+        public void InitSurface(ScriptBase script)
         {
             if(script != null)
             {
@@ -278,9 +284,9 @@ namespace NProcessing.Script
 
                 switch (e.Button)
                 {
-                    case MouseButtons.Left: _script.mouseButton = NpScript.LEFT; break;
-                    case MouseButtons.Right: _script.mouseButton = NpScript.RIGHT; break;
-                    case MouseButtons.Middle: _script.mouseButton = NpScript.CENTER; break;
+                    case MouseButtons.Left: _script.mouseButton = ScriptBase.LEFT; break;
+                    case MouseButtons.Right: _script.mouseButton = ScriptBase.RIGHT; break;
+                    case MouseButtons.Middle: _script.mouseButton = ScriptBase.CENTER; break;
                     default: _script.mouseButton = 0; break;
                 }
             }
@@ -364,41 +370,41 @@ namespace NProcessing.Script
             // Check modifiers.
             if (keys.keyCodes.Contains(Keys.Control))
             {
-                _script.keyCode |= NpScript.CTRL;
+                _script.keyCode |= ScriptBase.CTRL;
             }
 
             if (keys.keyCodes.Contains(Keys.Alt))
             {
-                _script.keyCode |= NpScript.ALT;
+                _script.keyCode |= ScriptBase.ALT;
             }
 
             if (keys.keyCodes.Contains(Keys.Shift))
             {
-                _script.keyCode |= NpScript.SHIFT;
+                _script.keyCode |= ScriptBase.SHIFT;
             }
 
             if (keys.keyCodes.Contains(Keys.Left))
             {
-                _script.keyCode |= NpScript.LEFT;
-                _script.key = (char)NpScript.CODED;
+                _script.keyCode |= ScriptBase.LEFT;
+                _script.key = (char)ScriptBase.CODED;
             }
 
             if (keys.keyCodes.Contains(Keys.Right))
             {
-                _script.keyCode |= NpScript.RIGHT;
-                _script.key = (char)NpScript.CODED;
+                _script.keyCode |= ScriptBase.RIGHT;
+                _script.key = (char)ScriptBase.CODED;
             }
 
             if (keys.keyCodes.Contains(Keys.Up))
             {
-                _script.keyCode |= NpScript.UP;
-                _script.key = (char)NpScript.CODED;
+                _script.keyCode |= ScriptBase.UP;
+                _script.key = (char)ScriptBase.CODED;
             }
 
             if (keys.keyCodes.Contains(Keys.Down))
             {
-                _script.keyCode |= NpScript.DOWN;
-                _script.key = (char)NpScript.CODED;
+                _script.keyCode |= ScriptBase.DOWN;
+                _script.key = (char)ScriptBase.CODED;
             }
         }
         #endregion

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using SkiaSharp;
-using SkiaSharp.Views.Desktop;
+//using SkiaSharp.Views.Desktop;
 using NBagOfTricks;
 
 
@@ -14,7 +14,7 @@ using NBagOfTricks;
 
 namespace NProcessing.Script
 {
-    public partial class NpScript
+    public partial class ScriptBase
     {
         #region Definitions - same values as Processing
         //---- Math
