@@ -3,9 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{930FA5A0-9FED-4754-951F-1033437D20C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App", "App\App.csproj", "{930FA5A0-9FED-4754-951F-1033437D20C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Script", "Script\Script.csproj", "{BAD1AAD5-5289-46A0-8C1A-B15D382D17A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Script", "Script\Script.csproj", "{BAD1AAD5-5289-46A0-8C1A-B15D382D17A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DocFiles", "DocFiles", "{469A9139-FFD7-49A6-A446-4996A455F8C1}"
+	ProjectSection(SolutionItems) = preProject
+		DocFiles\Custom.md = DocFiles\Custom.md
+		DocFiles\Internals.md = DocFiles\Internals.md
+		DocFiles\NProcessing.md = DocFiles\NProcessing.md
+		DocFiles\Porting.md = DocFiles\Porting.md
+		DocFiles\ScriptApi.md = DocFiles\ScriptApi.md
+		DocFiles\ScriptSyntax.md = DocFiles\ScriptSyntax.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

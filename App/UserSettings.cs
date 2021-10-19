@@ -98,20 +98,10 @@ namespace NProcessing.App
         #endregion
 
         #region Persistence
-        /// <summary>Save object to file.</summary>
-        public void Save()
-        {
-            JsonSerializerOptions opts = new() { WriteIndented = true };
-            string json = JsonSerializer.Serialize(this, opts);
-            File.WriteAllText(_fn, json);
-
-        }
-
         /// <summary>Create object from file.</summary>
         public static UserSettings Load(string appDir)
         {
-            UserSettings settings = null;
-
+            UserSettings settings = new();
             string fn = Path.Combine(appDir, "settings.json");
 
             if (File.Exists(fn))
@@ -138,6 +128,17 @@ namespace NProcessing.App
             settings._fn = fn;
 
             return settings;
+        }
+
+        /// <summary>Save object to file.</summary>
+        public void Save()
+        {
+            if(Valid)
+            {
+                JsonSerializerOptions opts = new() { WriteIndented = true };
+                string json = JsonSerializer.Serialize(this, opts);
+                File.WriteAllText(_fn, json);
+            }
         }
         #endregion
     }
@@ -169,7 +170,7 @@ namespace NProcessing.App
         // Get the specific list based on the property name.
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
-            List<string> rec = null;
+            List<string>? rec = null;
 
             switch (context.PropertyDescriptor.Name)
             {

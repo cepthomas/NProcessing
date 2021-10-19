@@ -13,6 +13,7 @@ using NProcessing.Script;
 
 
 //TODOneb nullable
+//TODOneb About
 
 
 namespace NProcessing.App
@@ -29,7 +30,7 @@ namespace NProcessing.App
         readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Fast timer.</summary>
-        MmTimerEx _mmTimer = new MmTimerEx();
+        MmTimerEx _mmTimer = new();
 
         /// <summary>Surface child form.</summary>
         readonly Surface _surface = new Surface();
@@ -38,7 +39,7 @@ namespace NProcessing.App
         string _fn = "";
 
         /// <summary>The current script.</summary>
-        ScriptBase _script = null;
+        ScriptBase _script = new();
 
         /// <summary>Frame rate in fps.</summary>
         int _frameRate = 30;
@@ -47,7 +48,7 @@ namespace NProcessing.App
         DateTime _startTime = DateTime.Now;
 
         /// <summary>Script compile errors and warnings.</summary>
-        List<ScriptError> _compileResults = new List<ScriptError>();
+        List<CompileResult> _compileResults = new List<CompileResult>();
 
         /// <summary>Detect changed script files.</summary>
         readonly MultiFileWatcher _watcher = new MultiFileWatcher();
@@ -55,20 +56,20 @@ namespace NProcessing.App
         /// <summary>Files that have been changed externally or have runtime errors - requires a recompile.</summary>
         bool _needCompile = false;
 
-        /// <summary>The temp dir for channeling down runtime errors.</summary>
+        /// <summary>The temp dir for channeling down runtime errors. TODO</summary>
         string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
         readonly UserSettings _settings;
 
         /// <summary>Midi input device.</summary>
-        NpMidiInput _midiIn = null;
+        NpMidiInput? _midiIn = null;
 
         /// <summary>Midi event queue.</summary>
         readonly ConcurrentQueue<PMidiEvent> _pmidiEvents = new ConcurrentQueue<PMidiEvent>();
 
         /// <summary>Optional midi piano.</summary>
-        Form _piano = null;
+        Form? _piano = null;
         #endregion
 
         #region Lifecycle
@@ -126,11 +127,11 @@ namespace NProcessing.App
                 toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
             }
 
-            btnClear.Click += (object _, EventArgs __) => { textViewer.Clear(); };
+            btnClear.Click += (object? _, EventArgs __) => { textViewer.Clear(); };
 
             btnWrap.Checked = _settings.WordWrap;
             textViewer.WordWrap = btnWrap.Checked;
-            btnWrap.Click += (object _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; };
+            btnWrap.Click += (object? _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; };
 
             ok = InitMidi();
 
@@ -143,7 +144,7 @@ namespace NProcessing.App
             Text = $"NProcessing {MiscUtils.GetVersionString()} - No file loaded";
 
             // Catches runtime errors during drawing.
-            _surface.RuntimeErrorEvent += (object esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
+            _surface.RuntimeErrorEvent += (object? esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
 
             // Fast timer.
             SetUiTimerPeriod();
@@ -155,7 +156,7 @@ namespace NProcessing.App
 
             // Look for filename passed in.
             string[] args = Environment.GetCommandLineArgs();
-            if (ok && args.Count() > 1)
+            if (ok && args.Length > 1)
             {
                 OpenFile(args[1]);
             }
@@ -164,7 +165,7 @@ namespace NProcessing.App
         /// <summary>
         /// Clean up on shutdown.
         /// </summary>
-        void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             try
             {
@@ -187,9 +188,8 @@ namespace NProcessing.App
         {
             if (disposing)
             {
-                _mmTimer?.Stop();
-                _mmTimer?.Dispose();
-                _mmTimer = null;
+                _mmTimer.Stop();
+                _mmTimer.Dispose();
 
                 _midiIn?.Dispose();
                 _midiIn = null;
@@ -232,9 +232,9 @@ namespace NProcessing.App
 
                 // Process errors. Some may be warnings.
                 _compileResults = compiler.Errors;
-                int errorCount = _compileResults.Count(w => w.ErrorType == ScriptErrorType.Error);
+                int errorCount = _compileResults.Count(w => w.ResultType == CompileResultType.Error);
 
-                if (errorCount == 0 && _script != null)
+                if (errorCount == 0 && _script is not null)
                 {
                     SetCompileStatus(true);
                     _compileTempDir = compiler.TempDir;
@@ -266,7 +266,7 @@ namespace NProcessing.App
                 {
                     _logger.Log(new LogEventInfo()
                     {
-                        Level = r.ErrorType == ScriptErrorType.Warning ? LogLevel.Warn : LogLevel.Error,
+                        Level = r.ResultType == CompileResultType.Warning ? LogLevel.Warn : LogLevel.Error,
                         Message = r.ToString()
                     });
                 });
@@ -301,18 +301,18 @@ namespace NProcessing.App
         void MmTimerCallback(double totalElapsed, double periodElapsed)
         {
             // Kick over to main UI thread.
-            BeginInvoke((MethodInvoker)delegate ()
+            _ = BeginInvoke((MethodInvoker)delegate ()
             {
-                if (_script != null)
+                if (_script.Valid)
                 {
-                    // Process any events.
-                    while(_pmidiEvents.TryDequeue(out PMidiEvent mevt))
-                    {
-                        _script.midiEvent(mevt);
-                    }
+                // Process any events.
+                while (_pmidiEvents.TryDequeue(out PMidiEvent? mevt))
+                {
+                    _script.midiEvent(mevt);
+                }
 
-                    // Update the view.
-                    NextDraw();
+                // Update the view.
+                NextDraw();
                 }
             });
         }
@@ -371,77 +371,81 @@ namespace NProcessing.App
             ProcessPlay(PlayCommand.Stop);
             SetCompileStatus(false);
 
-            ScriptError err = ProcessScriptRuntimeError(args, _compileTempDir);
-
-            if (err != null)
-            {
-                _logger.Error(err.ToString());
-            }
+            ProcessScriptRuntimeError(args.Exception);
         }
 
         /// <summary>
         /// Runtime error. Look for ones generated by our script - normal occurrence which the user should know about.
         /// </summary>
-        /// <param name="args"></param>
-        /// <param name="compileDir"></param>
-        ScriptError ProcessScriptRuntimeError(Surface.RuntimeErrorEventArgs args, string compileDir)
+        /// <param name="ex"></param>
+        void ProcessScriptRuntimeError(Exception ex)
         {
-            ScriptError err = null;
+            CompileResult? err = null;
 
             // Locate the offending frame.
             string srcFile = "";
             int srcLine = -1;
-            StackTrace st = new StackTrace(args.Exception, true);
-            StackFrame sf = null;
+            StackTrace st = new(ex, true);
+            StackFrame? sf = null;
 
             for (int i = 0; i < st.FrameCount; i++)
             {
-                StackFrame stf = st.GetFrame(i);
-                if (stf.GetFileName() != null && stf.GetFileName().ToUpper().Contains(compileDir.ToUpper()))
+                StackFrame? stf = st.GetFrame(i);
+                if (stf is not null)
                 {
-                    sf = stf;
-                    break;
+                    var stfn = stf!.GetFileName();
+                    if (stfn is not null)
+                    {
+                        if (stfn.ToUpper().Contains(_compileTempDir.ToUpper()))
+                        {
+                            sf = stf;
+                            break;
+                        }
+                    }
                 }
             }
 
-            if (sf != null)
+            if (sf is not null)
             {
                 // Dig out generated file parts.
-                string genFile = sf.GetFileName();
+                string? genFile = sf!.GetFileName();
                 int genLine = sf.GetFileLineNumber() - 1;
 
                 // Open the generated file and dig out the source file and line.
-                string[] genLines = File.ReadAllLines(genFile);
+                string[] genLines = File.ReadAllLines(genFile!);
 
                 srcFile = genLines[0].Trim().Replace("//", "");
 
                 int ind = genLines[genLine].LastIndexOf("//");
                 if (ind != -1)
                 {
-                    string sl = genLines[genLine].Substring(ind + 2);
-                    int.TryParse(sl, out srcLine);
+                    string sl = genLines[genLine][(ind + 2)..];
+                    srcLine = int.Parse(sl);
                 }
 
-                err = new ScriptError()
+                err = new CompileResult()
                 {
-                    ErrorType = ScriptErrorType.Runtime,
+                    ResultType = CompileResultType.Runtime,
                     SourceFile = srcFile,
                     LineNumber = srcLine,
-                    Message = args.Exception.Message
+                    Message = ex.Message
                 };
             }
             else // unknown?
             {
-                err = new ScriptError()
+                err = new CompileResult()
                 {
-                    ErrorType = ScriptErrorType.Runtime,
+                    ResultType = CompileResultType.Runtime,
                     SourceFile = "",
                     LineNumber = -1,
-                    Message = args.Exception.Message
+                    Message = ex.Message
                 };
             }
 
-            return err;
+            if (err is not null)
+            {
+                _logger.Error(err.ToString());
+            }
         }
         #endregion
 
@@ -481,7 +485,7 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MidiIn_InputEvent(object sender, NpMidiEventArgs e)
+        void MidiIn_InputEvent(object? sender, NpMidiEventArgs e)
         {
             PMidiEvent mevt = new PMidiEvent(e.channel, e.note, e.velocity, e.controllerId, e.controllerValue);
             _pmidiEvents.Enqueue(mevt);
@@ -608,7 +612,7 @@ namespace NProcessing.App
         /// <summary>
         /// Allows the user to select a np file from file system.
         /// </summary>
-        void Open_Click(object sender, EventArgs e)
+        void Open_Click(object? sender, EventArgs e)
         {
             OpenFileDialog openDlg = new OpenFileDialog()
             {
@@ -625,11 +629,14 @@ namespace NProcessing.App
         /// <summary>
         /// The user has asked to open a recent file.
         /// </summary>
-        void Recent_Click(object sender, EventArgs e)
+        void Recent_Click(object? sender, EventArgs e)
         {
-            ToolStripMenuItem item = sender as ToolStripMenuItem;
-            string fn = sender.ToString();
-            OpenFile(fn);
+            if(sender is not null)
+            {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                string fn = item.ToString();
+                OpenFile(fn);
+            }
         }
 
         /// <summary>
@@ -712,7 +719,7 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Watcher_Changed(object sender, MultiFileWatcher.FileChangeEventArgs e)
+        void Watcher_Changed(object? sender, MultiFileWatcher.FileChangeEventArgs e)
         {
             // Kick over to main UI thread.
             BeginInvoke((MethodInvoker)delegate ()
@@ -810,7 +817,7 @@ namespace NProcessing.App
         {
             bool ret = true;
 
-            if(_script != null)
+            if(_script.Valid)
             {
                 switch (cmd)
                 {

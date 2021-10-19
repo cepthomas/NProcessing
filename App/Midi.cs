@@ -38,7 +38,7 @@ namespace NProcessing.App
     {
         #region Fields
         /// <summary>Midi input device.</summary>
-        MidiIn _mdev = null;
+        MidiIn? _mdev = null;
 
         /// <summary>Resource clean up.</summary>
         bool _disposed = false;
@@ -51,7 +51,7 @@ namespace NProcessing.App
 
         #region Events
         /// <summary>Handler for message arrived.</summary>
-        public event EventHandler<NpMidiEventArgs> InputEvent;
+        public event EventHandler<NpMidiEventArgs>? InputEvent;
         #endregion
 
         #region Lifecycle
@@ -66,7 +66,7 @@ namespace NProcessing.App
 
             try
             {
-                if (_mdev != null)
+                if (_mdev is not null)
                 {
                     _mdev.Stop();
                     _mdev.Dispose();
@@ -133,11 +133,11 @@ namespace NProcessing.App
         /// <summary>
         /// Process input midi event.
         /// </summary>
-        void NpMidiIn_MessageReceived(object sender, MidiInMessageEventArgs e)
+        void NpMidiIn_MessageReceived(object? sender, MidiInMessageEventArgs e)
         {
             // Decode the message. We only care about a few.
             MidiEvent me = MidiEvent.FromRawMessage(e.RawMessage);
-            NpMidiEventArgs mevt = null;
+            NpMidiEventArgs? mevt = null;
 
             switch (me.CommandCode)
             {
@@ -190,7 +190,7 @@ namespace NProcessing.App
                     break;
             }
 
-            if (mevt != null)
+            if (mevt is not null)
             {
                 // Pass it up for handling.
                 InputEvent?.Invoke(this, mevt);
@@ -201,7 +201,7 @@ namespace NProcessing.App
         /// <summary>
         /// Process error midi event - Parameter 1 is invalid.
         /// </summary>
-        void NpMidiIn_ErrorReceived(object sender, MidiInMessageEventArgs e)
+        void NpMidiIn_ErrorReceived(object? sender, MidiInMessageEventArgs e)
         {
             // do something> log? $"Message:0x{e.RawMessage:X8}");
         }

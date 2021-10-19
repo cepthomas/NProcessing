@@ -39,7 +39,7 @@ namespace NProcessing.App
 
         #region Properties
         /// <summary>Accumulated errors.</summary>
-        public List<ScriptError> Errors { get; } = new List<ScriptError>();
+        public List<CompileResult> Errors { get; } = new List<CompileResult>();
 
         /// <summary>All active source files. Provided so client can monitor for external changes.</summary>
         public IEnumerable<string> SourceFiles { get { return _filesToCompile.Values.Select(f => f.SourceFile).ToList(); } }
@@ -193,9 +193,9 @@ namespace NProcessing.App
 
                         if (!ParseOneFile(subcont))
                         {
-                            Errors.Add(new ScriptError()
+                            Errors.Add(new CompileResult()
                             {
-                                ErrorType = ScriptErrorType.Error,
+                                ResultType = CompileResultType.Error,
                                 Message = $"Invalid #import: {fn}",
                                 SourceFile = pcont.SourceFile,
                                 LineNumber = pcont.LineNumber
@@ -219,11 +219,312 @@ namespace NProcessing.App
             return valid;
         }
 
+
+        /// <summary>
+        /// Run the Compiler.
+        /// </summary>
+        /// <param name="nebfn">Fully qualified path to main file.</param>
+        public void Execute(string nebfn)
+        {
+            // Reset everything.
+            Script = new();
+            Channels.Clear();
+            Results.Clear();
+            _filesToCompile.Clear();
+            _initLines.Clear();
+
+            if (nebfn != Definitions.UNKNOWN_STRING && File.Exists(nebfn))
+            {
+                _logger.Info($"Compiling {nebfn}.");
+
+                ///// Get and sanitize the script name.
+                _scriptName = Path.GetFileNameWithoutExtension(nebfn);
+                StringBuilder sb = new();
+                _scriptName.ForEach(c => sb.Append(char.IsLetterOrDigit(c) ? c : '_'));
+                _scriptName = sb.ToString();
+                var dir = Path.GetDirectoryName(nebfn);
+
+                ///// Compile.
+                DateTime startTime = DateTime.Now; // for metrics
+
+                ///// Process the source files into something that can be compiled. ParseOneFile is a recursive function.
+                FileContext pcont = new()
+                {
+                    SourceFile = nebfn,
+                    LineNumber = 1
+                };
+                PreprocessFile(pcont);
+
+                ///// Check for changed channel descriptors.
+                if (string.Join("", _channelDescriptors).GetHashCode() != chdesc)
+                {
+                    Channels = ProcessChannelDescs();
+                }
+
+                ///// Compile the processed files.
+                Script = CompileNative(dir!);
+
+                _logger.Info($"Compile took {(DateTime.Now - startTime).Milliseconds} msec.");
+            }
+            else
+            {
+                _logger.Error($"Invalid file {nebfn}.");
+            }
+
+            int errorCount = Results.Where(r => r.ResultType == CompileResultType.Error || r.ResultType == CompileResultType.Fatal).Count();
+            Script.Valid = errorCount == 0;
+        }
+
+
+
+
+        /// <summary>
+        /// The actual compiler driver.
+        /// </summary>
+        /// <returns>Compiled script</returns>
+        ScriptBase CompileNative(string baseDir)
+        {
+            ScriptBase script = new();
+
+            try // many ways to go wrong...
+            {
+                // Create temp output area and/or clean it.
+                TempDir = Path.Combine(baseDir, "temp");
+                Directory.CreateDirectory(TempDir);
+                Directory.GetFiles(TempDir).ForEach(f => File.Delete(f));
+
+                ///// Assemble constituents.
+                List<SyntaxTree> trees = new();
+
+                // Write the generated source files to temp build area.
+                foreach (string genFn in _filesToCompile.Keys)
+                {
+                    FileContext ci = _filesToCompile[genFn];
+                    string fullpath = Path.Combine(TempDir, genFn);
+                    File.Delete(fullpath);
+                    File.WriteAllLines(fullpath, ci.CodeLines);
+
+                    // Build a syntax tree.
+                    string code = File.ReadAllText(fullpath);
+                    CSharpParseOptions popts = new();
+                    SyntaxTree tree = CSharpSyntaxTree.ParseText(code, popts, genFn);
+                    trees.Add(tree);
+                }
+
+                //3. We now build up a list of references needed to compile the code.
+                var references = new List<MetadataReference>();
+                // System stuff location.
+                var dotnetStore = Path.GetDirectoryName(typeof(object).Assembly.Location);
+                // Project refs like nuget.
+                var localStore = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                // System dlls.
+                foreach (var dll in new[] { "System", "System.Core", "System.Private.CoreLib", "System.Runtime", "System.Collections", "System.Drawing", "System.Linq" })
+                {
+                    references.Add(MetadataReference.CreateFromFile(Path.Combine(dotnetStore!, dll + ".dll")));
+                }
+
+                // Local dlls.
+                foreach (var dll in new[] { "NAudio", "NLog", "NBagOfTricks", "NebOsc", "Nebulator.Common", "Nebulator.Script" })
+                {
+                    references.Add(MetadataReference.CreateFromFile(Path.Combine(localStore!, dll + ".dll")));
+                }
+
+                ///// Emit to stream
+                var copts = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+                var compilation = CSharpCompilation.Create($"{_scriptName}.dll", trees, references, copts);
+                var ms = new MemoryStream();
+                EmitResult result = compilation.Emit(ms);
+
+                if (result.Success)
+                {
+                    //Load into currently running assembly. Normally we'd probably want to do this in an AppDomain
+                    var assy = Assembly.Load(ms.ToArray());
+                    foreach (Type t in assy.GetTypes())
+                    {
+                        if (t.BaseType != null && t.BaseType.Name == "ScriptBase")
+                        {
+                            // We have a good script file. Create the executable object.
+                            object? o = Activator.CreateInstance(t);
+                            if (o is not null)
+                            {
+                                script = (ScriptBase)o;
+                            }
+                        }
+                    }
+                }
+
+                ///// Results.
+                // List<string> diags = new();
+                // result.Diagnostics.ForEach(d => diags.Add(d.ToString()));
+                // File.WriteAllLines(@"C:\Dev\repos\Nebulator\Examples\temp\compiler.txt", diags);
+                foreach (var diag in result.Diagnostics)
+                {
+                    CompileResult se = new();
+                    se.Message = diag.GetMessage();
+                    bool keep = true;
+
+                    switch (diag.Severity)
+                    {
+                        case DiagnosticSeverity.Error:
+                            se.ResultType = CompileResultType.Error;
+                            break;
+
+                        case DiagnosticSeverity.Warning:
+                            if (UserSettings.TheSettings.IgnoreWarnings)
+                            {
+                                keep = false;
+                            }
+                            else
+                            {
+                                se.ResultType = CompileResultType.Warning;
+                            }
+                            break;
+
+                        case DiagnosticSeverity.Info:
+                            se.ResultType = CompileResultType.Info;
+                            break;
+
+                        case DiagnosticSeverity.Hidden:
+                            if (UserSettings.TheSettings.IgnoreWarnings)
+                            {
+                                keep = false;
+                            }
+                            else
+                            {
+                                //?? se.ResultType = CompileResultType.Warning;
+                            }
+                            break;
+                    }
+
+                    var genFileName = diag.Location.SourceTree!.FilePath;
+                    var genLineNum = diag.Location.GetLineSpan().StartLinePosition.Line; // 0-based
+
+                    // Get the original info.
+                    if (_filesToCompile.TryGetValue(Path.GetFileName(genFileName), out var context))
+                    {
+                        se.SourceFile = context.SourceFile;
+                        // Dig out the original line number.
+                        string origLine = context.CodeLines[genLineNum];
+                        int ind = origLine.LastIndexOf("//");
+                        if (ind != -1)
+                        {
+                            se.LineNumber = int.TryParse(origLine[(ind + 2)..], out int origLineNum) ? origLineNum : -1; // 1-based
+                        }
+                    }
+                    else
+                    {
+                        // Presumably internal generated file - should never have errors.
+                        se.SourceFile = "NoSourceFile";
+                    }
+
+                    if (keep)
+                    {
+                        Results.Add(se);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Results.Add(new CompileResult()
+                {
+                    ResultType = CompileResultType.Fatal,
+                    Message = "Exception: " + ex.Message,
+                });
+            }
+
+            return script;
+        }
+
+        /// <summary>
+        /// Parse one file. Recursive to support nested include(fn).
+        /// </summary>
+        /// <param name="pcont">The parse context.</param>
+        /// <returns>True if a valid file.</returns>
+        bool PreprocessFile(FileContext pcont)
+        {
+            bool valid = File.Exists(pcont.SourceFile);
+
+            if (valid)
+            {
+                string genFn = $"{_scriptName}_src{_filesToCompile.Count}.cs".ToLower();
+                _filesToCompile.Add(genFn, pcont);
+
+                ///// Preamble.
+                pcont.CodeLines.AddRange(GenTopOfFile(pcont.SourceFile));
+
+                ///// The content.
+                List<string> sourceLines = new(File.ReadAllLines(pcont.SourceFile));
+
+                for (pcont.LineNumber = 1; pcont.LineNumber <= sourceLines.Count; pcont.LineNumber++)
+                {
+                    string s = sourceLines[pcont.LineNumber - 1];
+
+                    // Remove any comments. Single line type only.
+                    int pos = s.IndexOf("//");
+                    string cline = pos >= 0 ? s.Left(pos) : s;
+
+                    // Test for preprocessor directives.
+                    string strim = s.Trim();
+
+                    //Include("path\name.neb");
+                    if (strim.StartsWith("Include"))
+                    {
+                        // Exclude from output file.
+                        List<string> parts = strim.SplitByTokens("\"");
+                        if (parts.Count == 3)
+                        {
+                            string fn = Path.Combine(UserSettings.TheSettings.WorkPath, parts[1]);
+
+                            // Recursive call to parse this file
+                            FileContext subcont = new()
+                            {
+                                SourceFile = fn,
+                                LineNumber = 1
+                            };
+                            valid = PreprocessFile(subcont);
+                        }
+
+                        if (!valid)
+                        {
+                            Results.Add(new CompileResult()
+                            {
+                                ResultType = CompileResultType.Error,
+                                Message = $"Invalid Include: {strim}",
+                                SourceFile = pcont.SourceFile,
+                                LineNumber = pcont.LineNumber
+                            });
+                        }
+                    }
+                    else if (strim.StartsWith("Channel"))
+                    {
+                        // Exclude from output file.
+                        _channelDescriptors.Add(strim);
+                    }
+                    else // plain line
+                    {
+                        if (cline.Trim() != "")
+                        {
+                            // Store the whole line with line number tacked on and some indentation.
+                            pcont.CodeLines.Add($"        {cline} //{pcont.LineNumber}");
+                        }
+                    }
+                }
+
+                ///// Postamble.
+                pcont.CodeLines.AddRange(GenBottomOfFile());
+            }
+
+            return valid;
+        }
+
+
+
         /// <summary>
         /// Top level compiler.
         /// </summary>
         /// <returns>Compiled script</returns>
-        ScriptBase Compile()
+        ScriptBase Compile_not()
         {
             ScriptBase script = null;
 
@@ -277,7 +578,7 @@ namespace NProcessing.App
                     // Bind to the script interface.
                     foreach (Type t in assy.GetTypes())
                     {
-                        if (t.BaseType != null && t.BaseType.Name == "ScriptBase")
+                        if (t.BaseType is not null && t.BaseType.Name == "ScriptBase")
                         {
                             // We have a good script file. Create the executable object.
                             Object o = Activator.CreateInstance(t);
@@ -310,9 +611,9 @@ namespace NProcessing.App
                             if (origFileName == "" || ind == -1)
                             {
                                 // Must be an internal error. Do the best we can.
-                                Errors.Add(new ScriptError()
+                                Errors.Add(new CompileResult()
                                 {
-                                    ErrorType = err.IsWarning ? ScriptErrorType.Warning : ScriptErrorType.Error,
+                                    ResultType = err.IsWarning ? CompileResultType.Warning : CompileResultType.Error,
                                     SourceFile = err.FileName,
                                     LineNumber = err.Line,
                                     Message = $"InternalError: {err.ErrorText} in: {origLine}"
@@ -320,21 +621,23 @@ namespace NProcessing.App
                             }
                             else
                             {
-                                int.TryParse(origLine.Substring(ind + 2), out origLineNum);
-                                Errors.Add(new ScriptError()
+                                if(int.TryParse(origLine.Substring(ind + 2), out origLineNum))
                                 {
-                                    ErrorType = err.IsWarning ? ScriptErrorType.Warning : ScriptErrorType.Error,
-                                    SourceFile = origFileName,
-                                    LineNumber = origLineNum,
-                                    Message = err.ErrorText
-                                });
+                                    Errors.Add(new CompileResult()
+                                    {
+                                        ResultType = err.IsWarning ? CompileResultType.Warning : CompileResultType.Error,
+                                        SourceFile = origFileName,
+                                        LineNumber = origLineNum,
+                                        Message = err.ErrorText
+                                    });
+                                }
                             }
                         }
                         else
                         {
-                            Errors.Add(new ScriptError()
+                            Errors.Add(new CompileResult()
                             {
-                                ErrorType = err.IsWarning ? ScriptErrorType.Warning : ScriptErrorType.Error,
+                                ResultType = err.IsWarning ? CompileResultType.Warning : CompileResultType.Error,
                                 SourceFile = "NoSourceFile",
                                 LineNumber = -1,
                                 Message = err.ErrorText
@@ -345,9 +648,9 @@ namespace NProcessing.App
             }
             catch (Exception ex)
             {
-                Errors.Add(new ScriptError()
+                Errors.Add(new CompileResult()
                 {
-                    ErrorType = ScriptErrorType.Error,
+                    ResultType = CompileResultType.Error,
                     Message = "Exception: " + ex.Message,
                     SourceFile = "",
                     LineNumber = 0
@@ -431,13 +734,13 @@ namespace NProcessing.App
     }
 
     /// <summary>General script error.</summary>
-    public enum ScriptErrorType { None, Warning, Error, Runtime }
+    public enum CompileResultType { None, Warning, Error, Runtime }
 
     /// <summary>General script error container.</summary>
-    public class ScriptError
+    public class CompileResult
     {
         /// <summary>Where it came from.</summary>
-        public ScriptErrorType ErrorType { get; set; } = ScriptErrorType.None;
+        public CompileResultType ResultType { get; set; } = CompileResultType.None;
 
         /// <summary>Original source file.</summary>
         public string SourceFile { get; set; } = "???";
@@ -449,6 +752,6 @@ namespace NProcessing.App
         public string Message { get; set; } = "???";
 
         /// <summary>Readable.</summary>
-        public override string ToString() => $"{ErrorType} {SourceFile}({LineNumber}): {Message}";
+        public override string ToString() => $"{ResultType} {SourceFile}({LineNumber}): {Message}";
     }
 }

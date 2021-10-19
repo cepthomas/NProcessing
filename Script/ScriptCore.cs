@@ -87,6 +87,10 @@ namespace NProcessing.Script
         public int FrameRate { get; set; } = 0;
         #endregion
 
+        #region Properties - internal
+        public bool Valid { get; set; } = false;
+        #endregion
+
         #region Lifecycle
         /// <summary>
         /// Constructor.

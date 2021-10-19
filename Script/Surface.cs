@@ -79,7 +79,7 @@ namespace NProcessing.Script
         /// <param name="script"></param>
         public void InitSurface(ScriptBase script)
         {
-            if(script != null)
+            if(script.Valid)
             {
                 _script = script;
                 ClientSize = new System.Drawing.Size(_script.width, _script.height);
@@ -94,12 +94,12 @@ namespace NProcessing.Script
         /// </summary>
         public void UpdateSurface()
         {
-            if (_script != null && (_script._loop || _script._redraw))
+            if (_script.Valid && (_script._loop || _script._redraw))
             {
                 // Check for resize or init.
                 if(_bitmap is null || _bitmap.Width != _script.width || _bitmap.Height != _script.height)
                 {
-                    if (_bitmap != null)
+                    if (_bitmap is not null)
                     {
                         _bitmap.Dispose();
                         _bitmap = null;
@@ -159,7 +159,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_bitmap != null)
+            if (_bitmap is not null)
             {
                 e.Graphics.DrawImage(_bitmap, new System.Drawing.Point(0, 0));
             }
@@ -173,7 +173,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if(_script != null)
+            if(_script.Valid)
             {
                 ProcessMouseEvent(e);
                 _script.mouseIsPressed = true;
@@ -188,7 +188,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 ProcessMouseEvent(e);
                 _script.mouseIsPressed = false;
@@ -203,7 +203,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 ProcessMouseEvent(e);
                 if (_script.mouseIsPressed)
@@ -224,7 +224,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 ProcessMouseEvent(e);
                 _script.mouseClicked();
@@ -238,7 +238,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 ProcessMouseEvent(e);
                 _script.mouseWheel();
@@ -252,7 +252,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseEnter(EventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 _script.focused = Focused;
             }
@@ -264,7 +264,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 _script.focused = Focused;
             }
@@ -276,7 +276,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         void ProcessMouseEvent(MouseEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 _script.mouseX = e.X;
                 _script.mouseY = e.Y;
@@ -300,7 +300,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 _script.keyIsPressed = false;
 
@@ -324,7 +324,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 _script.keyIsPressed = false;
 
@@ -351,7 +351,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            if (_script != null)
+            if (_script.Valid)
             {
                 _script.key = e.KeyChar;
                 _script.keyTyped();
