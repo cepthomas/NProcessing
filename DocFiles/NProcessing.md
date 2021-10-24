@@ -1,4 +1,6 @@
 
+TODO clean up all docs.
+
 # Usage
 - Basically open a .np file, press compile, then run.
 - Settings and log are in `C:\Users\<user>\AppData\Local\Ephemera\NProcessing`.

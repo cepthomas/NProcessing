@@ -18,6 +18,12 @@
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="..\NProcessing.md.html" Link="NProcessing.md.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningsAsErrors>NU1605 </WarningsAsErrors>
     <DebugType>portable</DebugType>
