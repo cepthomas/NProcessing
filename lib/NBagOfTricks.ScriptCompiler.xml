@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NBagOfTricks.ScriptCompiler</name>
+    </assembly>
+    <members>
+        <member name="P:Nebulator.App.NebCompiler.Channels">
+            <summary>Current active channels.</summary>
+        </member>
+        <member name="F:Nebulator.App.NebCompiler._nebfn">
+            <summary>Main source file name.</summary>
+        </member>
+        <member name="F:Nebulator.App.NebCompiler._channelDescriptors">
+            <summary>Code lines that define channels.</summary>
+        </member>
+        <member name="F:Nebulator.App.NebCompiler._chHash">
+            <summary>Current hash for lines of interest.</summary>
+        </member>
+        <member name="M:Nebulator.App.NebCompiler.PreExecute">
+            <inheritdoc />
+        </member>
+        <member name="M:Nebulator.App.NebCompiler.PostExecute">
+            <inheritdoc />
+        </member>
+        <member name="M:Nebulator.App.NebCompiler.PreprocessFile(System.String,NBagOfTricks.ScriptCompiler.FileContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:Nebulator.App.NebCompiler.ProcessChannelDescs">
+            <summary>
+            Convert channel descriptors into partial Channel objects.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Nebulator.App.Channel.NUM_CHANNELS">
+            <summary>Same as midi.</summary>
+        </member>
+        <member name="P:Nebulator.App.Channel.ChannelName">
+            <summary>UI label and script reference.</summary>
+        </member>
+        <member name="P:Nebulator.App.Channel.ChannelNumber">
+            <summary>The associated numerical (midi) channel to use</summary>
+        </member>
+        <member name="P:Nebulator.App.Channel.Patch">
+            <summary>Optional patch to send at startup.</summary>
+        </member>
+        <member name="P:Nebulator.App.Channel.DeviceType">
+            <summary>The device type for this channel. Used to find and bind the device at runtime.</summary>
+        </member>
+        <member name="T:NBagOfTricks.ScriptCompiler.CompileResultType">
+            <summary>General script result - error/warn etc.</summary>
+        </member>
+        <member name="T:NBagOfTricks.ScriptCompiler.CompileResult">
+            <summary>General script result container.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.CompileResult.ResultType">
+            <summary>Where it came from.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.CompileResult.SourceFile">
+            <summary>Original source file.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.CompileResult.LineNumber">
+            <summary>Original source line number. -1 means invalid or unknown.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.CompileResult.Message">
+            <summary>Content.</summary>
+        </member>
+        <member name="T:NBagOfTricks.ScriptCompiler.FileContext">
+            <summary>Parser helper class.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.FileContext.SourceFile">
+            <summary>Current source file.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.FileContext.LineNumber">
+            <summary>Current source line.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.FileContext.CodeLines">
+            <summary>Accumulated script code lines.</summary>
+        </member>
+        <member name="T:NBagOfTricks.ScriptCompiler.ScriptCompilerCore">
+            <summary>Parses/compiles script file(s).</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.WorkPath">
+            <summary>Client needs to tell us this.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.IgnoreWarnings">
+            <summary>Client needs to tell us this.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.SystemDlls">
+            <summary>Default system dlls. Client can add or subtract.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.LocalDlls">
+            <summary>App dlls.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.Usings">
+            <summary>Additional using statements not supplied by dlls.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.Script">
+            <summary>The compiled script.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.Results">
+            <summary>Accumulated errors/results.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.SourceFiles">
+            <summary>All active source files. Provided so client can monitor for external changes.</summary>
+        </member>
+        <member name="P:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.TempDir">
+            <summary>Compile products are here.</summary>
+        </member>
+        <member name="F:NBagOfTricks.ScriptCompiler.ScriptCompilerCore._scriptName">
+            <summary>Script info.</summary>
+        </member>
+        <member name="F:NBagOfTricks.ScriptCompiler.ScriptCompilerCore._initLines">
+            <summary>Accumulated lines to go in the constructor.</summary>
+        </member>
+        <member name="F:NBagOfTricks.ScriptCompiler.ScriptCompilerCore._filesToCompile">
+            <summary>Products of file preprocess. Key is generated file name.</summary>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.PreExecute">
+            <summary>Hook to override.</summary>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.PostExecute">
+            <summary>Hook to override.</summary>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.PreprocessFile(System.String,NBagOfTricks.ScriptCompiler.FileContext)">
+            <summary>Hook to override.</summary>
+            <param name="sline">Trimmed line</param>
+            <param name="pcont">File context</param>
+            <returns>True if handled</returns>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.Execute(System.String)">
+            <summary>
+            Run the Compiler.
+            </summary>
+            <param name="scriptfn">Fully qualified path to main file.</param>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.CompileNative(System.String)">
+            <summary>
+            The actual compiler driver.
+            </summary>
+            <returns>Compiled script</returns>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.PreprocessFile(NBagOfTricks.ScriptCompiler.FileContext)">
+            <summary>
+            Parse one file. Recursive to support nested include(fn).
+            </summary>
+            <param name="pcont">The parse context.</param>
+            <returns>True if a valid file.</returns>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.GenTopOfFile(System.String)">
+            <summary>
+            Create the boilerplate file top stuff.
+            </summary>
+            <param name="fn">Source file name. Empty means it's an internal file.</param>
+            <returns></returns>
+        </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.ScriptCompilerCore.GenBottomOfFile">
+            <summary>
+            Create the boilerplate file bottom stuff.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

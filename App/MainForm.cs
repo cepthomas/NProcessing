@@ -9,9 +9,9 @@ using System.Collections.Concurrent;
 using NLog;
 using NBagOfTricks;
 using NBagOfTricks.UI;
+using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
 
-using ScriptCompiler;
 
 namespace NProcessing.App
 {

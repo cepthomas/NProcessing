@@ -6,7 +6,8 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using NBagOfTricks;
-using ScriptCompiler;
+using NBagOfTricks.ScriptCompiler;
+
 
 namespace NProcessing.App
 {
@@ -16,8 +17,7 @@ namespace NProcessing.App
         public override void PreExecute()
         {
             SystemDlls.Add("System.Drawing");
-          //  SystemDlls.Add("System.Drawing.Primitives");
-            LocalDlls = new() { "NAudio", "NLog", "NBagOfTricks", "NProcessing.Script" };
+            LocalDlls = new() { "NAudio", "NLog", "SkiaSharp", "NBagOfTricks", "NProcessing.Script" };
         }
 
         // Nothing to do.

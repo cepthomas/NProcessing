@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DocFiles", "DocFiles", "{46
 		DocFiles\ScriptSyntax.md = DocFiles\ScriptSyntax.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptCompiler", "..\ScriptCompiler\ScriptCompiler.csproj", "{D43B214D-D459-41E4-84D3-F1F49467B949}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +31,6 @@ Global
 		{BAD1AAD5-5289-46A0-8C1A-B15D382D17A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAD1AAD5-5289-46A0-8C1A-B15D382D17A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAD1AAD5-5289-46A0-8C1A-B15D382D17A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D43B214D-D459-41E4-84D3-F1F49467B949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D43B214D-D459-41E4-84D3-F1F49467B949}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D43B214D-D459-41E4-84D3-F1F49467B949}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D43B214D-D459-41E4-84D3-F1F49467B949}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
