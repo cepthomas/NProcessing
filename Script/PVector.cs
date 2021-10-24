@@ -14,8 +14,8 @@ namespace NProcessing.Script
     /// </summary>
     public class PVector // implements Serializable
     {
-        static Random _rand = new Random();
-        protected double[] _array;
+        static readonly Random _rand = new();
+        protected double[]? _array;
 
         public double x;
         public double y;
@@ -78,32 +78,28 @@ namespace NProcessing.Script
             return this;
         }
 
-        static public PVector random2D(PVector target = null)
+        static public PVector random2D()
         {
-            double angle = (_rand.NextDouble() * Math.PI * 2);
+            double angle = _rand.NextDouble() * Math.PI * 2;
+            return new PVector(Math.Cos(angle), Math.Sin(angle), 0);
+        }
 
-            if (target is null)
-            {
-                target = new PVector(Math.Cos(angle), Math.Sin(angle), 0);
-            }
-            else
-            {
-                target.set(Math.Cos(angle), Math.Sin(angle), 0);
-            }
-
+        static public PVector random2D(PVector target)
+        {
+            target.set(random2D());
             return target;
         }
 
-        static public PVector random3D(PVector target = null)
+        static public PVector random3D(PVector target)
         {
             double angle;
             double vz;
 
-            angle = (_rand.NextDouble() * Math.PI * 2);
-            vz = (_rand.NextDouble() * 2 - 1);
+            angle = _rand.NextDouble() * Math.PI * 2;
+            vz = _rand.NextDouble() * 2 - 1;
 
-            double vx = (Math.Sqrt(1 - vz * vz) * Math.Cos(angle));
-            double vy = (Math.Sqrt(1 - vz * vz) * Math.Sin(angle));
+            double vx = Math.Sqrt(1 - vz * vz) * Math.Cos(angle);
+            double vy = Math.Sqrt(1 - vz * vz) * Math.Sin(angle);
 
             if (target is null)
             {
@@ -123,11 +119,8 @@ namespace NProcessing.Script
             return new PVector(x, y, z);
         }
 
-        [Obsolete()]
-        public PVector get()
-        {
-            return copy();
-        }
+        //[Obsolete()]
+        public PVector get() => copy();
 
         public double[] get(double[] target)
         {
@@ -185,19 +178,12 @@ namespace NProcessing.Script
 
         static public PVector add(PVector v1, PVector v2)
         {
-            return add(v1, v2, null);
+            return new PVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
         }
 
         static public PVector add(PVector v1, PVector v2, PVector target)
         {
-            if (target is null)
-            {
-                target = new PVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
-            }
-            else
-            {
-                target.set(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
-            }
+            target.set(add(v1, v2));
 
             return target;
         }
@@ -227,19 +213,12 @@ namespace NProcessing.Script
 
         static public PVector sub(PVector v1, PVector v2)
         {
-            return sub(v1, v2, null);
+            return new PVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
         }
 
         static public PVector sub(PVector v1, PVector v2, PVector target)
         {
-            if (target is null)
-            {
-                target = new PVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
-            }
-            else
-            {
-                target.set(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
-            }
+            target.set(sub(v1, v2));
 
             return target;
         }
@@ -254,19 +233,12 @@ namespace NProcessing.Script
 
         static public PVector mult(PVector v, double n)
         {
-            return mult(v, n, null);
+            return new PVector(v.x * n, v.y * n, v.z * n);
         }
 
         static public PVector mult(PVector v, double n, PVector target)
         {
-            if (target is null)
-            {
-                target = new PVector(v.x * n, v.y * n, v.z * n);
-            }
-            else
-            {
-                target.set(v.x * n, v.y * n, v.z * n);
-            }
+            target.set(mult(v, n));
 
             return target;
         }
@@ -281,19 +253,12 @@ namespace NProcessing.Script
 
         static public PVector div(PVector v, double n)
         {
-            return div(v, n, null);
+            return new PVector(v.x / n, v.y / n, v.z / n);
         }
 
         static public PVector div(PVector v, double n, PVector target)
         {
-            if (target is null)
-            {
-                target = new PVector(v.x / n, v.y / n, v.z / n);
-            }
-            else
-            {
-                target.set(v.x / n, v.y / n, v.z / n);
-            }
+            target.set(div(v, n));
             return target;
         }
 
@@ -330,7 +295,11 @@ namespace NProcessing.Script
 
         public PVector cross(PVector v)
         {
-            return cross(v, null);
+            double crossX = y * v.z - v.y * z;
+            double crossY = z * v.x - v.z * x;
+            double crossZ = x * v.y - v.x * y;
+
+            return new PVector(crossX, crossY, crossZ);
         }
 
         public PVector cross(PVector v, PVector target)
@@ -339,14 +308,7 @@ namespace NProcessing.Script
             double crossY = z * v.x - v.z * x;
             double crossZ = x * v.y - v.x * y;
 
-            if (target is null)
-            {
-                target = new PVector(crossX, crossY, crossZ);
-            }
-            else
-            {
-                target.set(crossX, crossY, crossZ);
-            }
+            target.set(crossX, crossY, crossZ);
 
             return target;
         }
@@ -357,14 +319,7 @@ namespace NProcessing.Script
             double crossY = v1.z * v2.x - v2.z * v1.x;
             double crossZ = v1.x * v2.y - v2.x * v1.y;
 
-            if (target is null)
-            {
-                target = new PVector(crossX, crossY, crossZ);
-            }
-            else
-            {
-                target.set(crossX, crossY, crossZ);
-            }
+            target.set(crossX, crossY, crossZ);
 
             return target;
         }
@@ -438,7 +393,7 @@ namespace NProcessing.Script
         {
             double temp = x;
             // Might need to check for rounding errors like with angleBetween function?
-            x = x * (Math.Cos(theta) - y * Math.Sin(theta));
+            x *= (Math.Cos(theta) - y * Math.Sin(theta));
             y = temp * (Math.Sin(theta) + y * Math.Cos(theta));
 
             return this;
@@ -519,12 +474,12 @@ namespace NProcessing.Script
             return _array;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             bool ret = false;
-            if (obj is PVector)
+            if (obj is not null && obj is PVector vector)
             {
-                PVector p = obj as PVector;
+                PVector p = vector;
                 ret = x == p.x && y == p.y && z == p.z;
             }
             return ret;

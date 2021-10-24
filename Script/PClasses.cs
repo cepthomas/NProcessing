@@ -188,10 +188,10 @@ namespace NProcessing.Script
                     Hue = 4.0f + greenc - redc;
                 }
 
-                Hue = Hue / 6.0;
+                Hue /= 6.0;
                 if (Hue < 0)
                 {
-                    Hue = Hue + 1.0;
+                    Hue += 1.0;
                 }
             }
         }
@@ -220,7 +220,7 @@ namespace NProcessing.Script
     {
         // Added native:
         public SKBitmap bmp { get; private set; } = new SKBitmap();
-        public color[] pixels { get; private set; }
+        public color[]? pixels { get; private set; }
         public int width { get { return bmp.Width; } }
         public int height { get { return bmp.Height; } }
         public PImage(string fname) { bmp = SKBitmap.Decode(fname); }
@@ -233,7 +233,7 @@ namespace NProcessing.Script
 
         public PImage get(int x, int y, int width, int height)
         {
-            SKBitmap dest = new SKBitmap();
+            SKBitmap dest = new();
             bmp.ExtractSubset(dest, new SKRectI(x, y, width, height));
             return new PImage(dest);
         }

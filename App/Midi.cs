@@ -10,22 +10,22 @@ namespace NProcessing.App
     /// Midi has received something.
     /// If a property is -1 that indicates invalid or not pertinent e.g a controller event doesn't have velocity.
     /// </summary>
-    public class NpMidiEventArgs : EventArgs
+    public class MidiEventArgs : EventArgs
     {
         /// <summary>Channel number.</summary>
-        public int channel { get; set; } = -1;
+        public int Channel { get; set; } = -1;
 
         /// <summary>The note number to play.</summary>%
-        public int note { get; set; } = -1;
+        public int Note { get; set; } = -1;
 
         /// <summary>The volume.</summary>
-        public int velocity { get; set; } = -1;
+        public int Velocity { get; set; } = -1;
 
         /// <summary>Specific controller.</summary>
-        public int controllerId { get; set; } = -1;
+        public int ControllerId { get; set; } = -1;
 
         /// <summary>The controller payload.</summary>
-        public int controllerValue { get; set; } = -1;
+        public int ControllerValue { get; set; } = -1;
 
         /// <summary>Special id to carry pitch info.</summary>
         public const int PITCH_CONTROL = 1000;
@@ -34,7 +34,7 @@ namespace NProcessing.App
     /// <summary>
     /// Midi input handler.
     /// </summary>
-    public class NpMidiInput
+    public class MidiInput
     {
         #region Fields
         /// <summary>Midi input device.</summary>
@@ -51,7 +51,7 @@ namespace NProcessing.App
 
         #region Events
         /// <summary>Handler for message arrived.</summary>
-        public event EventHandler<NpMidiEventArgs>? InputEvent;
+        public event EventHandler<MidiEventArgs>? InputEvent;
         #endregion
 
         #region Lifecycle
@@ -80,8 +80,8 @@ namespace NProcessing.App
                         if(name == MidiIn.DeviceInfo(device).ProductName)
                         {
                             _mdev = new MidiIn(device);
-                            _mdev.MessageReceived += NpMidiIn_MessageReceived;
-                            _mdev.ErrorReceived += NpMidiIn_ErrorReceived;
+                            _mdev.MessageReceived += MidiIn_MessageReceived;
+                            _mdev.ErrorReceived += MidiIn_ErrorReceived;
                             _mdev.Start();
                             inited = true;
                         }
@@ -133,60 +133,48 @@ namespace NProcessing.App
         /// <summary>
         /// Process input midi event.
         /// </summary>
-        void NpMidiIn_MessageReceived(object? sender, MidiInMessageEventArgs e)
+        void MidiIn_MessageReceived(object? sender, MidiInMessageEventArgs e)
         {
             // Decode the message. We only care about a few.
             MidiEvent me = MidiEvent.FromRawMessage(e.RawMessage);
-            NpMidiEventArgs? mevt = null;
+            MidiEventArgs? mevt = null;
 
-            switch (me.CommandCode)
+            switch (me)
             {
-                case MidiCommandCode.NoteOn:
+                case NoteOnEvent evt:
+                    mevt = new MidiEventArgs()
                     {
-                        NoteOnEvent evt = me as NoteOnEvent;
-                        mevt = new NpMidiEventArgs() 
-                        {
-                            channel = evt.Channel,
-                            note = evt.NoteNumber,
-                            velocity = evt.Velocity
-                        };
-                    }
+                        Channel = evt.Channel,
+                        Note = evt.NoteNumber,
+                        Velocity = evt.Velocity
+                    };
                     break;
 
-                case MidiCommandCode.NoteOff:
+                case NoteEvent evt:
+                    mevt = new MidiEventArgs()
                     {
-                        NoteEvent evt = me as NoteEvent;
-                        mevt = new NpMidiEventArgs() 
-                        {
-                            channel = evt.Channel,
-                            note = evt.NoteNumber,
-                            velocity = 0
-                        };
-                    }
+                        Channel = evt.Channel,
+                        Note = evt.NoteNumber,
+                        Velocity = 0
+                    };
                     break;
 
-                case MidiCommandCode.ControlChange:
+                case ControlChangeEvent evt:
+                    mevt = new MidiEventArgs()
                     {
-                        ControlChangeEvent evt = me as ControlChangeEvent;
-                        mevt = new NpMidiEventArgs() 
-                        {
-                            channel = evt.Channel,
-                            controllerId = (int)evt.Controller,
-                            controllerValue = evt.ControllerValue
-                        };
-                    }
+                        Channel = evt.Channel,
+                        ControllerId = (int)evt.Controller,
+                        ControllerValue = evt.ControllerValue
+                    };
                     break;
 
-                case MidiCommandCode.PitchWheelChange:
+                case PitchWheelChangeEvent evt:
+                    mevt = new MidiEventArgs()
                     {
-                        PitchWheelChangeEvent evt = me as PitchWheelChangeEvent;
-                        mevt = new NpMidiEventArgs() 
-                        {
-                            channel = evt.Channel,
-                            controllerId = NpMidiEventArgs.PITCH_CONTROL,
-                            controllerValue = evt.Pitch
-                        };
-                    }
+                        Channel = evt.Channel,
+                        ControllerId = MidiEventArgs.PITCH_CONTROL,
+                        ControllerValue = evt.Pitch
+                    };
                     break;
             }
 
@@ -201,7 +189,7 @@ namespace NProcessing.App
         /// <summary>
         /// Process error midi event - Parameter 1 is invalid.
         /// </summary>
-        void NpMidiIn_ErrorReceived(object? sender, MidiInMessageEventArgs e)
+        void MidiIn_ErrorReceived(object? sender, MidiInMessageEventArgs e)
         {
             // do something> log? $"Message:0x{e.RawMessage:X8}");
         }

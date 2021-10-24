@@ -3,7 +3,7 @@ This section describes the general structure and syntax rules of script files.
 
 Script functions are very C#-like because essentially it is C# (without OO requirements). The compiler adds in the surrounding boilerplate and compiles the whole mess in memory where it executes.  
 
-Any functions specified by [Processing Functions](ScriptApiProcessing) or [Nebulator Functions](ScriptApiNeb) are written here.  
+Any functions specified by [Processing Functions](ScriptApiProcessing) are written here.  
 
 # General
 Double slash `//` is used for comments. C style `/* ... */` is not supported.  

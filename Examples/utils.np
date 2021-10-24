@@ -17,20 +17,3 @@ bool boing(int which = 0)
 
     return boinged;
 }
-
-
-// Example of an included class.
-public class Dummy
-{
-    int _thing = 0;
-
-    public Dummy(int thing)
-    {
-        _thing = thing;
-    }
-
-    public int GetThing(int value)
-    {
-        return _thing * s.random(value);
-    }
-}

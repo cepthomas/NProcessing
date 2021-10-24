@@ -11,10 +11,7 @@ using NBagOfTricks;
 using NBagOfTricks.UI;
 using NProcessing.Script;
 
-
-//TODOneb nullable
-//TODOneb About
-
+using ScriptCompiler;
 
 namespace NProcessing.App
 {
@@ -30,16 +27,16 @@ namespace NProcessing.App
         readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Fast timer.</summary>
-        MmTimerEx _mmTimer = new();
+        readonly MmTimerEx _mmTimer = new();
 
         /// <summary>Surface child form.</summary>
-        readonly Surface _surface = new Surface();
+        readonly Surface _surface = new();
 
         /// <summary>Current script file name.</summary>
-        string _fn = "";
+        string _scriptFileName = "???";
 
         /// <summary>The current script.</summary>
-        ScriptBase _script = new();
+        ScriptBase? _script = null;
 
         /// <summary>Frame rate in fps.</summary>
         int _frameRate = 30;
@@ -47,26 +44,23 @@ namespace NProcessing.App
         /// <summary>Seconds since start pressed.</summary>
         DateTime _startTime = DateTime.Now;
 
-        /// <summary>Script compile errors and warnings.</summary>
-        List<CompileResult> _compileResults = new List<CompileResult>();
-
         /// <summary>Detect changed script files.</summary>
-        readonly MultiFileWatcher _watcher = new MultiFileWatcher();
+        readonly MultiFileWatcher _watcher = new();
 
         /// <summary>Files that have been changed externally or have runtime errors - requires a recompile.</summary>
         bool _needCompile = false;
 
-        /// <summary>The temp dir for channeling down runtime errors. TODO</summary>
+        /// <summary>The temp dir for compile products.</summary>
         string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
         readonly UserSettings _settings;
 
         /// <summary>Midi input device.</summary>
-        NpMidiInput? _midiIn = null;
+        MidiInput? _midiIn = null;
 
         /// <summary>Midi event queue.</summary>
-        readonly ConcurrentQueue<PMidiEvent> _pmidiEvents = new ConcurrentQueue<PMidiEvent>();
+        readonly ConcurrentQueue<PMidiEvent> _pmidiEvents = new();
 
         /// <summary>Optional midi piano.</summary>
         Form? _piano = null;
@@ -80,7 +74,7 @@ namespace NProcessing.App
         {
             // Need to load settings before creating controls in MainForm_Load().
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-            DirectoryInfo di = new DirectoryInfo(appDir);
+            DirectoryInfo di = new(appDir);
             di.Create();
             _settings = UserSettings.Load(appDir);
             InitializeComponent();
@@ -114,7 +108,7 @@ namespace NProcessing.App
             ///// CPU meter /////
             if (_settings.CpuMeter)
             {
-                CpuMeter cpuMeter = new CpuMeter()
+                CpuMeter cpuMeter = new()
                 {
                     Width = 50,
                     Height = toolStrip1.Height,
@@ -142,9 +136,6 @@ namespace NProcessing.App
             _watcher.FileChangeEvent += Watcher_Changed;
 
             Text = $"NProcessing {MiscUtils.GetVersionString()} - No file loaded";
-
-            // Catches runtime errors during drawing.
-            _surface.RuntimeErrorEvent += (object? esender, Surface.RuntimeErrorEventArgs eargs) => { ScriptRuntimeError(eargs); };
 
             // Fast timer.
             SetUiTimerPeriod();
@@ -208,11 +199,11 @@ namespace NProcessing.App
         /// <summary>
         /// Master compiler function.
         /// </summary>
-        bool Compile()
+        bool CompileScript()
         {
             bool ok = true;
 
-            if (_fn == "")
+            if (_scriptFileName == "")
             {
                 _logger.Warn("No script file loaded.");
                 ok = false;
@@ -221,18 +212,18 @@ namespace NProcessing.App
             {
                 _script?.ResetVars();
 
-                Compiler compiler = new Compiler();
+                Compiler compiler = new();
 
                 // Compile now.
-                _script = compiler.Execute(_fn);
+                compiler.Execute(_scriptFileName);
+                _script = (ScriptBase?)compiler.Script;
 
                 // Update file watcher just in case.
                 _watcher.Clear();
                 compiler.SourceFiles.ForEach(f => { if (f != "") _watcher.Add(f); });
 
                 // Process errors. Some may be warnings.
-                _compileResults = compiler.Errors;
-                int errorCount = _compileResults.Count(w => w.ResultType == CompileResultType.Error);
+                int errorCount = compiler.Results.Count(w => w.ResultType == CompileResultType.Error);
 
                 if (errorCount == 0 && _script is not null)
                 {
@@ -243,12 +234,12 @@ namespace NProcessing.App
                     {
                         // Init surface area.
                         InitRuntime();
-                        _surface.InitSurface(_script);
+                        _surface.InitSurface(_script); // TODO? combine with main draw
                         ProcessRuntime();
                     }
                     catch (Exception ex)
                     {
-                        ScriptRuntimeError(new Surface.RuntimeErrorEventArgs() { Exception = ex });
+                        ScriptRuntimeError(ex);
                         ok = false;
                     }
 
@@ -262,12 +253,27 @@ namespace NProcessing.App
                     SetCompileStatus(false);
                 }
 
-                _compileResults.ForEach(r =>
+                compiler.Results.ForEach(r =>
                 {
+                    LogLevel level = LogLevel.Info;
+
+                    switch(r.ResultType)
+                    {
+                        case CompileResultType.Error:
+                            level = LogLevel.Error;
+                            break;
+                        case CompileResultType.Warning:
+                            level = LogLevel.Warn;
+                            break;
+                        case CompileResultType.Info:
+                            level = LogLevel.Info;
+                            break;
+                    }
+
                     _logger.Log(new LogEventInfo()
                     {
-                        Level = r.ResultType == CompileResultType.Warning ? LogLevel.Warn : LogLevel.Error,
-                        Message = r.ToString()
+                        Level = level,
+                        Message = r.LineNumber > 0 ? $"{r.SourceFile}({r.LineNumber}): {r.Message}" : $"{r.SourceFile}: {r.Message}"
                     });
                 });
             }
@@ -303,10 +309,10 @@ namespace NProcessing.App
             // Kick over to main UI thread.
             _ = BeginInvoke((MethodInvoker)delegate ()
             {
-                if (_script.Valid)
+                if (_script is not null)
                 {
-                // Process any events.
-                while (_pmidiEvents.TryDequeue(out PMidiEvent? mevt))
+                    // Process any events.
+                    while (_pmidiEvents.TryDequeue(out PMidiEvent? mevt))
                 {
                     _script.midiEvent(mevt);
                 }
@@ -333,7 +339,7 @@ namespace NProcessing.App
                 }
                 catch (Exception ex)
                 {
-                    ScriptRuntimeError(new Surface.RuntimeErrorEventArgs() { Exception = ex });
+                    ScriptRuntimeError(ex);
                 }
             }
 
@@ -346,8 +352,11 @@ namespace NProcessing.App
         /// </summary>
         void InitRuntime()
         {
-            _script.RealTime = (float)(DateTime.Now - _startTime).TotalSeconds;
-            _script.FrameRate = _frameRate;
+            if(_script is not null)
+            {
+                _script.RealTime = (float)(DateTime.Now - _startTime).TotalSeconds;
+                _script.FrameRate = _frameRate;
+            }
         }
 
         /// <summary>
@@ -355,36 +364,29 @@ namespace NProcessing.App
         /// </summary>
         void ProcessRuntime()
         {
-            if (_script.FrameRate != _frameRate)
+            if (_script is not null)
             {
-                _frameRate = _script.FrameRate;
-                SetUiTimerPeriod();
+                if (_script.FrameRate != _frameRate)
+                {
+                    _frameRate = _script.FrameRate;
+                    SetUiTimerPeriod();
+                }
             }
         }
 
         /// <summary>
         /// Runtime error. Look for ones generated by our script - normal occurrence which the user should know about.
         /// </summary>
-        /// <param name="args"></param>
-        void ScriptRuntimeError(Surface.RuntimeErrorEventArgs args)
+        /// <param name="ex"></param>
+        void ScriptRuntimeError(Exception ex)
         {
             ProcessPlay(PlayCommand.Stop);
             SetCompileStatus(false);
 
-            ProcessScriptRuntimeError(args.Exception);
-        }
-
-        /// <summary>
-        /// Runtime error. Look for ones generated by our script - normal occurrence which the user should know about.
-        /// </summary>
-        /// <param name="ex"></param>
-        void ProcessScriptRuntimeError(Exception ex)
-        {
-            CompileResult? err = null;
-
             // Locate the offending frame.
-            string srcFile = "";
+            string srcFile = "???";
             int srcLine = -1;
+            string msg = ex.Message;
             StackTrace st = new(ex, true);
             StackFrame? sf = null;
 
@@ -422,30 +424,10 @@ namespace NProcessing.App
                     string sl = genLines[genLine][(ind + 2)..];
                     srcLine = int.Parse(sl);
                 }
+            }
+            // else // unknown?
 
-                err = new CompileResult()
-                {
-                    ResultType = CompileResultType.Runtime,
-                    SourceFile = srcFile,
-                    LineNumber = srcLine,
-                    Message = ex.Message
-                };
-            }
-            else // unknown?
-            {
-                err = new CompileResult()
-                {
-                    ResultType = CompileResultType.Runtime,
-                    SourceFile = "",
-                    LineNumber = -1,
-                    Message = ex.Message
-                };
-            }
-
-            if (err is not null)
-            {
-                _logger.Error(err.ToString());
-            }
+            _logger.Error(srcLine > 0 ? $"{srcFile}({srcLine}): {msg}" : $"{srcFile}: {msg}");
         }
         #endregion
 
@@ -459,7 +441,7 @@ namespace NProcessing.App
 
             if (_settings.MidiInDevice != "")
             {
-                _midiIn = new NpMidiInput();
+                _midiIn = new MidiInput();
                 if (_midiIn.Init(_settings.MidiInDevice))
                 {
                     _midiIn.InputEvent += MidiIn_InputEvent;
@@ -485,9 +467,9 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MidiIn_InputEvent(object? sender, NpMidiEventArgs e)
+        void MidiIn_InputEvent(object? sender, MidiEventArgs e)
         {
-            PMidiEvent mevt = new PMidiEvent(e.channel, e.note, e.velocity, e.controllerId, e.controllerValue);
+            PMidiEvent mevt = new(e.Channel, e.Note, e.Velocity, e.ControllerId, e.ControllerValue);
             _pmidiEvents.Enqueue(mevt);
         }
 
@@ -507,23 +489,23 @@ namespace NProcessing.App
                 ShowInTaskbar = false
             };
 
-            VirtualKeyboard vkey = new VirtualKeyboard()
+            VirtualKeyboard vkey = new()
             {
                 Dock = DockStyle.Fill,
                 ShowNoteNames = true,
             };
 
             // Set the icon.
-            Bitmap bm = new Bitmap(global::App.Properties.Resources.glyphicons_327_piano);
+            Bitmap bm = new(global::App.Properties.Resources.glyphicons_327_piano);
             _piano.Icon = Icon.FromHandle(bm.GetHicon());
 
             vkey.KeyboardEvent += (_, e) =>
             {
-                NpMidiEventArgs mevt = new NpMidiEventArgs()
+                MidiEventArgs mevt = new()
                 {
-                    channel = e.ChannelNumber,
-                    note = e.NoteId,
-                    velocity = e.Velocity
+                    Channel = e.ChannelNumber,
+                    Note = e.NoteId,
+                    Velocity = e.Velocity
                 };
                 MidiIn_InputEvent(vkey, mevt);
             };
@@ -542,7 +524,7 @@ namespace NProcessing.App
         { 
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
 
-            FileInfo fi = new FileInfo(Path.Combine(appDir, "log.txt"));
+            FileInfo fi = new(Path.Combine(appDir, "log.txt"));
             if(fi.Exists && fi.Length > 100000)
             {
                 File.Copy(fi.FullName, fi.FullName.Replace("log.", "log2."), true);
@@ -597,11 +579,11 @@ namespace NProcessing.App
             //tv.Colors.Add(" SND???:", Color.LightGreen);
             f.Controls.Add(tv);
 
-            string appDir = MiscUtils.GetAppDataDir("Nebulator", "Ephemera");
+            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
             string logFileName = Path.Combine(appDir, "log.txt");
             using (new WaitCursor())
             {
-                File.ReadAllLines(logFileName).ForEach(l => tv.AddLine(l)); //TODO still a little broken.
+                File.ReadAllLines(logFileName).ForEach(l => tv.AddLine(l));
             }
 
             f.ShowDialog();
@@ -614,12 +596,11 @@ namespace NProcessing.App
         /// </summary>
         void Open_Click(object? sender, EventArgs e)
         {
-            OpenFileDialog openDlg = new OpenFileDialog()
+            using OpenFileDialog openDlg = new()
             {
                 Filter = "NProcessing files (*.np)|*.np",
                 Title = "Select a NProcessing file"
             };
-
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
                 OpenFile(openDlg.FileName);
@@ -651,11 +632,11 @@ namespace NProcessing.App
             try
             {
                 _logger.Info($"Reading np file: {fn}");
-                _fn = fn;
+                _scriptFileName = fn;
 
                 AddToRecentDefs(fn);
 
-                bool ok = Compile();
+                bool ok = CompileScript();
                 SetCompileStatus(ok);
 
                 Text = $"NProcessing {MiscUtils.GetVersionString()} - {fn}";
@@ -680,7 +661,7 @@ namespace NProcessing.App
 
             _settings.RecentFiles.ForEach(f =>
             {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(f, null, new EventHandler(Recent_Click));
+                ToolStripMenuItem menuItem = new(f, null, new EventHandler(Recent_Click));
                 menuItems.Add(menuItem);
             });
         }
@@ -743,7 +724,7 @@ namespace NProcessing.App
         /// </summary>
         void Compile_Click(object sender, EventArgs e)
         {
-            Compile();
+            CompileScript();
             ProcessPlay(PlayCommand.Stop);
         }
         #endregion
@@ -755,54 +736,20 @@ namespace NProcessing.App
         void SaveSettings()
         {
             _settings.MainFormInfo.FromForm(this);
-
             _settings.Save();
         }
 
         /// <summary>
-        /// Edit the options in a property grid.
+        /// Edit the common options in a property grid.
         /// </summary>
         void Settings_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form()
+            using SettingsEditor f = new() { Settings = _settings };
+
+            if (f.ShowDialog() == DialogResult.OK)
             {
-                Text = "User Settings",
-                Size = new Size(350, 400),
-                StartPosition = FormStartPosition.Manual,
-                Location = new Point(200, 200),
-                FormBorderStyle = FormBorderStyle.FixedToolWindow,
-                ShowIcon = false,
-                ShowInTaskbar = false
-            })
-            {
-                PropertyGrid pg = new PropertyGrid()
-                {
-                    Dock = DockStyle.Fill,
-                    PropertySort = PropertySort.NoSort,
-                    SelectedObject = _settings
-                };
-
-                // Detect changes of interest.
-                bool ctrls = false;
-                pg.PropertyValueChanged += (sdr, args) =>
-                {
-                    string p = args.ChangedItem.PropertyDescriptor.Name;
-                    ctrls |= p.Contains("Font") | p.Contains("Color") | p.Contains("Midi");
-                };
-
-                f.Controls.Add(pg);
-                f.ShowDialog();
-
-                if (ctrls)
-                {
-                    MessageBox.Show("These changes require a restart to take effect.");
-                }
-
-                // Always safe to update these.
-                SetUiTimerPeriod();
-                _surface.TopMost = _settings.LockUi;
-
-                SaveSettings();
+                _settings.Save();
+                MessageBox.Show("Settings changes require a restart to take effect.");
             }
         }
         #endregion
@@ -817,12 +764,12 @@ namespace NProcessing.App
         {
             bool ret = true;
 
-            if(_script.Valid)
+            if (_script is not null)
             {
                 switch (cmd)
                 {
                     case PlayCommand.Start:
-                        bool ok = !_needCompile || Compile();
+                        bool ok = !_needCompile || CompileScript();
                         if (ok)
                         {
                             _startTime = DateTime.Now;
@@ -886,44 +833,10 @@ namespace NProcessing.App
         /// <summary>
         /// The meaning of life.
         /// </summary>
-        void About_Click(object sender, EventArgs e)
+        void About_Click(object? sender, EventArgs e)
         {
-            // Make some markdown.
-            List<string> mdText = new List<string>
-            {
-                // Device info.
-                "# Your Devices",
-                "## Midi Input"
-            };
-
-            if (NAudio.Midi.MidiIn.NumberOfDevices > 0)
-            {
-                for (int device = 0; device < NAudio.Midi.MidiIn.NumberOfDevices; device++)
-                {
-                    mdText.Add($"- {NAudio.Midi.MidiIn.DeviceInfo(device).ProductName}");
-                }
-            }
-            else
-            {
-                mdText.Add($"- None");
-            }
-            mdText.Add("## Midi Output");
-            if (NAudio.Midi.MidiOut.NumberOfDevices > 0)
-            {
-                for (int device = 0; device < NAudio.Midi.MidiOut.NumberOfDevices; device++)
-                {
-                    mdText.Add($"- {NAudio.Midi.MidiOut.DeviceInfo(device).ProductName}");
-                }
-            }
-            else
-            {
-                mdText.Add($"- None");
-            }
-
-            // Main help file.
-            mdText.AddRange(File.ReadAllLines(@"README.md"));
-
-            Tools.MarkdownToHtml(mdText, "lightcyan", "helvetica", true);
+            string fn = "NProcessing.md.html";
+            new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
         }
 
         /// <summary>

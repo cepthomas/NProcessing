@@ -122,7 +122,7 @@ namespace NProcessing.Script
         //public string hex(object value) { NotImpl(nameof(hex)); }
         public int @int(double val) { return (int)val; }
         public int @int(string val) { return int.Parse(val); }
-        public string str(object value) { return value.ToString(); }
+        public string str(object value) { return value.ToString() ?? "null"; }
         //public int unbinary(string value) { NotImpl(nameof(unbinary)); }
         //public int unhex(string value) { NotImpl(nameof(unhex)); }
 
@@ -165,8 +165,8 @@ namespace NProcessing.Script
             y1 -= height / 2;
             angle1 = MathUtils.RadiansToDegrees(angle1);
             angle2 = MathUtils.RadiansToDegrees(angle2);
-            SKPath path = new SKPath();
-            SKRect rect = new SKRect((float)x1, (float)y1, (float)x2, (float)y2);
+            SKPath path = new();
+            SKRect rect = new((float)x1, (float)y1, (float)x2, (float)y2);
             path.AddArc(rect, (float)angle1, (float)angle2);
 
             //https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/curves/arcs
@@ -286,12 +286,10 @@ namespace NProcessing.Script
         public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
         {
             // Draw path with cubic Bezier curve.
-            using (SKPath path = new SKPath())
-            {
-                path.MoveTo((float)x1, (float)y1);
-                path.CubicTo((float)x2, (float)y2, (float)x3, (float)y3, (float)x4, (float)y4);
-                _canvas.DrawPath(path, _pen);
-            }
+            using SKPath path = new();
+            path.MoveTo((float)x1, (float)y1);
+            path.CubicTo((float)x2, (float)y2, (float)x3, (float)y3, (float)x4, (float)y4);
+            _canvas.DrawPath(path, _pen);
         }
 
         public void curve(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) { NotImpl(nameof(curve)); }
@@ -359,30 +357,28 @@ namespace NProcessing.Script
             }
             else if (mode == CLOSE)
             {
-                using (var path = new SKPath())
+                using var path = new SKPath();
+                for (int i = 0; i < _vertexes.Count; i++)
                 {
-                    for (int i = 0; i < _vertexes.Count; i++)
+                    if (i == 0)
                     {
-                        if (i == 0)
-                        {
-                            path.MoveTo(_vertexes[i]);
-                        }
-                        else
-                        {
-                            path.LineTo(_vertexes[i]);
-                        }
+                        path.MoveTo(_vertexes[i]);
                     }
-                    path.Close();
+                    else
+                    {
+                        path.LineTo(_vertexes[i]);
+                    }
+                }
+                path.Close();
 
-                    if (_fill.Color != SKColors.Transparent)
-                    {
-                        _canvas.DrawPath(path, _fill);
-                    }
+                if (_fill.Color != SKColors.Transparent)
+                {
+                    _canvas.DrawPath(path, _fill);
+                }
 
-                    if (_pen.StrokeWidth != 0)
-                    {
-                        _canvas.DrawPath(path, _pen);
-                    }
+                if (_pen.StrokeWidth != 0)
+                {
+                    _canvas.DrawPath(path, _pen);
                 }
             }
             else
@@ -566,18 +562,18 @@ namespace NProcessing.Script
         //public void background(int rgb, double alpha) { NotImpl(nameof(background)); }
         public void background(double gray) { _bgColor = SafeColor(gray, gray, gray, 255); _canvas.Clear(_bgColor); }
         public void background(double gray, double alpha) { _bgColor = SafeColor(gray, gray, gray, alpha); _canvas.Clear(_bgColor); }
-        public void background(double v1, double v2, double v3) { color c = new color(v1, v2, v3, 255); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
-        public void background(double v1, double v2, double v3, double alpha) { color c = new color(v1, v2, v3, alpha); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
+        public void background(double v1, double v2, double v3) { color c = new(v1, v2, v3, 255); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
+        public void background(double v1, double v2, double v3, double alpha) { color c = new(v1, v2, v3, alpha); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
         public void background(PImage img) { _canvas.DrawBitmap(img.bmp, new SKRect(0, 0, width, height)); }
-        public void colorMode(int mode, double max = 255) { NProcessing.Script.color.SetMode(mode, max, max, max, max); }
-        public void colorMode(int mode, int max1, int max2, int max3, int maxA = 255) { NProcessing.Script.color.SetMode(mode, max1, max2, max3, maxA); }
+        public void colorMode(int mode, double max = 255) { Script.color.SetMode(mode, max, max, max, max); }
+        public void colorMode(int mode, int max1, int max2, int max3, int maxA = 255) { Script.color.SetMode(mode, max1, max2, max3, maxA); }
         //public void fill(int rgb) { NotImpl(nameof(fill)); }
         //public void fill(int rgb, double alpha) { NotImpl(nameof(fill)); }
         public void fill(color clr) { _fill.Color = SafeColor(clr.R, clr.G, clr.B, clr.A); }
         public void fill(double gray) { _fill.Color = SafeColor(gray, gray, gray, 255); }
         public void fill(double gray, double alpha) { _fill.Color = SafeColor(gray, gray, gray, alpha); }
-        public void fill(double v1, double v2, double v3) { color c = new color(v1, v2, v3, 255); _fill.Color = c.NativeColor; }
-        public void fill(double v1, double v2, double v3, double alpha) { color c = new color(v1, v2, v3, alpha); _fill.Color = c.NativeColor; }
+        public void fill(double v1, double v2, double v3) { color c = new(v1, v2, v3, 255); _fill.Color = c.NativeColor; }
+        public void fill(double v1, double v2, double v3, double alpha) { color c = new(v1, v2, v3, alpha); _fill.Color = c.NativeColor; }
         public void noFill() { _fill.Color = SKColors.Transparent; }
         public void noStroke() { _pen.StrokeWidth = 0; }
         //public void stroke(int rgb) { NotImpl(nameof(stroke)); }
@@ -585,8 +581,8 @@ namespace NProcessing.Script
         public void stroke(color clr) { _pen.Color = clr.NativeColor; }
         public void stroke(double gray) { _pen.Color = SafeColor(gray, gray, gray, 255); }
         public void stroke(double gray, double alpha) { _pen.Color = SafeColor(gray, gray, gray, alpha); }
-        public void stroke(double v1, double v2, double v3) { color c = new color(v1, v2, v3, 255); _pen.Color = c.NativeColor; }
-        public void stroke(double v1, double v2, double v3, double alpha) { color c = new color(v1, v2, v3, alpha); _pen.Color = c.NativeColor; }
+        public void stroke(double v1, double v2, double v3) { color c = new(v1, v2, v3, 255); _pen.Color = c.NativeColor; }
+        public void stroke(double v1, double v2, double v3, double alpha) { color c = new(v1, v2, v3, alpha); _pen.Color = c.NativeColor; }
         #endregion
 
         #region Color - Creating & Reading

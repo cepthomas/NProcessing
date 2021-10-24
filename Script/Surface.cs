@@ -1,20 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Windows.Forms;
-
-using NLog;
 using SkiaSharp;
-
-//using SkiaSharp.Views.Desktop;
-
-
-
 using NBagOfTricks;
 using NBagOfTricks.UI;
 
@@ -23,28 +10,12 @@ namespace NProcessing.Script
 {
     public partial class Surface : Form
     {
-        #region Events
-        /// <summary>Reports a runtime error to listeners.</summary>
-        public event EventHandler<RuntimeErrorEventArgs> RuntimeErrorEvent;
-
-        public class RuntimeErrorEventArgs : EventArgs
-        {
-            public Exception Exception { get; set; } = null;
-        }
-        #endregion
-
         #region Fields
-        /// <summary>My logger.</summary>
-        Logger _logger = LogManager.GetCurrentClassLogger();
-
-        /// <summary>The embedded drawing control.</summary>
-//        SKControl _skcontrol = null;
-
         /// <summary>The current script.</summary>
-        ScriptBase _script = null;
+        ScriptBase? _script = null;
 
         /// <summary>Rendered bitmap for display when painting.</summary>
-        System.Drawing.Bitmap _bitmap = null;
+        System.Drawing.Bitmap? _bitmap = null;
         #endregion
 
         #region Lifecycle
@@ -56,16 +27,12 @@ namespace NProcessing.Script
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
             UpdateStyles();
-
-            // Create the control.
-//            _skcontrol = new SKControl();
-//            Controls.Add(_skcontrol);
         }
 
         /// <summary>
         /// Initialize form controls.
         /// </summary>
-        private void Surface_Load(object sender, EventArgs e)
+        private void Surface_Load(object? sender, EventArgs e)
         {
             // Intercept all keyboard events.
             KeyPreview = true;
@@ -75,11 +42,12 @@ namespace NProcessing.Script
         #region Public functions
         /// <summary>
         /// Update per new script object.
+        /// If there are user script exceptions they will bubble up to the MainForm.
         /// </summary>
         /// <param name="script"></param>
         public void InitSurface(ScriptBase script)
         {
-            if(script.Valid)
+            if(script is not null)
             {
                 _script = script;
                 ClientSize = new System.Drawing.Size(_script.width, _script.height);
@@ -94,7 +62,7 @@ namespace NProcessing.Script
         /// </summary>
         public void UpdateSurface()
         {
-            if (_script.Valid && (_script._loop || _script._redraw))
+            if (_script is not null && (_script._loop || _script._redraw))
             {
                 // Check for resize or init.
                 if(_bitmap is null || _bitmap.Width != _script.width || _bitmap.Height != _script.height)
@@ -119,18 +87,18 @@ namespace NProcessing.Script
         #region Painting
         /// <summary>
         /// Calls the script code that generates the bmp to paint later.
+        /// If there are user script exceptions they will bubble up to the MainForm.
         /// </summary>
         void Render()
         {
-            var w = _script.width; // Width;
-            var h = _script.height; // Height;
-
-            var data = _bitmap.LockBits(new System.Drawing.Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, _bitmap.PixelFormat);
-
-            using (var skSurface = SKSurface.Create(new SKImageInfo(w, h, SKImageInfo.PlatformColorType, SKAlphaType.Premul), data.Scan0, w * 4))
+            if (_script is not null && _bitmap is not null)
             {
-                // Note: Need exception handling here to protect from user script errors.
-                try
+                var w = _script.width; // Width;
+                var h = _script.height; // Height;
+
+                var data = _bitmap.LockBits(new System.Drawing.Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, _bitmap.PixelFormat);
+
+                using (SKSurface skSurface = SKSurface.Create(new SKImageInfo(w, h, SKImageInfo.PlatformColorType, SKAlphaType.Premul), data.Scan0, w * 4))
                 {
                     // Hand over to the script for drawing on.
                     _script._canvas = skSurface.Canvas;
@@ -144,13 +112,9 @@ namespace NProcessing.Script
                     _script.frameCount++;
                     _script.draw();
                 }
-                catch (Exception ex)
-                {
-                    RuntimeErrorEvent?.Invoke(this, new RuntimeErrorEventArgs() { Exception = ex });
-                }
-            }
 
-            _bitmap.UnlockBits(data);
+                _bitmap.UnlockBits(data);
+            }
         }
 
         /// <summary>
@@ -173,7 +137,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if(_script.Valid)
+            if (_script is not null)
             {
                 ProcessMouseEvent(e);
                 _script.mouseIsPressed = true;
@@ -188,7 +152,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 ProcessMouseEvent(e);
                 _script.mouseIsPressed = false;
@@ -203,7 +167,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 ProcessMouseEvent(e);
                 if (_script.mouseIsPressed)
@@ -224,7 +188,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 ProcessMouseEvent(e);
                 _script.mouseClicked();
@@ -238,7 +202,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 ProcessMouseEvent(e);
                 _script.mouseWheel();
@@ -252,7 +216,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseEnter(EventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 _script.focused = Focused;
             }
@@ -264,7 +228,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 _script.focused = Focused;
             }
@@ -276,19 +240,19 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         void ProcessMouseEvent(MouseEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 _script.mouseX = e.X;
                 _script.mouseY = e.Y;
                 _script.mouseWheelValue = e.Delta;
 
-                switch (e.Button)
+                _script.mouseButton = e.Button switch
                 {
-                    case MouseButtons.Left: _script.mouseButton = ScriptBase.LEFT; break;
-                    case MouseButtons.Right: _script.mouseButton = ScriptBase.RIGHT; break;
-                    case MouseButtons.Middle: _script.mouseButton = ScriptBase.CENTER; break;
-                    default: _script.mouseButton = 0; break;
-                }
+                    MouseButtons.Left => ScriptBase.LEFT,
+                    MouseButtons.Right => ScriptBase.RIGHT,
+                    MouseButtons.Middle => ScriptBase.CENTER,
+                    _ => 0,
+                };
             }
         }
         #endregion
@@ -300,7 +264,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 _script.keyIsPressed = false;
 
@@ -324,7 +288,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 _script.keyIsPressed = false;
 
@@ -351,7 +315,7 @@ namespace NProcessing.Script
         /// <param name="e"></param>
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            if (_script.Valid)
+            if (_script is not null)
             {
                 _script.key = e.KeyChar;
                 _script.keyTyped();
@@ -364,6 +328,11 @@ namespace NProcessing.Script
         /// <param name="keys"></param>
         void ProcessKeys((char ch, List<Keys> keyCodes) keys)
         {
+            if (_script is null)
+            {
+                return; // early return!
+            }
+             
             _script.keyCode = 0;
             _script.key = keys.ch;
 

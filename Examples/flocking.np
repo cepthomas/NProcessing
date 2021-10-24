@@ -35,30 +35,30 @@ public override void setup()
 public override void draw()
 {
     background(50);
-    my_flock.run();
+    my_flock.run(this);
 }
 
 // Add a new boid into the System
 public override void mousePressed()
 {
-    my_flock.addBoid(new Boid(mouseX,mouseY));
+    my_flock.addBoid(new Boid(mouseX, mouseY));
 }
 
 // The Flock (a list of Boid objects)
 public class Flock
 {
-    List<Boid> boids; // An ArrayList for all the boids
+    List<Boid> boids; // A list of all the boids
 
     public Flock()
     {
         boids = new List<Boid>(); // Initialize the ArrayList
     }
 
-    public void run()
+    public void run(flocking s)
     {
         foreach (Boid b in boids)
         {
-            b.run(boids);  // Passing the entire list of boids to each boid individually
+            b.run(s, boids);  // Passing the entire list of boids to each boid individually
         }
     }
 
@@ -88,22 +88,17 @@ public class Boid
         maxforce = 0.03;
     }
 
-    public void run(List<Boid> boids)
+    public void run(flocking s, List<Boid> boids)
     {
-        my_flock(boids);
-        update();
-        borders();
-        render();
-    }
+        recalc(boids);
 
-    public void applyForce(PVector force)
-    {
-        // We could add mass here if we want A = F / M
-        acceleration.add(force);
+        update();
+        borders(s);
+        render(s);
     }
 
     // We accumulate a new acceleration each time based on three rules
-    public void my_flock(List<Boid> boids)
+    public void recalc(List<Boid> boids)
     {
         PVector sep = separate(boids);   // Separation
         PVector ali = align(boids);      // Alignment
@@ -120,7 +115,7 @@ public class Boid
         applyForce(coh);
     }
 
-    // Method to update position
+    // Update position
     public void update()
     {
         // Update velocity
@@ -130,6 +125,39 @@ public class Boid
         position.add(velocity);
         // Reset acceleration to 0 each cycle
         acceleration.mult(0);
+    }
+
+    // Wraparound
+    public void borders(flocking f)
+    {
+        if (position.x < -r) position.x = f.width + r;
+        if (position.y < -r) position.y = f.height + r;
+        if (position.x > f.width + r) position.x = -r;
+        if (position.y > f.height + r) position.y = -r;
+    }
+
+    // Draw.
+    public void render(flocking f)
+    {
+        // Draw a triangle rotated in the direction of velocity
+        double theta = velocity.heading() + f.radians(90);
+        f.fill(200, 100, 50);
+        f.stroke(255);
+        f.pushMatrix();
+        f.translate(position.x, position.y);
+        f.rotate(theta);
+        f.beginShape();  // was: beginShape(TRIANGLES);
+        f.vertex(0, -r * 2);
+        f.vertex(-r, r * 2);
+        f.vertex(r, r * 2);
+        f.endShape(CLOSE);
+        f.popMatrix();
+    }
+
+    public void applyForce(PVector force)
+    {
+        // We could add mass here if we want A = F / M
+        acceleration.add(force);
     }
 
     // A method that calculates and applies a steering force towards a target
@@ -146,35 +174,7 @@ public class Boid
         return steer;
     }
 
-    public void render()
-    {
-        // Draw a triangle rotated in the direction of velocity
-        double theta = velocity.heading() + s.radians(90);
-
-        s.fill(200, 100, 50);
-        s.stroke(255);
-        s.pushMatrix();
-        s.translate(position.x, position.y);
-        s.rotate(theta);
-        s.beginShape();  // was: beginShape(TRIANGLES);
-        s.vertex(0, -r * 2);
-        s.vertex(-r, r * 2);
-        s.vertex(r, r * 2);
-        s.endShape(CLOSE);
-        s.popMatrix();
-    }
-
-    // Wraparound
-    public void borders()
-    {
-        if (position.x < -r) position.x = s.width + r;
-        if (position.y < -r) position.y = s.height + r;
-        if (position.x > s.width + r) position.x = -r;
-        if (position.y > s.height + r) position.y = -r;
-    }
-
-    // Separation
-    // Method checks for nearby boids and steers away
+    // Separation method checks for nearby boids and steers away
     public PVector separate (List<Boid> boids)
     {
         double desiredseparation = 25.0;

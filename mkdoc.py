@@ -3,6 +3,8 @@ import sys
 import pathlib
 import shutil
 
+# TODO fix this for nproc
+
 # Combine md files into single html with toc. Assumes cwd is the repo of interest.
 # Markdeep styles: slate.css for dark mode or apidoc.css for light.
 

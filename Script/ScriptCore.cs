@@ -16,13 +16,13 @@ namespace NProcessing.Script
     {
         #region Fields - internal
         /// <summary>My logger.</summary>
-        Logger _logger = LogManager.GetCurrentClassLogger();
+        readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>Resource clean up.</summary>
         bool _disposed = false;
 
         /// <summary>Script randomizer.</summary>
-        Random _rand = new Random();
+        Random _rand = new();
 
         /// <summary>Loop option.</summary>
         internal bool _loop = true;
@@ -31,12 +31,12 @@ namespace NProcessing.Script
         internal bool _redraw = false;
 
         /// <summary>Current working object to draw on.</summary>
-        internal SKCanvas _canvas = null;
+        internal SKCanvas _canvas;
         #endregion
 
         #region Fields - graphics/processing
         /// <summary>Current font to draw with.</summary>
-        SKPaint _textPaint = new SKPaint()
+        readonly SKPaint _textPaint = new()
         {
             TextSize = 12,
             Color = SKColors.Black,
@@ -46,7 +46,7 @@ namespace NProcessing.Script
         };
 
         /// <summary>Current pen to draw with.</summary>
-        SKPaint _pen = new SKPaint()
+        readonly SKPaint _pen = new()
         {
             Color = SKColors.Black,
             Style = SKPaintStyle.Stroke,
@@ -57,7 +57,7 @@ namespace NProcessing.Script
         };
 
         /// <summary>Current brush to draw with.</summary>
-        SKPaint _fill = new SKPaint()
+        readonly SKPaint _fill = new()
         {
             Color = SKColors.Transparent,
             Style = SKPaintStyle.Fill,
@@ -67,10 +67,10 @@ namespace NProcessing.Script
         };
 
         /// <summary>Current drawing points.</summary>
-        List<SKPoint> _vertexes = new List<SKPoint>();
+        readonly List<SKPoint> _vertexes = new();
 
         /// <summary>General purpose stack</summary>
-        Stack<SKMatrix> _matrixStack = new Stack<SKMatrix>();
+        readonly Stack<SKMatrix> _matrixStack = new();
 
         /// <summary>Background color.</summary>
         SKColor _bgColor = SKColors.LightGray;
@@ -87,10 +87,6 @@ namespace NProcessing.Script
         public int FrameRate { get; set; } = 0;
         #endregion
 
-        #region Properties - internal
-        public bool Valid { get; set; } = false;
-        #endregion
-
         #region Lifecycle
         /// <summary>
         /// Constructor.
@@ -101,7 +97,7 @@ namespace NProcessing.Script
         }
 
         /// <summary>
-        /// Ugly way to deal with static vars in color class.
+        /// Ugly way to deal with static vars in color class. TODO?
         /// </summary>
         public void ResetVars()
         {
