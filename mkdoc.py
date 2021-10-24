@@ -3,8 +3,6 @@ import sys
 import pathlib
 import shutil
 
-# TODO fix this for nproc
-
 # Combine md files into single html with toc. Assumes cwd is the repo of interest.
 # Markdeep styles: slate.css for dark mode or apidoc.css for light.
 
@@ -33,7 +31,10 @@ all_text = []
 repo_path = os.getcwd()
 
 # Content files.
-dfiles = [ 'Nebulator.md', 'ScriptSyntax.md', 'ScriptApi.md', 'Internals.md', 'MusicDefinitions.md' ]
+dfiles = [ 'NProcessing.md', 'ScriptSyntax.md', 'ScriptApi.md', 'Porting.md', 'Custom.md', 'Internals.md' ]
+
+
+
 for df in dfiles:
     srcfn = os.path.join(repo_path, 'DocFiles', df)
     with open(srcfn, "r") as srcf:

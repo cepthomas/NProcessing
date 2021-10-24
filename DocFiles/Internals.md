@@ -1,6 +1,14 @@
 
 A place to store notes that don't fit anywhere else, like inside my head.
 
+# Internals
+
+- VS 2019 solution, targets .NET5 WinForms.
+- Uses Roslyn for in-memory compilation.
+- No installer yet, it's a build-it-yerself for now. Eventually a nuget package might be created.
+- Settings and log are in `C:\Users\<user>\AppData\Local\Ephemera\Nebulator`.
+
+
 # Editing Scripts
 - Rather than spending the effort on a built-in script editor, I figured it would be easier for you to use your favorite external text editor. The application will watch for changes you make and indicate that recompile is needed.  
 - I use Sublime - you can associate .np files with .cs for pretty-close syntax coloring by:  

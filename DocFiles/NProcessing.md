@@ -1,6 +1,5 @@
 
 # Usage
-- Currently this runs only in VS2017, using all the goodness of C#7. No installer yet, it's a build-it-yerself for now. Eventually a Wix project and/or nuget package could be created.
 - Basically open a .np file, press compile, then run.
 - Settings and log are in `C:\Users\<user>\AppData\Local\Ephemera\NProcessing`.
 
