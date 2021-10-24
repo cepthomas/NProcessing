@@ -8,7 +8,6 @@ using System.Diagnostics;
 using NBagOfTricks;
 using ScriptCompiler;
 
-
 namespace NProcessing.App
 {
     public class Compiler : ScriptCompilerCore
@@ -16,20 +15,13 @@ namespace NProcessing.App
         /// <inheritdoc />
         public override void PreExecute()
         {
+            SystemDlls.Add("System.Drawing");
+          //  SystemDlls.Add("System.Drawing.Primitives");
             LocalDlls = new() { "NAudio", "NLog", "NBagOfTricks", "NProcessing.Script" };
-            Usings = new() { "System.Collections.Generic" };
         }
 
-        // /// <inheritdoc />
+        // Nothing to do.
         // public override void PostExecute()
-        // {
-        //     // Nothing to do.
-        // }
-
-        // /// <inheritdoc />
         // public override bool PreprocessFile(string sline, FileContext pcont)
-        // {
-        //     // Nothing to do.
-        // }
     }
 }

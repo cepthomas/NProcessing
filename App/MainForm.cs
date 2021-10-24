@@ -100,7 +100,6 @@ namespace NProcessing.App
             _surface.TopMost = _settings.LockUi;
 
             // The rest of the controls.
-            textViewer.WordWrap = false;
             textViewer.BackColor = _settings.BackColor;
             textViewer.Colors.Add(" E ", Color.LightPink);
             textViewer.Colors.Add(" W ", Color.Plum);
@@ -125,7 +124,7 @@ namespace NProcessing.App
 
             btnWrap.Checked = _settings.WordWrap;
             textViewer.WordWrap = btnWrap.Checked;
-            btnWrap.Click += (object? _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; };
+            btnWrap.Click += (object? _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; _settings.WordWrap = textViewer.WordWrap; };
 
             ok = InitMidi();
 
@@ -273,7 +272,7 @@ namespace NProcessing.App
                     _logger.Log(new LogEventInfo()
                     {
                         Level = level,
-                        Message = r.LineNumber > 0 ? $"{r.SourceFile}({r.LineNumber}): {r.Message}" : $"{r.SourceFile}: {r.Message}"
+                        Message = r.LineNumber > 0 ? $"{Path.GetFileName(r.SourceFile)}({r.LineNumber}): {r.Message}" : $"{r.SourceFile}: {r.Message}"
                     });
                 });
             }

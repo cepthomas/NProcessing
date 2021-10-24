@@ -1,5 +1,4 @@
 
-
 // Partial implementation of https://en.wikipedia.org/wiki/L-system and http://benvan.co.uk/lsys/
 
 // Variables
@@ -8,7 +7,9 @@ int _angle = -3963;
 
 
 // The lines to draw.
-List<Point> lines = new List<Point>();
+struct point { public int x; public int y; }
+List<point> lines = new List<point>();
+
 
 public override void setup()
 {
@@ -25,17 +26,20 @@ public override void draw()
 {
     background(_bcolor, 100, 200);
 
+    stroke(255);
+
     for (var i = 0; i < lines.Count; i += 2)
     {
         var a = lines[i];
         var b = lines[i + 1];
-        line(a.X, a.Y, b.X, b.Y);
+        line(a.x, a.y, b.x, b.y);
     }
 }
 
 public override void mouseClicked()
 {
     genLSys(-1.359672, -0.138235, mouseX, 14.11);
+
     redraw();
 }
 
@@ -68,8 +72,6 @@ void genLSys(double sizeGrowth, double angleGrowth, double initAngle, double ini
         angle = initAngle
     };
 
-    lines.Clear();
-
     // The rules.
     var tbl = new Dictionary<char, string>
     {
@@ -99,8 +101,16 @@ void genLSys(double sizeGrowth, double angleGrowth, double initAngle, double ini
                 var new_x = state.x + state.size * Math.Cos(state.direction * Math.PI / 180.0);
                 var new_y = state.y + state.size * Math.Sin(state.direction * Math.PI / 180.0);
 
-                lines.Add(new Point((int)state.x, (int)state.y));
-                lines.Add(new Point((int)new_x, (int)new_y));
+                point pt1 = new point();
+                pt1.x = (int)state.x;
+                pt1.y = (int)state.y;
+
+                point pt2 = new point();
+                pt2.x = (int)state.x;
+                pt2.y = (int)state.y;
+
+                lines.Add(pt1);
+                lines.Add(pt2);
 
                 state.x = new_x;
                 state.y = new_y;

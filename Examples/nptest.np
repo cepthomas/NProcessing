@@ -1,7 +1,7 @@
 
 ///// Tester for Processing workalike.
 
-#import "utils.np";
+Include(utils.np);
 
 public override void setup()
 {
@@ -82,14 +82,14 @@ void draw_force_fail()
     int z = x / y;
 }
 
-public override void step()
-{
-    //print("step()");
-    int x = 1;
-    int y = 0;
-    //int z = x / y;
-    int z = x + y;
-}
+// public override void step()
+// {
+//     //print("step()");
+//     int x = 1;
+//     int y = 0;
+//     //int z = x / y;
+//     int z = x + y;
+// }
 
 
 ///////////////////// ball /////////////////////////////////
