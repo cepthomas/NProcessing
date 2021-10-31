@@ -1,6 +1,8 @@
 
+#Porting from Processing
+
 It should be fairly easy to port simple Processing scripts using this guidance. It is somewhat modelled after [p5](https://github.com/processing/p5.js/wiki/Processing-transition).
-- `import` is not supported. If you have multiple files, you can use `#import`.
+- `import` is not supported. If you have multiple files, you can use `Inclue()`.
 - Change overridden functions like `void setup()` to `public override void setup()`.
 - Functions with the same name as intrinsic types need `@` e.g. `@int()`.
 - Processing default `float` type is not supported - change all to `double`. Change `boolean` type to `bool`.

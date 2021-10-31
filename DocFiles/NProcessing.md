@@ -1,12 +1,17 @@
 
-TODO clean up all docs.
-
 # Usage
 - Basically open a .np file, press compile, then run.
 - Settings and log are in `C:\Users\<user>\AppData\Local\Ephemera\NProcessing`.
 
-# The Files
-See the Examples directory for material while perusing this. There's a bunch that were ported from the Processing world mainly to test.
+
+## Editing Scripts
+- Rather than spending the effort on a built-in script editor, I figured it would be easier for you to use your favorite external text editor. The application will watch for changes you make and indicate that recompile is needed.  
+- I use Sublime - you can associate .np files with .cs for pretty-close syntax coloring by:  
+  `View -> Syntax -> Open all with current extension as C#`
+
+
+## Example Script Files
+See the Examples directory for material while perusing the docs. There's a bunch that were ported from the Processing world, mainly to test.
 
 File | Description
 ---- | -----------

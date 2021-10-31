@@ -1,12 +1,16 @@
 
-The following sections list the supported elements in roughly the same structure as the [Processing API](https://processing.org/reference/). Refer to that document for API specifics.  
+# Script API
 
-There are lots of unimplemented functions and properties, including some of the overloaded flavors. If it's not implemented, you get either a compiler error or a runtime warning.  
+The following sections list the supported elements in roughly the same structure as the [Processing API](https://processing.org/reference/).
+Refer to that document for API specifics.  
 
-Note also that a lot of these have not been properly tested. Eventually there may be a real unit tester project.
+There are lots of unimplemented functions and properties, including some of the overloaded flavors. If it's not implemented,
+you get either a compiler error or a runtime warning.  
+
+Note also that a lot of these have not been properly tested. Eventually there may be a real unit test project.
 
 
-# Constants
+## Constants
 ```c#
 Math: QUARTER_PI, HALF_PI, PI, TWO_PI, TAU
 Mouse, keys: LEFT, UP, RIGHT, DOWN, CENTER
@@ -19,7 +23,8 @@ Cursor types: ARROW, CROSS, TEXT, WAIT, HAND, MOVE
 Misc: CLOSE
 ```
 
-# Classes
+## Classes
+
 ### color
 color is implemented here as a class rather than a packed unsigned int.
 ```c#
@@ -58,7 +63,7 @@ PFont(string name, int size)
 Font NativeFont
 ```
 
-# Structure
+## Structure
 ```c#
 virtual void draw() 
 void popStyle()
@@ -66,7 +71,7 @@ void pushStyle()
 virtual void setup() 
 ```
 
-# Environment
+## Environment
 ```c#
 bool focused 
 int frameCount 
@@ -80,13 +85,13 @@ void smooth(int level)
 int width 
 ```
 
-# Data
+## Data
 ```c#
 int @int(double val) 
 string str(object value) 
 ```
 
-### Data - String Functions
+### String Functions
 ```c#
 string join(string[] list, char separator)
 string[] split(string value, char delim)
@@ -96,14 +101,14 @@ string trim(string str)
 string[] trim(string[] array)
 ```
 
-### Data - Array Functions
+### Array Functions
 ```c#
 None implemented.
 ```
 
-# Shape
+## Shape
 
-### Shape - 2D Primitives
+### 2D Primitives
 ```c#
 void arc(double x1, double y1, double x2, double y2, double angle1, double angle2, int style)
 void arc(double x1, double y1, double x2, double y2, double angle1, double angle2)
@@ -115,25 +120,25 @@ void rect(double x1, double y1, double w, double h)
 void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
 ```
 
-### Shape - Curves
+### Curves
 ```c#
 void bezier(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
 void curve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
 ```
 
-### Shape - 3D Primitives
+### 3D Primitives
 ```c#
 None implemented.
 ```
 
-### Shape - Attributes
+### Attributes
 ```c#
 void strokeCap(int style)
 void strokeJoin(int style)
 void strokeWeight(int width) 
 ```
 
-### Shape - Vertex
+### Vertex
 ```c#
 void beginShape()
 void endShape()
@@ -141,14 +146,14 @@ void endShape(int mode)
 void vertex(int x, int y)
 ```
 
-### Shape - Loading & Displaying
+### Loading & Displaying
 ```c#
 None implemented.
 ```
 
-# Input
+## Input
 
-### Input - Mouse
+### Mouse
 ```c#
 int mouseButton 
 virtual void mouseClicked() 
@@ -165,7 +170,7 @@ int pMouseX
 int pMouseY 
 ```
 
-### Input - Keyboard
+### Keyboard
 ```c#
 char key 
 int keyCode
@@ -175,12 +180,12 @@ virtual void keyTyped()
 bool keyTypedP
 ```
 
-### Input - Files
+### Files
 ```c#
 string[] loadStrings(string filename)
 ```
 
-### Input - Time & Date
+### Time & Date
 ```c#
 int day() 
 int hour() 
@@ -191,30 +196,30 @@ int second()
 int year() 
 ```
 
-# Output
+## Output
 
-### Output - Text Area
+### Text Area
 ```c#
 void print(params object[] args)
 void printArray(params object[] what)
 ```
 
-### Output - Image
+### Image
 ```c#
 None implemented.
 ```
 
-### Output - Files
+### Files
 ```c#
 None implemented.
 ```
 
-### Output - PrintWriter
+### PrintWriter
 ```c#
 None implemented.
 ```
 
-# Transform
+## Transform
 ```c#
 void popMatrix() 
 void pushMatrix() 
@@ -224,14 +229,14 @@ void scale(double scx, double scy)
 void translate(double dx, double dy) 
 ```
 
-# Lights & Camera
+## Lights & Camera
 ```c#
 None implemented.
 ```
 
-# Color
+## Color
 
-### Color - Setting
+### Setting
 ```c#
 void background(int r, int g, int b, int a)
 void background(int r, int g, int b) 
@@ -262,7 +267,7 @@ void stroke(color pcolor, int a)
 void stroke(string scolor, int a) 
 ```
 
-### Color - Creating & Reading
+### Creating & Reading
 ```c#
 int alpha(color color) 
 int blue(color color) 
@@ -276,55 +281,55 @@ int red(color color)
 double saturation(color color) 
 ```
 
-# Image
+## Image
 
-### Image - Loading & Displaying
+### Loading & Displaying
 ```c#
 void image(PImage img, double x, double y)
 void image(PImage img, double x1, double y1, double x2, double y2)
 PImage loadImage(string filename)
 ```
 
-### Image - Textures
+### Textures
 ```c#
 None implemented.
 ```
 
-### Image - Pixels
+### Pixels
 ```c#
 None implemented.
 ```
 
-# Rendering - Shaders
+## Rendering - Shaders
 ```c#
 None implemented.
 ```
 
-# Typography
+## Typography
 
-### Typography - Loading & Displaying
+### Loading & Displaying
 ```c#
 PFont createFont(string name, int size)
 void text(string s, double x, double y)
 void textFont(PFont font)
 ```
 
-### Typography - Attributes
+### Attributes
 ```c#
 void textSize(int pts) 
 int textWidth(string s) 
 int textWidth(char ch) 
 ```
 
-### Typography - Metrics
+### Metrics
 ```c#
 int textAscent() 
 int textDescent() 
 ```
 
-# Math
+## Math
 
-### Math - Calculation
+### Calculation
 ```c#
 int abs(int val) 
 double abs(double val) 
@@ -352,7 +357,7 @@ double sqrt(double val)
 int truncate(double val) 
 ```
 
-### Math - Trigonometry
+### Trigonometry
 ```c#
 double acos(double val) 
 double asin(double val) 
@@ -365,7 +370,7 @@ double sin(double angle)
 double tan(double angle) 
 ```
 
-### Math - Random
+### Random
 ```c#
 double random(double max) 
 double random(double min, double max)

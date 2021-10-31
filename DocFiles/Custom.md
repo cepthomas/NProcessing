@@ -1,7 +1,8 @@
+# Custom for this app
 
 The following sections list classes and functions added specifically for this application.
 
-# Midi
+## Midi
 Basic midi functionality has been added after enjoying the [Music Animation Machine](http://www.musanim.com).
 
 Access midi by configuring these settings fields:
