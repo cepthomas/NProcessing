@@ -4,48 +4,6 @@
         <name>NBagOfTricks.ScriptCompiler</name>
     </assembly>
     <members>
-        <member name="P:Nebulator.App.NebCompiler.Channels">
-            <summary>Current active channels.</summary>
-        </member>
-        <member name="F:Nebulator.App.NebCompiler._nebfn">
-            <summary>Main source file name.</summary>
-        </member>
-        <member name="F:Nebulator.App.NebCompiler._channelDescriptors">
-            <summary>Code lines that define channels.</summary>
-        </member>
-        <member name="F:Nebulator.App.NebCompiler._chHash">
-            <summary>Current hash for lines of interest.</summary>
-        </member>
-        <member name="M:Nebulator.App.NebCompiler.PreExecute">
-            <inheritdoc />
-        </member>
-        <member name="M:Nebulator.App.NebCompiler.PostExecute">
-            <inheritdoc />
-        </member>
-        <member name="M:Nebulator.App.NebCompiler.PreprocessFile(System.String,NBagOfTricks.ScriptCompiler.FileContext)">
-            <inheritdoc />
-        </member>
-        <member name="M:Nebulator.App.NebCompiler.ProcessChannelDescs">
-            <summary>
-            Convert channel descriptors into partial Channel objects.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="F:Nebulator.App.Channel.NUM_CHANNELS">
-            <summary>Same as midi.</summary>
-        </member>
-        <member name="P:Nebulator.App.Channel.ChannelName">
-            <summary>UI label and script reference.</summary>
-        </member>
-        <member name="P:Nebulator.App.Channel.ChannelNumber">
-            <summary>The associated numerical (midi) channel to use</summary>
-        </member>
-        <member name="P:Nebulator.App.Channel.Patch">
-            <summary>Optional patch to send at startup.</summary>
-        </member>
-        <member name="P:Nebulator.App.Channel.DeviceType">
-            <summary>The device type for this channel. Used to find and bind the device at runtime.</summary>
-        </member>
         <member name="T:NBagOfTricks.ScriptCompiler.CompileResultType">
             <summary>General script result - error/warn etc.</summary>
         </member>
