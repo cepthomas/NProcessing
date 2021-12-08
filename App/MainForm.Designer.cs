@@ -32,7 +32,7 @@
             this.btnClear = new System.Windows.Forms.ToolStripButton();
             this.btnWrap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.textViewer = new NBagOfTricks.UI.TextViewer();
+            this.textViewer = new NBagOfUis.TextViewer();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -239,7 +239,7 @@
         private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Timer timer1;
-        private NBagOfTricks.UI.TextViewer textViewer;
+        private NBagOfUis.TextViewer textViewer;
     }
 }
 

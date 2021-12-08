@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using SkiaSharp;
 using NBagOfTricks;
-using NBagOfTricks.UI;
+using NBagOfUis;
 
 
 namespace NProcessing.Script

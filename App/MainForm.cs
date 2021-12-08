@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 using NLog;
 using NBagOfTricks;
-using NBagOfTricks.UI;
+using NBagOfUis;
 using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
 
