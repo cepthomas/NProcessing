@@ -86,7 +86,8 @@ namespace NProcessing.App
         public bool WordWrap { get; set; } = false;
 
         [Browsable(false)]
-        public FormInfo MainFormInfo { get; set; } = new FormInfo();
+        [JsonConverter(typeof(JsonRectangleConverter))]
+        public Rectangle FormGeometry { get; set; } = new Rectangle(50, 50, 600, 400);
 
         [Browsable(false)]
         public List<string> RecentFiles { get; set; } = new List<string>();
@@ -141,24 +142,6 @@ namespace NProcessing.App
             }
         }
         #endregion
-    }
-
-    /// <summary>General purpose container for persistence.</summary>
-    [Serializable]
-    public class FormInfo
-    {
-        public int X { get; set; } = 50;
-        public int Y { get; set; } = 50;
-        public int Width { get; set; } = 1000;
-        public int Height { get; set; } = 700;
-
-        public void FromForm(Form f)
-        {
-            X = f.Location.X;
-            Y = f.Location.Y;
-            Width = f.Width;
-            Height = f.Height;
-        }
     }
 
     /// <summary>Converter for selecting property value from known lists.</summary>

@@ -91,13 +91,15 @@ namespace NProcessing.App
             _logger.Info("============================ Starting up ===========================");
 
             ///// Init UI //////
-            Location = new Point(_settings.MainFormInfo.X, _settings.MainFormInfo.Y);
-            Size = new Size(_settings.MainFormInfo.Width, _settings.MainFormInfo.Height);
+            Location = new Point(_settings.FormGeometry.X, _settings.FormGeometry.Y);
+            Size = new Size(_settings.FormGeometry.Width, _settings.FormGeometry.Height);
             WindowState = FormWindowState.Normal;
 
             _surface.Visible = true;
             _surface.Location = new Point(Right, Top);
             _surface.TopMost = _settings.LockUi;
+
+            toolStrip1.Renderer = new NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
 
             // The rest of the controls.
             textViewer.BackColor = _settings.BackColor;
@@ -734,7 +736,7 @@ namespace NProcessing.App
         /// </summary>
         void SaveSettings()
         {
-            _settings.MainFormInfo.FromForm(this);
+            _settings.FormGeometry = new Rectangle(Location.X, Location.Y, Size.Width, Size.Height);
             _settings.Save();
         }
 
