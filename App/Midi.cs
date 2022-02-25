@@ -39,9 +39,6 @@ namespace NProcessing.App
         #region Fields
         /// <summary>Midi input device.</summary>
         MidiIn? _mdev = null;
-
-        /// <summary>Resource clean up.</summary>
-        bool _disposed = false;
         #endregion
 
         #region Properties
@@ -108,24 +105,9 @@ namespace NProcessing.App
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Resource clean up.
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed && disposing)
-            {
-                _mdev?.Stop();
-                _mdev?.Dispose();
-                _mdev = null;
-
-                _disposed = true;
-            }
+            _mdev?.Stop();
+            _mdev?.Dispose();
+            _mdev = null;
         }
         #endregion
 

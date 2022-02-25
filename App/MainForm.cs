@@ -72,11 +72,6 @@ namespace NProcessing.App
         /// </summary>
         public MainForm()
         {
-            // Need to load settings before creating controls in MainForm_Load().
-            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-            DirectoryInfo di = new(appDir);
-            di.Create();
-            _settings = UserSettings.Load(appDir);
             InitializeComponent();
         }
 
@@ -87,10 +82,18 @@ namespace NProcessing.App
         {
             bool ok = true;
 
+            // Get settings.
+            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
+            DirectoryInfo di = new(appDir);
+            di.Create();
+            _settings = UserSettings.Load(appDir);
+
             InitLogging();
             _logger.Info("============================ Starting up ===========================");
 
             ///// Init UI //////
+            toolStrip1.Renderer = new NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
+
             Location = new Point(_settings.FormGeometry.X, _settings.FormGeometry.Y);
             Size = new Size(_settings.FormGeometry.Width, _settings.FormGeometry.Height);
             WindowState = FormWindowState.Normal;
@@ -98,8 +101,6 @@ namespace NProcessing.App
             _surface.Visible = true;
             _surface.Location = new Point(Right, Top);
             _surface.TopMost = _settings.LockUi;
-
-            toolStrip1.Renderer = new NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
 
             // The rest of the controls.
             textViewer.BackColor = _settings.BackColor;
