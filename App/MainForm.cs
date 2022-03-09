@@ -54,7 +54,7 @@ namespace NProcessing.App
         string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
-        readonly UserSettings _settings;
+        UserSettings _settings;
 
         /// <summary>Midi input device.</summary>
         MidiInput? _midiIn = null;
