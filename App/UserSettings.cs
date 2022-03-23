@@ -11,12 +11,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using NAudio.Midi;
 using NBagOfTricks;
+using NBagOfUis;
 
 
 namespace NProcessing.App
 {
     [Serializable]
-    public class UserSettings
+    public class UserSettings : Settings
     {
         #region Persisted editable properties
         [DisplayName("Selected Color")]
@@ -84,63 +85,6 @@ namespace NProcessing.App
 
         [Browsable(false)]
         public bool WordWrap { get; set; } = false;
-
-        [Browsable(false)]
-        [JsonConverter(typeof(JsonRectangleConverter))]
-        public Rectangle FormGeometry { get; set; } = new Rectangle(50, 50, 600, 400);
-
-        [Browsable(false)]
-        public List<string> RecentFiles { get; set; } = new List<string>();
-        #endregion
-
-        #region Fields
-        /// <summary>The file name.</summary>
-        string _fn = "";
-        #endregion
-
-        #region Persistence
-        /// <summary>Create object from file.</summary>
-        public static UserSettings Load(string appDir)
-        {
-            UserSettings settings = new();
-            string fn = Path.Combine(appDir, "settings.json");
-
-            if (File.Exists(fn))
-            {
-                string json = File.ReadAllText(fn);
-                var jobj = JsonSerializer.Deserialize<UserSettings>(json);
-                if (jobj is not null)
-                {
-                    settings = jobj;
-                    settings._fn = fn;
-                    settings.Valid = true;
-                }
-            }
-            else
-            {
-                // Doesn't exist, create a new one.
-                settings = new UserSettings()
-                {
-                    _fn = fn,
-                    Valid = true
-                };
-            }
-
-            settings._fn = fn;
-
-            return settings;
-        }
-
-        /// <summary>Save object to file.</summary>
-        public void Save()
-        {
-            if(Valid)
-            {
-                JsonSerializerOptions opts = new() { WriteIndented = true };
-                string json = JsonSerializer.Serialize(this, opts);
-                File.WriteAllText(_fn, json);
-            }
-        }
         #endregion
     }
 

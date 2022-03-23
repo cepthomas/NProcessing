@@ -54,7 +54,7 @@ namespace NProcessing.App
         string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
-        UserSettings _settings;
+        UserSettings _settings = new();
 
         /// <summary>Midi input device.</summary>
         MidiInput? _midiIn = null;
@@ -84,9 +84,7 @@ namespace NProcessing.App
 
             // Get settings.
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-            DirectoryInfo di = new(appDir);
-            di.Create();
-            _settings = UserSettings.Load(appDir);
+            _settings = (UserSettings)Settings.Load(appDir, typeof(UserSettings));
 
             InitLogging();
             _logger.Info("============================ Starting up ===========================");
@@ -546,7 +544,7 @@ namespace NProcessing.App
         {
             BeginInvoke((MethodInvoker)delegate ()
             {
-                textViewer.AddLine(msg);
+                textViewer.AppendLine(msg);
             });
         }
 
@@ -585,7 +583,7 @@ namespace NProcessing.App
             string logFileName = Path.Combine(appDir, "log.txt");
             using (new WaitCursor())
             {
-                File.ReadAllLines(logFileName).ForEach(l => tv.AddLine(l));
+                File.ReadAllLines(logFileName).ForEach(l => tv.AppendLine(l));
             }
 
             f.ShowDialog();
@@ -746,13 +744,17 @@ namespace NProcessing.App
         /// </summary>
         void Settings_Click(object sender, EventArgs e)
         {
-            using SettingsEditor f = new() { Settings = _settings };
+            var changes = _settings.Edit("User Settings");
 
-            if (f.ShowDialog() == DialogResult.OK)
+            // Detect changes of interest.
+            bool restart = changes.Count > 0;
+
+            if (restart)
             {
-                _settings.Save();
-                MessageBox.Show("Settings changes require a restart to take effect.");
+                MessageBox.Show("Restart required for device changes to take effect");
             }
+
+            _settings.Save();
         }
         #endregion
 

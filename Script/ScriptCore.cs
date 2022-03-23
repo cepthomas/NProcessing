@@ -12,7 +12,7 @@ using NBagOfTricks;
 
 namespace NProcessing.Script
 {
-    public partial class ScriptBase : IDisposable
+    public partial class ScriptBase
     {
         #region Fields - internal
         /// <summary>My logger.</summary>
@@ -28,7 +28,9 @@ namespace NProcessing.Script
         internal bool _redraw = false;
 
         /// <summary>Current working object to draw on.</summary>
+        #nullable disable
         internal SKCanvas _canvas;
+        #nullable enable
         #endregion
 
         #region Fields - graphics/processing
@@ -99,13 +101,6 @@ namespace NProcessing.Script
         public void ResetVars()
         {
             Script.color.ResetMode();
-        }
-
-        /// <summary>
-        /// Resource clean up.
-        /// </summary>
-        public void Dispose()
-        {
         }
         #endregion
 
