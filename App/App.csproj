@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>NProcessing</AssemblyName>
     <Deterministic>False</Deterministic>
-    <Version>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\version.txt"))</Version>
+    <Version>$([System.DateTime]::UtcNow.ToString(yy.MM.dd))</Version> 
     <Description>NProcessing application</Description>
     <Copyright>MIT License</Copyright>
     <OutputPath>bin\</OutputPath>

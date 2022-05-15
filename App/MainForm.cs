@@ -839,8 +839,7 @@ namespace NProcessing.App
         /// </summary>
         void About_Click(object? sender, EventArgs e)
         {
-            string fn = "NProcessing.md.html";
-            new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
+            MiscUtils.ShowReadme("NProcessing");
         }
 
         /// <summary>
