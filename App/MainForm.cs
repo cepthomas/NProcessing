@@ -11,6 +11,7 @@ using NBagOfTricks;
 using NBagOfUis;
 using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
+using MidiLib;
 
 
 namespace NProcessing.App
