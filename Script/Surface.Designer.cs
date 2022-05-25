@@ -41,7 +41,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Surface";
             this.Text = "Surface";
-            this.Load += new System.EventHandler(this.Surface_Load);
             this.ResumeLayout(false);
 
         }

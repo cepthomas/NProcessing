@@ -27,13 +27,7 @@ namespace NProcessing.Script
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
             UpdateStyles();
-        }
 
-        /// <summary>
-        /// Initialize form controls.
-        /// </summary>
-        private void Surface_Load(object? sender, EventArgs e)
-        {
             // Intercept all keyboard events.
             KeyPreview = true;
         }

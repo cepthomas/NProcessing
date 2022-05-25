@@ -73,13 +73,7 @@ namespace NProcessing.App
         public MainForm()
         {
             InitializeComponent();
-        }
 
-        /// <summary>
-        /// Initialize form controls.
-        /// </summary>
-        void MainForm_Load(object sender, EventArgs e)
-        {
             bool ok = true;
 
             // Get settings.
@@ -156,7 +150,7 @@ namespace NProcessing.App
         /// <summary>
         /// Clean up on shutdown.
         /// </summary>
-        void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             try
             {
@@ -810,7 +804,7 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MainForm_KeyDown(object sender, KeyEventArgs e)
+        protected override void OnKeyDown(KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Space)
             {
