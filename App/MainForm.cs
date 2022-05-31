@@ -11,7 +11,6 @@ using NBagOfTricks;
 using NBagOfUis;
 using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
-using MidiLib;
 
 
 namespace NProcessing.App
@@ -75,14 +74,11 @@ namespace NProcessing.App
         {
             InitializeComponent();
 
-            bool ok = true;
-
             // Get settings.
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
             _settings = (UserSettings)Settings.Load(appDir, typeof(UserSettings));
 
             InitLogging();
-            _logger.Info("============================ Starting up ===========================");
 
             ///// Init UI //////
             toolStrip1.Renderer = new NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
@@ -122,7 +118,7 @@ namespace NProcessing.App
             textViewer.WordWrap = btnWrap.Checked;
             btnWrap.Click += (object? _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; _settings.WordWrap = textViewer.WordWrap; };
 
-            ok = InitMidi();
+            InitMidi();
 
             PopulateRecentMenu();
 
@@ -139,13 +135,24 @@ namespace NProcessing.App
             // Slow timer.
             timer1.Interval = 500;
             timer1.Start();
+        }
+
+        /// <summary>
+        /// Post control creation.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnLoad(EventArgs e)
+        {
+            _logger.Info("============================ Starting up ===========================");
 
             // Look for filename passed in.
             string[] args = Environment.GetCommandLineArgs();
-            if (ok && args.Length > 1)
+            if (args.Length > 1)
             {
                 OpenFile(args[1]);
             }
+
+            base.OnLoad(e);
         }
 
         /// <summary>
@@ -449,11 +456,6 @@ namespace NProcessing.App
                 }
             }
 
-            if (_settings.Vkey)
-            {
-                CreatePiano();
-            }
-
             return valid;
         }
 
@@ -466,48 +468,6 @@ namespace NProcessing.App
         {
             PMidiEvent mevt = new(e.Channel, e.Note, e.Velocity, e.ControllerId, e.ControllerValue);
             _pmidiEvents.Enqueue(mevt);
-        }
-
-        /// <summary>
-        /// Make a floating midi piano.
-        /// </summary>
-        void CreatePiano()
-        {
-            _piano = new Form()
-            {
-                Text = "Virtual Keyboard",
-                Size = new Size(864, 100),
-                StartPosition = FormStartPosition.Manual,
-                Location = new Point(Left, Bottom + 20),
-                FormBorderStyle = FormBorderStyle.FixedToolWindow,
-                ShowIcon = false,
-                ShowInTaskbar = false
-            };
-
-            VirtualKeyboard vkey = new()
-            {
-                Dock = DockStyle.Fill,
-                ShowNoteNames = true,
-            };
-
-            // Set the icon.
-            Bitmap bm = new(global::App.Properties.Resources.glyphicons_327_piano);
-            _piano.Icon = Icon.FromHandle(bm.GetHicon());
-
-            vkey.KeyboardEvent += (_, e) =>
-            {
-                MidiEventArgs mevt = new()
-                {
-                    Channel = e.ChannelNumber,
-                    Note = e.NoteId,
-                    Velocity = e.Velocity
-                };
-                MidiIn_InputEvent(vkey, mevt);
-            };
-
-            _piano.Controls.Add(vkey);
-            _piano.TopMost = true;
-            _piano.Show();
         }
         #endregion
 

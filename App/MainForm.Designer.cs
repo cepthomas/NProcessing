@@ -181,14 +181,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textViewer.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textViewer.Location = new System.Drawing.Point(13, 60);
             this.textViewer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textViewer.MaxText = 5000;
             this.textViewer.Name = "textViewer";
             this.textViewer.Size = new System.Drawing.Size(836, 542);
             this.textViewer.TabIndex = 41;
-            this.textViewer.Text = "";
+            this.textViewer.WordWrap = true;
             // 
             // timer1
             // 
@@ -209,6 +208,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "NProcessing";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

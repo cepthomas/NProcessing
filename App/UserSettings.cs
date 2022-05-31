@@ -47,12 +47,6 @@ namespace NProcessing.App
         [TypeConverter(typeof(FixedListTypeConverter))]
         public string MidiInDevice { get; set; } = "";
 
-        [DisplayName("Virtual Keyboard")]
-        [Description("Show or hide the virtual keyboard.")]
-        [Category("Devices")]
-        [Browsable(true)]
-        public bool Vkey { get; set; } = false;
-
         [DisplayName("Work Path")]
         [Description("Where you keep your neb files.")]
         [Category("Functionality")]
