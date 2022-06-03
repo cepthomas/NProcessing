@@ -49,3 +49,10 @@ MouseDown sequence looks like this:
   `warning MSB3277: Found conflicts between different versions of "System.IO.Compression" that could not be resolved.`
   Commenting out the redirect in the .proj file fixed that... shouldn't have.
   
+# Third Party
+
+This application uses these FOSS components:
+- Main icon: [Charlotte Schmidt](http://pattedemouche.free.fr/) (Copyright © 2009 of Charlotte Schmidt).
+- Button icons: [Glyphicons Free](http://glyphicons.com/) (CC BY 3.0).
+- [NBagOfTricks](https://github.com/cepthomas/NBagOfTricks/blob/main/README.md)
+- [NBagOfUis](https://github.com/cepthomas/NBagOfUis/blob/main/README.md)
