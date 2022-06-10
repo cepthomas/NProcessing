@@ -306,7 +306,7 @@ int smallPoint, largePoint;
 void setup_pointillism()
 {
     //size(640, 360);
-    img = loadImage(@"C:\Dev\NProcessing\Examples\balls.png");
+    img = loadImage(@"C:\Dev\NProcessing\Examples\balls.png TODOX");
     //image(img, 0, 0);//, width, height);
     smallPoint = 4;
     largePoint = 40;

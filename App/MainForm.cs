@@ -171,6 +171,7 @@ namespace NProcessing.App
             {
                 _logger.Error($"Something failed during shut down: {ex.Message}.");
             }
+            base.OnFormClosing(e);
         }
 
         /// <summary>
