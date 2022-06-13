@@ -6,9 +6,9 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using NLog;
 using NBagOfTricks;
 using NBagOfUis;
+using NBagOfTricks.Slog;
 using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
 
@@ -24,7 +24,7 @@ namespace NProcessing.App
 
         #region Fields
         /// <summary>My logger.</summary>
-        readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        readonly Logger _logger = LogManager.CreateLogger("Main");
 
         /// <summary>Fast timer.</summary>
         readonly MmTimerEx _mmTimer = new();
@@ -54,16 +54,7 @@ namespace NProcessing.App
         string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
-        UserSettings _settings = new();
-
-        /// <summary>Midi input device.</summary>
-        MidiInput? _midiIn = null;
-
-        /// <summary>Midi event queue.</summary>
-        readonly ConcurrentQueue<PMidiEvent> _pmidiEvents = new();
-
-        /// <summary>Optional midi piano.</summary>
-        Form? _piano = null;
+        readonly UserSettings _settings = new();
         #endregion
 
         #region Lifecycle
@@ -74,11 +65,16 @@ namespace NProcessing.App
         {
             InitializeComponent();
 
-            // Get settings.
+            ///// Get settings. /////
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
             _settings = (UserSettings)Settings.Load(appDir, typeof(UserSettings));
 
-            InitLogging();
+            ///// Init logging. /////
+            FileInfo fi = new(Path.Combine(appDir, "log.txt"));
+            LogManager.MinLevelFile = LogLevel.Debug;
+            LogManager.MinLevelNotif = LogLevel.Info;
+            LogManager.LogEvent += LogManager_LogEvent;
+            LogManager.Run(fi.FullName, 100000);
 
             ///// Init UI //////
             toolStrip1.Renderer = new NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
@@ -93,8 +89,8 @@ namespace NProcessing.App
 
             // The rest of the controls.
             textViewer.BackColor = _settings.BackColor;
-            textViewer.Colors.Add(" E ", Color.LightPink);
-            textViewer.Colors.Add(" W ", Color.Plum);
+            textViewer.Colors.Add("ERR", Color.LightPink);
+            textViewer.Colors.Add("WRN", Color.Plum);
 
             ///// CPU meter /////
             if (_settings.CpuMeter)
@@ -118,8 +114,6 @@ namespace NProcessing.App
             textViewer.WordWrap = btnWrap.Checked;
             btnWrap.Click += (object? _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; _settings.WordWrap = textViewer.WordWrap; };
 
-            InitMidi();
-
             PopulateRecentMenu();
 
             KeyPreview = true; // for routing kbd strokes properly
@@ -127,10 +121,6 @@ namespace NProcessing.App
             _watcher.FileChangeEvent += Watcher_Changed;
 
             Text = $"NProcessing {MiscUtils.GetVersionString()} - No file loaded";
-
-            // Fast timer.
-            SetUiTimerPeriod();
-            _mmTimer.Start();
 
             // Slow timer.
             timer1.Interval = 500;
@@ -144,6 +134,10 @@ namespace NProcessing.App
         protected override void OnLoad(EventArgs e)
         {
             _logger.Info("============================ Starting up ===========================");
+
+            // Fast timer.
+            SetUiTimerPeriod();
+            _mmTimer.Start();
 
             // Look for filename passed in.
             string[] args = Environment.GetCommandLineArgs();
@@ -162,6 +156,7 @@ namespace NProcessing.App
         {
             try
             {
+                LogManager.Stop();
                 ProcessPlay(PlayCommand.Stop);
 
                 // Save user settings.
@@ -184,12 +179,6 @@ namespace NProcessing.App
             {
                 _mmTimer.Stop();
                 _mmTimer.Dispose();
-
-                _midiIn?.Dispose();
-                _midiIn = null;
-
-                _piano?.Dispose();
-                _piano = null;
 
                 components?.Dispose();
             }
@@ -258,26 +247,33 @@ namespace NProcessing.App
 
                 compiler.Results.ForEach(r =>
                 {
-                    LogLevel level = LogLevel.Info;
+                    string msg;
 
-                    switch(r.ResultType)
+                    if (r.LineNumber > 0)
                     {
-                        case CompileResultType.Error:
-                            level = LogLevel.Error;
-                            break;
-                        case CompileResultType.Warning:
-                            level = LogLevel.Warn;
-                            break;
-                        case CompileResultType.Info:
-                            level = LogLevel.Info;
-                            break;
+                        msg = $"{Path.GetFileName(r.SourceFile)}({r.LineNumber}): {r.Message}";
+                    }
+                    else if (r.SourceFile != "")
+                    {
+                        msg = $"{r.SourceFile}: {r.Message}";
+                    }
+                    else
+                    {
+                        msg = r.Message;
                     }
 
-                    _logger.Log(new LogEventInfo()
+                    switch (r.ResultType)
                     {
-                        Level = level,
-                        Message = r.LineNumber > 0 ? $"{Path.GetFileName(r.SourceFile)}({r.LineNumber}): {r.Message}" : $"{r.SourceFile}: {r.Message}"
-                    });
+                        case CompileResultType.Error:
+                            _logger.Error(msg);
+                            break;
+                        case CompileResultType.Warning:
+                            _logger.Warn(msg);
+                            break;
+                        case CompileResultType.Info:
+                            _logger.Info(msg);
+                            break;
+                    }
                 });
             }
 
@@ -314,14 +310,8 @@ namespace NProcessing.App
             {
                 if (_script is not null)
                 {
-                    // Process any events.
-                    while (_pmidiEvents.TryDequeue(out PMidiEvent? mevt))
-                {
-                    _script.midiEvent(mevt);
-                }
-
-                // Update the view.
-                NextDraw();
+                    // Update the view.
+                    NextDraw();
                 }
             });
         }
@@ -434,118 +424,6 @@ namespace NProcessing.App
         }
         #endregion
 
-        #region Midi
-        /// <summary>
-        /// Init midi stuff.
-        /// </summary>
-        bool InitMidi()
-        {
-            bool valid = true;
-
-            if (_settings.MidiInDevice != "")
-            {
-                _midiIn = new MidiInput();
-                if (_midiIn.Init(_settings.MidiInDevice))
-                {
-                    _midiIn.InputEvent += MidiIn_InputEvent;
-                }
-                else
-                {
-                    _logger.Error(_midiIn.ErrorInfo);
-                    _midiIn = null;
-                    valid = false;
-                }
-            }
-
-            return valid;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void MidiIn_InputEvent(object? sender, MidiEventArgs e)
-        {
-            PMidiEvent mevt = new(e.Channel, e.Note, e.Velocity, e.ControllerId, e.ControllerValue);
-            _pmidiEvents.Enqueue(mevt);
-        }
-        #endregion
-
-        #region Messages and logging
-        /// <summary>
-        /// Init all logging functions.
-        /// </summary>
-        void InitLogging()
-        { 
-            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-
-            FileInfo fi = new(Path.Combine(appDir, "log.txt"));
-            if(fi.Exists && fi.Length > 100000)
-            {
-                File.Copy(fi.FullName, fi.FullName.Replace("log.", "log2."), true);
-                File.Delete(fi.FullName);
-            }
-
-            // Hook to client window.
-            LogClientNotificationTarget.ClientNotification += Log_ClientNotification;
-        }
-
-        /// <summary>
-        /// A message from the logger to display to the user.
-        /// </summary>
-        /// <param name="level">Level.</param>
-        /// <param name="msg">The message.</param>
-        void Log_ClientNotification(LogLevel level, string msg)
-        {
-            BeginInvoke((MethodInvoker)delegate ()
-            {
-                textViewer.AppendLine(msg);
-            });
-        }
-
-        /// <summary>
-        /// Show the log file.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void LogShow_Click(object sender, EventArgs e)
-        {
-            using Form f = new()
-            {
-                Text = "Log Viewer",
-                Size = new Size(900, 600),
-                BackColor = _settings.BackColor,
-                StartPosition = FormStartPosition.Manual,
-                Location = new Point(20, 20),
-                FormBorderStyle = FormBorderStyle.SizableToolWindow,
-                ShowIcon = false,
-                ShowInTaskbar = false
-            };
-
-            TextViewer tv = new()
-            {
-                Dock = DockStyle.Fill,
-                WordWrap = true,
-                MaxText = 50000
-            };
-
-            tv.Colors.Add(" E ", Color.LightPink);
-            tv.Colors.Add(" W ", Color.Plum);
-            //tv.Colors.Add(" SND???:", Color.LightGreen);
-            f.Controls.Add(tv);
-
-            string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-            string logFileName = Path.Combine(appDir, "log.txt");
-            using (new WaitCursor())
-            {
-                File.ReadAllLines(logFileName).ForEach(l => tv.AppendLine(l));
-            }
-
-            f.ShowDialog();
-        }
-        #endregion
-
         #region File handling
         /// <summary>
         /// Allows the user to select a np file from file system.
@@ -630,23 +508,7 @@ namespace NProcessing.App
         {
             if (File.Exists(fn))
             {
-                // First check if it's already in there.
-                for (int i = 0; i < _settings.RecentFiles.Count; i++)
-                {
-                    if (fn == _settings.RecentFiles[i])
-                    {
-                        // Remove from current location so we can stuff it back in later.
-                        _settings.RecentFiles.Remove(_settings.RecentFiles[i]);
-                    }
-                }
-
-                // Insert at the front and trim the tail.
-                _settings.RecentFiles.Insert(0, fn);
-                while (_settings.RecentFiles.Count > 20)
-                {
-                    _settings.RecentFiles.RemoveAt(_settings.RecentFiles.Count - 1);
-                }
-
+                _settings.RecentFiles.UpdateMru(fn);
                 PopulateRecentMenu();
             }
         }
@@ -796,6 +658,20 @@ namespace NProcessing.App
         void About_Click(object? sender, EventArgs e)
         {
             MiscUtils.ShowReadme("NProcessing");
+        }
+
+        /// <summary>
+        /// Show log events.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void LogManager_LogEvent(object? sender, LogEventArgs e)
+        {
+            // Usually come from a different thread.
+            if (IsHandleCreated)
+            {
+                this.InvokeIfRequired(_ => { textViewer.AppendLine($"{e.Message}"); });
+            }
         }
 
         /// <summary>

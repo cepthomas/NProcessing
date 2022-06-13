@@ -10,7 +10,7 @@ bool boing(int which = 0)
 
     if(which == 0)
     {
-        which = (int)random(30, MAX.Value);
+        which = (int)random(30, 60);
         boinged = true;
         print("boing");
     }

@@ -11,14 +11,13 @@
         <OutputPath>bin\</OutputPath>
         <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
         <WarningLevel>4</WarningLevel>
-        <!-- <NoWarn>CS1591;CA1822;IDE1006</NoWarn> -->
+        <NoWarn>CS1591;CA1822;IDE1006</NoWarn> 
         <Nullable>enable</Nullable>
         <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
         <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
         <!-- en none -->
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="NLog" Version="4.7.11"/>
         <PackageReference Include="SkiaSharp" Version="2.80.3"/>
         <PackageReference Include="System.Drawing.Common" Version="6.0.0"/>
     </ItemGroup>

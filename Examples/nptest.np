@@ -1,20 +1,21 @@
 
 ///// Tester for Processing workalike.
 
-Include(utils.np);
+Include(C:\Dev\repos\NProcessing\Examples\utils.np);
 
 public override void setup()
 {
     size(800, 800);
+    frameRate(30); // default - other setups may change it.
     // testStuff();
 
     // setup_force_fail();
     // setup_bezier();
-    setup_radial_gradient();
+    // setup_radial_gradient();
     // setup_sine_cosine();
     // setup_random_gaussian();
     // setup_loadfiles1();
-    // setup_pointillism();
+    setup_pointillism();
 }
 
 public override void draw()
@@ -22,13 +23,13 @@ public override void draw()
     // draw_force_fail();
     // draw_ball();
     // draw_bezier();
-    draw_radial_gradient();
+    // draw_radial_gradient();
     // draw_regular_polygon();
     // draw_sine_cosine();
     // draw_random_gaussian();
     // draw_embedded_iteration();
     // draw_loadfiles1();
-    // draw_pointillism();
+    draw_pointillism();
 }
 
 
@@ -306,9 +307,9 @@ int smallPoint, largePoint;
 void setup_pointillism()
 {
     //size(640, 360);
-    img = loadImage(@"C:\Dev\repos\NProcessing\Examples\balls.png");
+    img = loadImage(@"..\..\..\Examples\balls.png");
     //image(img, 0, 0);//, width, height);
-    smallPoint = 4;
+    smallPoint = 10;
     largePoint = 40;
     //imageMode(CENTER);
     noStroke();
@@ -317,8 +318,9 @@ void setup_pointillism()
 
 void draw_pointillism()
 {
-    double pointillize = map(mouseX, 0, width, smallPoint, largePoint);
-    pointillize = 10; // dev
+    // double pointillize = map(mouseX, 0, width, smallPoint, largePoint);
+    // pointillize = 10; // dev
+    int pointillize = random( smallPoint, largePoint);
     int x = @int(random(img.width));
     int y = @int(random(img.height));
     color pix = img.get(x, y);

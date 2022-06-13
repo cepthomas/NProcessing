@@ -47,13 +47,6 @@ namespace NProcessing.App
         [TypeConverter(typeof(FixedListTypeConverter))]
         public string MidiInDevice { get; set; } = "";
 
-        [DisplayName("Work Path")]
-        [Description("Where you keep your neb files.")]
-        [Category("Functionality")]
-        [Browsable(true)]
-        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
-        public string WorkPath { get; set; } = "";
-
         [DisplayName("Auto Compile")]
         [Description("Compile current file when change detected.")]
         [Category("Functionality")]

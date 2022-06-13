@@ -17,10 +17,10 @@ namespace NProcessing.App
         public override void PreExecute()
         {
             SystemDlls.Add("System.Drawing");
-            LocalDlls = new() { "NAudio", "NLog", "SkiaSharp", "NBagOfTricks", "NProcessing.Script" };
+            LocalDlls = new() { "NAudio", "SkiaSharp", "NBagOfTricks", "NProcessing.Script" };
         }
 
-        // Nothing to do.
+        // Nothing to do:
         // public override void PostExecute()
         // public override bool PreprocessFile(string sline, FileContext pcont)
     }

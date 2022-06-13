@@ -12,7 +12,7 @@ double minH = 0;
 double maxH = 0;
 bool curves = true;
 
-// klunky way to make this example work with my model - probably should fix some time
+// TODOX klunky way to make this example work with my model - probably should fix some time
 bool go = false;
 
 public override void setup()

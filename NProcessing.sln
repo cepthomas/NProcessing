@@ -17,6 +17,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DocFiles", "DocFiles", "{46
 		DocFiles\ScriptSyntax.md = DocFiles\ScriptSyntax.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{34E51D26-EAD9-44E4-A318-E8F35078A6EE}"
+	ProjectSection(SolutionItems) = preProject
+		Examples\balls.png = Examples\balls.png
+		Examples\dquick.np = Examples\dquick.np
+		Examples\flocking.np = Examples\flocking.np
+		Examples\generative1.np = Examples\generative1.np
+		Examples\generative2.np = Examples\generative2.np
+		Examples\gol.np = Examples\gol.np
+		Examples\lsys.np = Examples\lsys.np
+		Examples\nptest.np = Examples\nptest.np
+		Examples\positions.txt = Examples\positions.txt
+		Examples\utils.np = Examples\utils.np
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

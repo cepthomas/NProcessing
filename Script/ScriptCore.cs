@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using SkiaSharp;
-using NLog;
 using NBagOfTricks;
+using NBagOfTricks.Slog;
 
 
 namespace NProcessing.Script
@@ -16,7 +16,7 @@ namespace NProcessing.Script
     {
         #region Fields - internal
         /// <summary>My logger.</summary>
-        readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        readonly Logger _logger = LogManager.CreateLogger("Script");
 
         /// <summary>Script randomizer.</summary>
         Random _rand = new();

@@ -21,7 +21,6 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,8 +53,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
-            this.recentToolStripMenuItem,
-            this.logToolStripMenuItem});
+            this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
@@ -72,13 +70,6 @@
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
             this.recentToolStripMenuItem.Text = "Recent";
-            // 
-            // logToolStripMenuItem
-            // 
-            this.logToolStripMenuItem.Name = "logToolStripMenuItem";
-            this.logToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
-            this.logToolStripMenuItem.Text = "Log";
-            this.logToolStripMenuItem.Click += new System.EventHandler(this.LogShow_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -233,7 +224,6 @@
         private System.Windows.Forms.ToolStripButton btnPlay;
         private System.Windows.Forms.ToolStripButton btnCompile;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Timer timer1;
         private NBagOfUis.TextViewer textViewer;
