@@ -1263,9 +1263,6 @@
         <member name="T:NBagOfTricks.Slog.LogEventArgs">
             <summary>Log event for notification.</summary>
         </member>
-        <member name="F:NBagOfTricks.Slog.Definitions.TIME_FORMAT">
-            <summary>Verbose timestamp.</summary>
-        </member>
         <member name="T:NBagOfTricks.Slog.Scoper">
             <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
         </member>
