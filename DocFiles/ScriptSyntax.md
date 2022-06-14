@@ -31,5 +31,5 @@ class klass
 ## Include
 A simple include mechanism is supplied in lieu of the Processing `import`. It's pretty much an insert-whole-file-body-here, no wildcard support. Tries absolute path first, then relative to current. It needs to be specified before contents are referenced. If one were to get grandiose, a true import could be implemented.
 ```c#
-Include(utils.np)
+Include(path\utils.np)
 ```
