@@ -1,5 +1,7 @@
 // Doodle generator Donya Quick http://donyaquick.com/an-avant-garde-jazz-album-cover-generator/
 
+
+
 int shapes = 10;
 double padding = 80;
 double minW = 0;
@@ -47,7 +49,7 @@ void newDoodle()
         double r = random(0, 1.0);
         if (r < 0.25)   // 25% chance to draw a circle
         {
-            fill(random(0, 255), random(0, 255), random(0,255), random(0,255));
+            fill(random(0, 255), random(0, 255), random(0, 255), random(0, 255));
             double size = random(width/8, width/4);
             ellipse(random(minW,maxW), random(minH,maxH), size, size);
         }

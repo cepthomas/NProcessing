@@ -139,12 +139,17 @@ namespace NProcessing.App
             SetUiTimerPeriod();
             _mmTimer.Start();
 
-            // Look for filename passed in.
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                OpenFile(args[1]);
-            }
+            //// Look for filename passed in.
+            //string[] args = Environment.GetCommandLineArgs();
+            //if (args.Length > 1)
+            //{
+            //    OpenFile(args[1]);
+            //}
+
+
+            OpenFile(@"C:\Dev\repos\NProcessing\Examples\junk.np");
+            //_watcher.Add(@"C:\Dev\repos\NProcessing\Examples\junk.np");
+
 
             base.OnLoad(e);
         }
@@ -306,7 +311,7 @@ namespace NProcessing.App
         void MmTimerCallback(double totalElapsed, double periodElapsed)
         {
             // Kick over to main UI thread.
-            _ = BeginInvoke((MethodInvoker)delegate ()
+            this.InvokeIfRequired(_ =>
             {
                 if (_script is not null)
                 {
@@ -521,10 +526,7 @@ namespace NProcessing.App
         void Watcher_Changed(object? sender, MultiFileWatcher.FileChangeEventArgs e)
         {
             // Kick over to main UI thread.
-            BeginInvoke((MethodInvoker)delegate ()
-            {
-                SetCompileStatus(false);
-            });
+            this.InvokeIfRequired(_ => { SetCompileStatus(false); });
         }
         #endregion
 
