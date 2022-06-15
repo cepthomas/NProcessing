@@ -118,7 +118,7 @@ namespace NProcessing.App
 
             KeyPreview = true; // for routing kbd strokes properly
 
-            _watcher.FileChangeEvent += Watcher_Changed;
+            _watcher.FileChangeEvent += (_, __) => { this.InvokeIfRequired(_ => { SetCompileStatus(false); }); };
 
             Text = $"NProcessing {MiscUtils.GetVersionString()} - No file loaded";
 
@@ -139,15 +139,15 @@ namespace NProcessing.App
             SetUiTimerPeriod();
             _mmTimer.Start();
 
-            //// Look for filename passed in.
-            //string[] args = Environment.GetCommandLineArgs();
-            //if (args.Length > 1)
-            //{
-            //    OpenFile(args[1]);
-            //}
+            // Look for filename passed in.
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                OpenFile(args[1]);
+            }
 
 
-            OpenFile(@"C:\Dev\repos\NProcessing\Examples\junk.np");
+            //OpenFile(@"C:\Dev\repos\NProcessing\Examples\junk.np"); // ok with: local modified watcher; local nbot project; bin nbot(?)
             //_watcher.Add(@"C:\Dev\repos\NProcessing\Examples\junk.np");
 
 
@@ -161,8 +161,8 @@ namespace NProcessing.App
         {
             try
             {
+                _mmTimer.Stop();
                 LogManager.Stop();
-                ProcessPlay(PlayCommand.Stop);
 
                 // Save user settings.
                 SaveSettings();
@@ -182,7 +182,6 @@ namespace NProcessing.App
         {
             if (disposing)
             {
-                _mmTimer.Stop();
                 _mmTimer.Dispose();
 
                 components?.Dispose();
@@ -310,15 +309,11 @@ namespace NProcessing.App
         /// </summary>
         void MmTimerCallback(double totalElapsed, double periodElapsed)
         {
-            // Kick over to main UI thread.
-            this.InvokeIfRequired(_ =>
+            // Kick over to main UI thread. TODO shurdown race condition here.
+            if (_script is not null)
             {
-                if (_script is not null)
-                {
-                    // Update the view.
-                    NextDraw();
-                }
-            });
+                this.InvokeIfRequired(_ => { NextDraw(); });
+            }
         }
 
         /// <summary>
@@ -516,17 +511,6 @@ namespace NProcessing.App
                 _settings.RecentFiles.UpdateMru(fn);
                 PopulateRecentMenu();
             }
-        }
-
-        /// <summary>
-        /// One or more np files have changed so reload/compile.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Watcher_Changed(object? sender, MultiFileWatcher.FileChangeEventArgs e)
-        {
-            // Kick over to main UI thread.
-            this.InvokeIfRequired(_ => { SetCompileStatus(false); });
         }
         #endregion
 
