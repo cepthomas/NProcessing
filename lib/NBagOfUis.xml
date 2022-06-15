@@ -794,9 +794,6 @@
         <member name="F:NBagOfUis.WaitCursor.m_cursorOld">
             <summary>Restore original cursor</summary>
         </member>
-        <member name="F:NBagOfUis.WaitCursor._start">
-            <summary>For metrics</summary>
-        </member>
         <member name="M:NBagOfUis.WaitCursor.#ctor">
             <summary>Constructor</summary>
         </member>

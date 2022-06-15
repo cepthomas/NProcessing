@@ -212,7 +212,7 @@ namespace NProcessing.App
 
                 // Update file watcher just in case.
                 _watcher.Clear();
-                compiler.SourceFiles.ForEach(f => { if (f != "") _watcher.Add(f); });
+                compiler.SourceFiles.ForEach(f => { _watcher.Add(f); });
 
                 // Process errors. Some may be warnings.
                 int errorCount = compiler.Results.Count(w => w.ResultType == CompileResultType.Error);

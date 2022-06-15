@@ -1039,6 +1039,9 @@
         <member name="P:NBagOfTricks.ScriptCompiler.CompileResult.Message">
             <summary>Content.</summary>
         </member>
+        <member name="M:NBagOfTricks.ScriptCompiler.CompileResult.ToString">
+            <summary>For humans.</summary>
+        </member>
         <member name="T:NBagOfTricks.ScriptCompiler.FileContext">
             <summary>Parser helper class.</summary>
         </member>

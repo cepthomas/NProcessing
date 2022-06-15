@@ -1,8 +1,4 @@
-/*
-Doodle generator
-Donya Quick
-http://donyaquick.com/an-avant-garde-jazz-album-cover-generator/
-*/
+// Doodle generator Donya Quick http://donyaquick.com/an-avant-garde-jazz-album-cover-generator/
 
 int shapes = 10;
 double padding = 80;
@@ -12,8 +8,7 @@ double minH = 0;
 double maxH = 0;
 bool curves = true;
 
-// TODOX klunky way to make this example work with my model - probably should fix some time
-bool go = false;
+bool draw_one = false;
 
 public override void setup()
 {
@@ -23,43 +18,36 @@ public override void setup()
     maxW = width - padding;
     minH = padding;
     maxH = height - padding;
-
-    //newDoodle(); // can't draw in setup. OK?
 }
 
 public override void draw()
 {
-    // NOT: do nothing - things only happen at start & on mouse press
-
-    if(go)
+    if(draw_one)
     {
         newDoodle();
-        go = false;
+        draw_one = false;
     }
 }
 
 public override void mousePressed()
 {
-    //NOT: newDoodle();
-    go = true;
+    draw_one = true;
     curves = !curves;
 }
 
-/*
-Make a new algorithmic squiggle
-*/
+// Make a new algorithmic squiggle
 void newDoodle()
 {
     background(50);
-    shapes = round(random(5,10));
-    for (int i=0; i<shapes; i++)
+    shapes = round(random(5, 10));
+    for (int i = 0; i < shapes; i++)
     {
         stroke(randomBrightColor());
-        strokeWeight(random(3,10));
-        double r = random(0,1.0);
-        if (r<0.25)   // 25% chance to draw a circle
+        strokeWeight(random(3, 10));
+        double r = random(0, 1.0);
+        if (r < 0.25)   // 25% chance to draw a circle
         {
-            fill(random(0,255), random(0,255), random(0,255), random(0,255));
+            fill(random(0, 255), random(0, 255), random(0,255), random(0,255));
             double size = random(width/8, width/4);
             ellipse(random(minW,maxW), random(minH,maxH), size, size);
         }
