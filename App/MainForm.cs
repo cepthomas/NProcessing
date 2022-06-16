@@ -158,7 +158,6 @@ namespace NProcessing.App
             {
                 _mmTimer.Stop();
                 LogManager.Stop();
-                // Save user settings.
                 SaveSettings();
             }
             catch (Exception ex)
@@ -180,6 +179,7 @@ namespace NProcessing.App
                 components?.Dispose();
             }
 
+            // TODO exception in MmTimerCallback() after this call.
             base.Dispose(disposing);
         }
         #endregion
@@ -305,7 +305,6 @@ namespace NProcessing.App
             // Kick over to main UI thread.
             if (_script is not null && _mmTimer.Running)
             {
-                // TODO shutdown race condition here.
                 try
                 {
                     this.InvokeIfRequired(_ => { NextDraw(); });
@@ -644,7 +643,9 @@ namespace NProcessing.App
         /// </summary>
         void About_Click(object? sender, EventArgs e)
         {
-            MiscUtils.ShowReadme("NProcessing");
+            _mmTimer.Stop();
+
+            //MiscUtils.ShowReadme("NProcessing");
         }
 
         /// <summary>
