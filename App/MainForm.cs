@@ -548,7 +548,7 @@ namespace NProcessing.App
         /// </summary>
         void Settings_Click(object sender, EventArgs e)
         {
-            var changes = _settings.Edit("User Settings");
+            var changes = _settings.Edit("User Settings", 300);
 
             // Detect changes of interest.
             bool restart = changes.Count > 0;

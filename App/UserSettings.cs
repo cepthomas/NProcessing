@@ -40,13 +40,6 @@ namespace NProcessing.App
         [Browsable(true)]
         public bool LockUi { get; set; } = false;
 
-        [DisplayName("Midi Input")]
-        [Description("Valid device if handling midi input.")]
-        [Category("Devices")]
-        [Browsable(true)]
-        [TypeConverter(typeof(FixedListTypeConverter))]
-        public string MidiInDevice { get; set; } = "";
-
         [DisplayName("Auto Compile")]
         [Description("Compile current file when change detected.")]
         [Category("Functionality")]
@@ -73,39 +66,5 @@ namespace NProcessing.App
         [Browsable(false)]
         public bool WordWrap { get; set; } = false;
         #endregion
-    }
-
-    /// <summary>Converter for selecting property value from known lists.</summary>
-    public class FixedListTypeConverter : TypeConverter
-    {
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context) { return true; }
-        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) { return true; }
-
-        // Get the specific list based on the property name.
-        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
-        {
-            List<string>? rec = null;
-
-            switch (context.PropertyDescriptor.Name)
-            {
-                case "MidiInDevice":
-                    rec = new List<string>();
-                    for (int devindex = 0; devindex < MidiIn.NumberOfDevices; devindex++)
-                    {
-                        rec.Add(MidiIn.DeviceInfo(devindex).ProductName);
-                    }
-                    break;
-
-                case "MidiOutDevice":
-                    rec = new List<string>();
-                    for (int devindex = 0; devindex < MidiOut.NumberOfDevices; devindex++)
-                    {
-                        rec.Add(MidiOut.DeviceInfo(devindex).ProductName);
-                    }
-                    break;
-            }
-
-            return new StandardValuesCollection(rec);
-        }
     }
 }
