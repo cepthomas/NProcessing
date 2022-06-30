@@ -4,7 +4,7 @@
 A place to store notes that don't fit anywhere else, like inside my head.
 
 
-- VS 2019 solution, targets .NET5 WinForms.
+- VS 2019 solution, targets .NET6 WinForms.
 - Uses Roslyn for in-memory compilation.
 - No installer yet, it's a build-it-yerself for now. Eventually a nuget package might be created.
 - Settings and log are in `C:\Users\<user>\AppData\Local\Ephemera\NProcessing`.
