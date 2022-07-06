@@ -6,7 +6,7 @@
 
 ## Editing Scripts
 - Rather than spending the effort on a built-in script editor, I figured it would be easier for you to use your favorite external text editor. The application will watch for changes you make and indicate that recompile is needed.  
-- I use Sublime - you can associate .np files with .cs for pretty-close syntax coloring by:  
+- I use Sublime Text - you can associate .np files with .cs for pretty-close syntax coloring by:  
   `View -> Syntax -> Open all with current extension as C#`
 
 

@@ -12,6 +12,7 @@ using NBagOfTricks.Slog;
 using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
 
+// TODOX revert scripts to classes like neb.
 
 namespace NProcessing.App
 {
@@ -179,7 +180,9 @@ namespace NProcessing.App
                 components?.Dispose();
             }
 
-            // TODO exception in MmTimerCallback() after this call.
+            // Wait a bit in case there are some lingering events.
+            System.Threading.Thread.Sleep(100);
+
             base.Dispose(disposing);
         }
         #endregion
