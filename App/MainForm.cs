@@ -71,8 +71,8 @@ namespace NProcessing.App
 
             ///// Init logging. /////
             FileInfo fi = new(Path.Combine(appDir, "log.txt"));
-            LogManager.MinLevelFile = LogLevel.Debug;
-            LogManager.MinLevelNotif = LogLevel.Info;
+            LogManager.MinLevelFile = _settings.FileLogLevel;
+            LogManager.MinLevelNotif = _settings.NotifLogLevel;
             LogManager.LogEvent += LogManager_LogEvent;
             LogManager.Run(fi.FullName, 100000);
 
