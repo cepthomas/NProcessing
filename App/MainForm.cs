@@ -12,7 +12,6 @@ using NBagOfTricks.Slog;
 using NBagOfTricks.ScriptCompiler;
 using NProcessing.Script;
 
-// TODOX revert scripts to classes like neb.
 
 namespace NProcessing.App
 {

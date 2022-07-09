@@ -15,56 +15,58 @@
 
 // Click the mouse to add a new boid.
 
-
-Flock my_flock;
-
-public override void setup()
+public class flocking : ScriptBase
 {
-    size(600, 600);
-    frameRate(30);
-    
-    my_flock = new Flock();
+    Flock my_flock;
 
-    // Add an initial set of boids into the system
-    for (int i = 0; i < 150; i++)
+    public override void setup()
     {
-        my_flock.addBoid(new Boid(width / 2, height / 2));
-    }
-}
+        size(600, 600);
+        frameRate(30);
+        
+        my_flock = new Flock();
 
-public override void draw()
-{
-    background(50);
-    my_flock.run(this);
-}
-
-// Add a new boid into the System
-public override void mousePressed()
-{
-    my_flock.addBoid(new Boid(mouseX, mouseY));
-}
-
-// The Flock (a list of Boid objects)
-public class Flock
-{
-    List<Boid> boids; // A list of all the boids
-
-    public Flock()
-    {
-        boids = new List<Boid>(); // Initialize the ArrayList
-    }
-
-    public void run(flocking s)
-    {
-        foreach (Boid b in boids)
+        // Add an initial set of boids into the system
+        for (int i = 0; i < 150; i++)
         {
-            b.run(s, boids);  // Passing the entire list of boids to each boid individually
+            my_flock.addBoid(new Boid(width / 2, height / 2));
         }
     }
 
-    public void addBoid(Boid b)
+    public override void draw()
     {
-        boids.Add(b);
+        background(50);
+        my_flock.run(this);
+    }
+
+    // Add a new boid into the System
+    public override void mousePressed()
+    {
+        my_flock.addBoid(new Boid(mouseX, mouseY));
+    }
+
+    // The Flock (a list of Boid objects)
+    public class Flock
+    {
+        List<Boid> boids; // A list of all the boids
+
+        public Flock()
+        {
+            boids = new List<Boid>(); // Initialize the ArrayList
+        }
+
+        public void run(flocking s)
+        {
+            foreach (Boid b in boids)
+            {
+                b.run(s, boids);  // Passing the entire list of boids to each boid individually
+            }
+        }
+
+        public void addBoid(Boid b)
+        {
+            boids.Add(b);
+        }
     }
 }
 
