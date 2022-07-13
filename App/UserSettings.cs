@@ -21,19 +21,11 @@ namespace NProcessing.App
     public class UserSettings : Settings
     {
         #region Persisted editable properties
-        [DisplayName("Selected Color")]
-        [Description("The color used for selections.")]
-        [Category("Cosmetics")]
-        [Browsable(true)]
-        [JsonConverter(typeof(JsonColorConverter))]
-        public Color SelectedColor { get; set; } = Color.Violet;
-
-        [DisplayName("Background Color")]
-        [Description("The color used for overall background.")]
-        [Category("Cosmetics")]
-        [Browsable(true)]
-        [JsonConverter(typeof(JsonColorConverter))]
-        public Color BackColor { get; set; } = Color.AliceBlue;
+        // [DisplayName("Script Path")]
+        // [Description("Default location for user scripts.")]
+        // [Browsable(true)]
+        // [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+        // public string ScriptPath { get; set; } = "";
 
         [DisplayName("Lock UI")]
         [Description("Forces UI to be topmost.")]
@@ -68,6 +60,20 @@ namespace NProcessing.App
         [Description("Log level for UI notification.")]
         [Browsable(true)]
         public LogLevel NotifLogLevel { get; set; } = LogLevel.Debug;
+
+        [DisplayName("Selected Color")]
+        [Description("The color used for selections.")]
+        [Category("Cosmetics")]
+        [Browsable(true)]
+        [JsonConverter(typeof(JsonColorConverter))]
+        public Color SelectedColor { get; set; } = Color.Violet;
+
+        [DisplayName("Background Color")]
+        [Description("The color used for overall background.")]
+        [Category("Cosmetics")]
+        [Browsable(true)]
+        [JsonConverter(typeof(JsonColorConverter))]
+        public Color BackColor { get; set; } = Color.AliceBlue;
         #endregion
 
         #region Persisted non-editable properties

@@ -206,7 +206,7 @@ namespace NProcessing.App
                 Compiler compiler = new();
 
                 // Compile now.
-                compiler.Execute(_scriptFileName);
+                compiler.CompileScript(_scriptFileName);
                 _script = (ScriptBase?)compiler.Script;
 
                 // Update file watcher just in case.
