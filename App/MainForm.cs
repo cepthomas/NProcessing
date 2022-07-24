@@ -91,6 +91,7 @@ namespace NProcessing.App
             textViewer.BackColor = _settings.BackColor;
             textViewer.Colors.Add("ERR", Color.LightPink);
             textViewer.Colors.Add("WRN", Color.Plum);
+            textViewer.Prompt = "> ";
 
             ///// CPU meter /////
             if (_settings.CpuMeter)
@@ -107,12 +108,6 @@ namespace NProcessing.App
                 cpuMeter.Enable = true;
                 toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
             }
-
-            btnClear.Click += (object? _, EventArgs __) => { textViewer.Clear(); };
-
-            btnWrap.Checked = _settings.WordWrap;
-            textViewer.WordWrap = btnWrap.Checked;
-            btnWrap.Click += (object? _, EventArgs __) => { textViewer.WordWrap = btnWrap.Checked; _settings.WordWrap = textViewer.WordWrap; };
 
             PopulateRecentMenu();
 
