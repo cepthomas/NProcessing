@@ -89,8 +89,8 @@ namespace NProcessing.App
 
             // The rest of the controls.
             textViewer.BackColor = _settings.BackColor;
-            textViewer.Colors.Add("ERR", Color.LightPink);
-            textViewer.Colors.Add("WRN", Color.Plum);
+            textViewer.MatchColors.Add("ERR", Color.LightPink);
+            textViewer.MatchColors.Add("WRN", Color.Plum);
             textViewer.Prompt = "> ";
 
             ///// CPU meter /////
