@@ -18,7 +18,7 @@ using NBagOfUis;
 namespace NProcessing.App
 {
     [Serializable]
-    public class UserSettings : Settings
+    public sealed class UserSettings : Settings
     {
         #region Persisted editable properties
         // [DisplayName("Script Path")]
