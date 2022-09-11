@@ -226,6 +226,7 @@ namespace NProcessing.Script
             {
                 _script.focused = Focused;
             }
+            base.OnMouseLeave(e);
         }
 
         /// <summary>
@@ -274,6 +275,7 @@ namespace NProcessing.Script
                     _script.keyPressed();
                 }
             }
+            base.OnKeyDown(e);
         }
 
         /// <summary>
@@ -301,6 +303,7 @@ namespace NProcessing.Script
                     _script.keyCode = 0;
                 }
             }
+            base.OnKeyUp(e);
         }
 
         /// <summary>
@@ -314,6 +317,7 @@ namespace NProcessing.Script
                 _script.key = e.KeyChar;
                 _script.keyTyped();
             }
+            base.OnKeyPress(e);
         }
 
         /// <summary>
