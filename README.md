@@ -1,9 +1,9 @@
 
 # What It Is
-NProcessing is a partial port of [Processing](https://processing.org/) to the .NET/C# world.
-Simple Processing scripts should port easily and run fine. A porting guide is included
 
-Requires VS2022 and .NET6.
+- NProcessing is a partial port of [Processing](https://processing.org/) to the .NET/C# world.
+- Simple Processing scripts should port easily and run fine. A porting guide is included.
+- Requires VS2022 and .NET6.
 
 
 # Documentation
