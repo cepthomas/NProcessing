@@ -67,7 +67,7 @@ namespace NProcessing.App
 
             ///// Get settings. /////
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
-            _settings = (UserSettings)Settings.Load(appDir, typeof(UserSettings));
+            _settings = (UserSettings)SettingsCore.Load(appDir, typeof(UserSettings));
 
             ///// Init logging. /////
             FileInfo fi = new(Path.Combine(appDir, "log.txt"));
@@ -545,7 +545,7 @@ namespace NProcessing.App
         /// </summary>
         void Settings_Click(object sender, EventArgs e)
         {
-            var changes = _settings.Edit("User Settings", 300);
+            var changes = SettingsEditor.Edit(_settings, "User Settings", 300);
 
             // Detect changes of interest.
             bool restart = changes.Count > 0;
