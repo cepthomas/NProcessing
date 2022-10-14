@@ -3,7 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
-        <AssemblyName>NProcessing.Script</AssemblyName>
+        <AssemblyName>Ephemera.NProcessing.Script</AssemblyName>
+        <RootNamespace>Ephemera.NProcessing.Script</RootNamespace>
         <Deterministic>False</Deterministic>
         <Version>$([System.DateTime]::UtcNow.ToString(yy.MM.dd))</Version>
         <Description>NProcessing script</Description>
@@ -13,7 +14,7 @@
         <WarningLevel>4</WarningLevel>
         <NoWarn>CS1591;CA1822;IDE1006</NoWarn> 
         <Nullable>enable</Nullable>
-        <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
         <!-- en none -->
     </PropertyGroup>
@@ -22,11 +23,11 @@
         <PackageReference Include="System.Drawing.Common" Version="6.0.0"/>
     </ItemGroup>
     <ItemGroup>
-        <Reference Include="NBagOfTricks">
-            <HintPath>..\lib\NBagOfTricks.dll</HintPath>
+        <Reference Include="Ephemera.NBagOfTricks">
+            <HintPath>..\lib\Ephemera.NBagOfTricks.dll</HintPath>
         </Reference>
-        <Reference Include="NBagOfUis">
-            <HintPath>..\lib\NBagOfUis.dll</HintPath>
+        <Reference Include="Ephemera.NBagOfUis">
+            <HintPath>..\lib\Ephemera.NBagOfUis.dll</HintPath>
         </Reference>
     </ItemGroup>
 </Project>

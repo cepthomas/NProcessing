@@ -4,7 +4,8 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net6.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
-        <AssemblyName>NProcessing</AssemblyName>
+        <AssemblyName>Ephemera.NProcessing.App</AssemblyName>
+        <RootNamespace>Ephemera.NProcessing.App</RootNamespace>
         <Deterministic>False</Deterministic>
         <Version>$([System.DateTime]::UtcNow.ToString(yy.MM.dd))</Version>
         <Description>NProcessing application</Description>
@@ -12,9 +13,9 @@
         <OutputPath>bin\</OutputPath>
         <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
         <WarningLevel>4</WarningLevel>
-        <!-- <NoWarn>CS1591;CA1822</NoWarn> -->
+        <NoWarn>CS1591;CA1822</NoWarn>
         <Nullable>enable</Nullable>
-        <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
         <ApplicationIcon>Resources\Goupil.ico</ApplicationIcon>
         <!-- en none -->
@@ -29,11 +30,11 @@
         <ProjectReference Include="..\Script\Script.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Reference Include="NBagOfTricks">
-          <HintPath>..\lib\NBagOfTricks.dll</HintPath>
+        <Reference Include="Ephemera.NBagOfTricks">
+          <HintPath>..\lib\Ephemera.NBagOfTricks.dll</HintPath>
         </Reference>
-        <Reference Include="NBagOfUis">
-            <HintPath>..\lib\NBagOfUis.dll</HintPath>
+        <Reference Include="Ephemera.NBagOfUis">
+            <HintPath>..\lib\Ephemera.NBagOfUis.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>

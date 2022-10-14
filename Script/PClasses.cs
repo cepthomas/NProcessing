@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text;
 using SkiaSharp;
-using NBagOfTricks;
+using Ephemera.NBagOfTricks;
 
 
 // Processing API stuff.
 
-namespace NProcessing.Script
+namespace Ephemera.NProcessing.Script
 {
     /// <summary>
     /// Map Processing color to native. Processing uses a 32 bit value as color - this uses a class.

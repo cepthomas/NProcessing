@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NProcessing.App
+namespace Ephemera.NProcessing.App
 {
     static class Program
     {

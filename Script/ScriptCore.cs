@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using SkiaSharp;
-using NBagOfTricks;
-using NBagOfTricks.Slog;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.Slog;
 
 
-namespace NProcessing.Script
+namespace Ephemera.NProcessing.Script
 {
     public partial class ScriptBase
     {

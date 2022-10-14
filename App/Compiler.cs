@@ -5,11 +5,11 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
-using NBagOfTricks;
-using NBagOfTricks.ScriptCompiler;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.ScriptCompiler;
 
 
-namespace NProcessing.App
+namespace Ephemera.NProcessing.App
 {
     public class Compiler : ScriptCompilerCore
     {
@@ -17,7 +17,7 @@ namespace NProcessing.App
         public override void PreCompile()
         {
             SystemDlls.Add("System.Drawing");
-            LocalDlls = new() { "NAudio", "SkiaSharp", "NBagOfTricks", "NProcessing.Script" };
+            LocalDlls = new() { "NAudio", "SkiaSharp", "Ephemera.NBagOfTricks", "Ephemera.NProcessing.Script" };
         }
 
         /// <inheritdoc />

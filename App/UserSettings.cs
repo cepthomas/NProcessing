@@ -10,12 +10,12 @@ using System.Drawing.Design;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using NAudio.Midi;
-using NBagOfTricks;
-using NBagOfTricks.Slog;
-using NBagOfUis;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.Slog;
+using Ephemera.NBagOfUis;
 
 
-namespace NProcessing.App
+namespace Ephemera.NProcessing.App
 {
     [Serializable]
     public sealed class UserSettings : SettingsCore

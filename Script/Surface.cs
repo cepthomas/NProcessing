@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using SkiaSharp;
-using NBagOfTricks;
-using NBagOfUis;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfUis;
 
 
-namespace NProcessing.Script
+namespace Ephemera.NProcessing.Script
 {
     public partial class Surface : Form
     {

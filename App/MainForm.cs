@@ -6,14 +6,14 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using NBagOfTricks;
-using NBagOfUis;
-using NBagOfTricks.Slog;
-using NBagOfTricks.ScriptCompiler;
-using NProcessing.Script;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfUis;
+using Ephemera.NBagOfTricks.Slog;
+using Ephemera.NBagOfTricks.ScriptCompiler;
+using Ephemera.NProcessing.Script;
 
 
-namespace NProcessing.App
+namespace Ephemera.NProcessing.App
 {
     public partial class MainForm : Form
     {
@@ -316,7 +316,6 @@ namespace NProcessing.App
         /// <summary>
         /// Output next frame.
         /// </summary>
-        /// <param name="e">Information about updates required.</param>
         void NextDraw()
         {
             InitRuntime();
@@ -609,7 +608,6 @@ namespace NProcessing.App
         /// <summary>
         /// Do some global key handling. Space bar is used for stop/start playing.
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {

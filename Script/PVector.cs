@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using SkiaSharp;
-using NBagOfTricks;
+using Ephemera.NBagOfTricks;
 
 
-namespace NProcessing.Script
+namespace Ephemera.NProcessing.Script
 {
     /// <summary>
     /// A port of the Processing PVector class.
@@ -337,10 +337,7 @@ namespace NProcessing.Script
 
         public PVector normalize(PVector target)
         {
-            if (target is null)
-            {
-                target = new PVector();
-            }
+            target ??= new PVector();
             double m = mag();
             if (m > 0)
             {
@@ -463,10 +460,7 @@ namespace NProcessing.Script
 
         public double[] array()
         {
-            if (_array is null)
-            {
-                _array = new double[3];
-            }
+            _array ??= new double[3];
             _array[0] = x;
             _array[1] = y;
             _array[2] = z;

@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using SkiaSharp;
-using NBagOfTricks;
+using Ephemera.NBagOfTricks;
 
 
 // Processing emulation script stuff.
 // The properties and functions are organized similarly to the API specified in https://processing.org/reference/.
 
 
-namespace NProcessing.Script
+namespace Ephemera.NProcessing.Script
 {
     public partial class ScriptBase
     {
