@@ -504,7 +504,7 @@ namespace Ephemera.NProcessing.App
         {
             if (File.Exists(fn))
             {
-                _settings.RecentFiles.UpdateMru(fn);
+                _settings.UpdateMru(fn);
                 PopulateRecentMenu();
             }
         }
