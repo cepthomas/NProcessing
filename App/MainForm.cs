@@ -73,7 +73,7 @@ namespace Ephemera.NProcessing.App
             FileInfo fi = new(Path.Combine(appDir, "log.txt"));
             LogManager.MinLevelFile = _settings.FileLogLevel;
             LogManager.MinLevelNotif = _settings.NotifLogLevel;
-            LogManager.LogEvent += LogManager_LogEvent;
+            LogManager.LogMessage += LogManager_LogMessage;
             LogManager.Run(fi.FullName, 100000);
 
             ///// Init UI //////
@@ -113,7 +113,7 @@ namespace Ephemera.NProcessing.App
 
             KeyPreview = true; // for routing kbd strokes properly
 
-            _watcher.FileChangeEvent += (_, __) => { this.InvokeIfRequired(_ => { SetCompileStatus(false); }); };
+            _watcher.FileChange += (_, __) => { this.InvokeIfRequired(_ => { SetCompileStatus(false); }); };
 
             Text = $"NProcessing {MiscUtils.GetVersionString()} - No file loaded";
 
@@ -649,7 +649,7 @@ namespace Ephemera.NProcessing.App
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void LogManager_LogEvent(object? sender, LogEventArgs e)
+        void LogManager_LogMessage(object? sender, LogMessageEventArgs e)
         {
             // Usually come from a different thread.
             if (IsHandleCreated)
