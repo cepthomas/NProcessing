@@ -10,10 +10,10 @@ using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
 using Ephemera.NBagOfTricks.Slog;
 using Ephemera.NBagOfTricks.ScriptCompiler;
-using Ephemera.NProcessing.Script;
+using NProcessing.Script;
 
 
-namespace Ephemera.NProcessing.App
+namespace NProcessing.App
 {
     public partial class MainForm : Form
     {

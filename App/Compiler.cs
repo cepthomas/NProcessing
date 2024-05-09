@@ -9,7 +9,7 @@ using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.ScriptCompiler;
 
 
-namespace Ephemera.NProcessing.App
+namespace NProcessing.App
 {
     public class Compiler : ScriptCompilerCore
     {
@@ -17,7 +17,7 @@ namespace Ephemera.NProcessing.App
         public override void PreCompile()
         {
             SystemDlls.Add("System.Drawing");
-            LocalDlls = new() { "NAudio", "SkiaSharp", "Ephemera.NBagOfTricks", "Ephemera.NProcessing.Script" };
+            LocalDlls = new() { "NAudio", "SkiaSharp", "Ephemera.NBagOfTricks", "NProcessing.Script" };
         }
 
         /// <inheritdoc />

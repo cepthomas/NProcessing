@@ -11,7 +11,7 @@ using Ephemera.NBagOfTricks;
 // The properties and functions are organized similarly to the API specified in https://processing.org/reference/.
 
 
-namespace Ephemera.NProcessing.Script
+namespace NProcessing.Script
 {
     public partial class ScriptBase
     {

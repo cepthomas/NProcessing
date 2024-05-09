@@ -3,8 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
-        <AssemblyName>Ephemera.NProcessing.Script</AssemblyName>
-        <RootNamespace>Ephemera.NProcessing.Script</RootNamespace>
+        <AssemblyName>NProcessing.Script</AssemblyName>
+        <RootNamespace>NProcessing.Script</RootNamespace>
         <Deterministic>False</Deterministic>
         <Version>$([System.DateTime]::UtcNow.ToString(yy.MM.dd))</Version>
         <Description>NProcessing script</Description>

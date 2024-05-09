@@ -7,7 +7,7 @@ using SkiaSharp;
 using Ephemera.NBagOfTricks;
 
 
-namespace Ephemera.NProcessing.Script
+namespace NProcessing.Script
 {
     /// <summary>
     /// A port of the Processing PVector class.

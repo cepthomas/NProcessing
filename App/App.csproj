@@ -4,8 +4,8 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net6.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
-        <AssemblyName>Ephemera.NProcessing.App</AssemblyName>
-        <RootNamespace>Ephemera.NProcessing.App</RootNamespace>
+        <AssemblyName>NProcessing.App</AssemblyName>
+        <RootNamespace>NProcessing.App</RootNamespace>
         <Deterministic>False</Deterministic>
         <Version>$([System.DateTime]::UtcNow.ToString(yy.MM.dd))</Version>
         <Description>NProcessing application</Description>

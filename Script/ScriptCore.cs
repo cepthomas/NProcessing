@@ -10,7 +10,7 @@ using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.Slog;
 
 
-namespace Ephemera.NProcessing.Script
+namespace NProcessing.Script
 {
     public partial class ScriptBase
     {

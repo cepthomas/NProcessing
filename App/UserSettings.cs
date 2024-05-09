@@ -15,7 +15,7 @@ using Ephemera.NBagOfTricks.Slog;
 using Ephemera.NBagOfUis;
 
 
-namespace Ephemera.NProcessing.App
+namespace NProcessing.App
 {
     [Serializable]
     public sealed class UserSettings : SettingsCore

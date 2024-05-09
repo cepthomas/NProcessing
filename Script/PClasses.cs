@@ -9,7 +9,7 @@ using Ephemera.NBagOfTricks;
 
 // Processing API stuff.
 
-namespace Ephemera.NProcessing.Script
+namespace NProcessing.Script
 {
     /// <summary>
     /// Map Processing color to native. Processing uses a 32 bit value as color - this uses a class.

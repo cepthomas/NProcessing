@@ -6,7 +6,7 @@ using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
 
 
-namespace Ephemera.NProcessing.Script
+namespace NProcessing.Script
 {
     public partial class Surface : Form
     {

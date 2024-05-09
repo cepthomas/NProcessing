@@ -1,4 +1,4 @@
-﻿namespace Ephemera.NProcessing.App
+﻿namespace NProcessing.App
 {
     partial class MainForm
     {
@@ -82,7 +82,7 @@
             // 
             // settingsToolStripMenuItem
             // 
-            this.settingsToolStripMenuItem.Image = global::Ephemera.NProcessing.App.Properties.Resources.glyphicons_137_cogwheel;
+            this.settingsToolStripMenuItem.Image = global::NProcessing.App.Properties.Resources.glyphicons_137_cogwheel;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(145, 26);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -90,7 +90,7 @@
             // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.Image = global::Ephemera.NProcessing.App.Properties.Resources.glyphicons_195_question_sign;
+            this.aboutToolStripMenuItem.Image = global::NProcessing.App.Properties.Resources.glyphicons_195_question_sign;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(145, 26);
             this.aboutToolStripMenuItem.Text = "About";
@@ -116,7 +116,7 @@
             // 
             this.btnPlay.CheckOnClick = true;
             this.btnPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnPlay.Image = global::Ephemera.NProcessing.App.Properties.Resources.glyphicons_174_play;
+            this.btnPlay.Image = global::NProcessing.App.Properties.Resources.glyphicons_174_play;
             this.btnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(29, 24);
@@ -127,7 +127,7 @@
             // btnCompile
             // 
             this.btnCompile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCompile.Image = global::Ephemera.NProcessing.App.Properties.Resources.glyphicons_366_restart;
+            this.btnCompile.Image = global::NProcessing.App.Properties.Resources.glyphicons_366_restart;
             this.btnCompile.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCompile.Name = "btnCompile";
             this.btnCompile.Size = new System.Drawing.Size(29, 24);
@@ -143,7 +143,7 @@
             // btnClear
             // 
             this.btnClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnClear.Image = global::Ephemera.NProcessing.App.Properties.Resources.glyphicons_551_erase;
+            this.btnClear.Image = global::NProcessing.App.Properties.Resources.glyphicons_551_erase;
             this.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(29, 24);
@@ -154,7 +154,7 @@
             // 
             this.btnWrap.CheckOnClick = true;
             this.btnWrap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnWrap.Image = global::Ephemera.NProcessing.App.Properties.Resources.glyphicons_114_justify;
+            this.btnWrap.Image = global::NProcessing.App.Properties.Resources.glyphicons_114_justify;
             this.btnWrap.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnWrap.Name = "btnWrap";
             this.btnWrap.Size = new System.Drawing.Size(29, 24);

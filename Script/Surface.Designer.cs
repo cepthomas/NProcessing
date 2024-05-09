@@ -1,4 +1,4 @@
-﻿namespace Ephemera.NProcessing.Script
+﻿namespace NProcessing.Script
 {
     partial class Surface
     {
