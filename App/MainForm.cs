@@ -77,7 +77,7 @@ namespace NProcessing.App
             LogManager.Run(fi.FullName, 100000);
 
             ///// Init UI //////
-            toolStrip1.Renderer = new NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
+            toolStrip1.Renderer = new Ephemera.NBagOfUis.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
 
             Location = new Point(_settings.FormGeometry.X, _settings.FormGeometry.Y);
             Size = new Size(_settings.FormGeometry.Width, _settings.FormGeometry.Height);
