@@ -4,7 +4,7 @@
 
 public class generative1 : ScriptBase
 {
-    nt count = 0;
+    int count = 0;
     int tileCountX = 10;
     int tileCountY = 8;
     double tileWidth  = 0;
