@@ -2,12 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
         <AssemblyName>NProcessing.App</AssemblyName>
         <RootNamespace>NProcessing.App</RootNamespace>
         <Deterministic>False</Deterministic>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <Description>NProcessing application</Description>
         <Copyright>MIT License</Copyright>
         <OutputPath>bin\</OutputPath>
