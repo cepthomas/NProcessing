@@ -93,22 +93,6 @@ namespace NProcessing.App
             textViewer.MatchText.Add("WRN", Color.Plum);
             textViewer.Prompt = "> ";
 
-            ///// CPU meter /////
-            if (_settings.CpuMeter)
-            {
-                CpuMeter cpuMeter = new()
-                {
-                    Width = 50,
-                    Height = toolStrip1.Height,
-                    DrawColor = Color.Red
-                };
-                // This took way too long to find out:
-                //https://stackoverflow.com/questions/12823400/statusstrip-hosting-a-usercontrol-fails-to-call-usercontrols-onpaint-event
-                cpuMeter.MinimumSize = cpuMeter.Size;
-                cpuMeter.Enable = true;
-                toolStrip1.Items.Add(new ToolStripControlHost(cpuMeter));
-            }
-
             PopulateRecentMenu();
 
             KeyPreview = true; // for routing kbd strokes properly

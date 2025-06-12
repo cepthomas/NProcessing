@@ -45,12 +45,6 @@ namespace NProcessing.App
         [Browsable(true)]
         public bool IgnoreWarnings { get; set; } = true;
 
-        [DisplayName("CPU Meter")]
-        [Description("Show a CPU usage meter. Note that this slows start up a bit.")]
-        [Category("Functionality")]
-        [Browsable(true)]
-        public bool CpuMeter { get; set; } = true;
-
         [DisplayName("File Log Level")]
         [Description("Log level for file write.")]
         [Browsable(true)]
