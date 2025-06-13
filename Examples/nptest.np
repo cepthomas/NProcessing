@@ -1,7 +1,7 @@
 
 ///// Tester for Processing workalike.
 
-Include(C:\Dev\repos\NProcessing\Examples\utils.np);
+Include(C:\Dev\Apps\NProcessing\Examples\utils.np);
 
 public class nptest : ScriptBase
 {

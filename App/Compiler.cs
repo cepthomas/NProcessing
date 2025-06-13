@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using Ephemera.NBagOfTricks;
-using Ephemera.NBagOfTricks.ScriptCompiler;
+using Ephemera.ScriptCompiler;
 
 
 namespace NProcessing.App
