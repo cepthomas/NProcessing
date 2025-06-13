@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using SkiaSharp;
 using Ephemera.NBagOfTricks;
-using Ephemera.NBagOfTricks.Slog;
 
 
 namespace NProcessing.Script
@@ -66,10 +65,10 @@ namespace NProcessing.Script
         };
 
         /// <summary>Current drawing points.</summary>
-        readonly List<SKPoint> _vertexes = new();
+        readonly List<SKPoint> _vertexes = [];
 
         /// <summary>General purpose stack</summary>
-        readonly Stack<SKMatrix> _matrixStack = new();
+        readonly Stack<SKMatrix> _matrixStack = [];
 
         /// <summary>Background color.</summary>
         SKColor _bgColor = SKColors.LightGray;
