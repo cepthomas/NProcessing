@@ -203,7 +203,7 @@ namespace NProcessing.App
                     {
                         // Init surface area.
                         InitRuntime();
-                        _surface.InitSurface(_script); // TODO maybe combine with main draw
+                        _surface.InitSurface(_script); // TODOX maybe combine with main draw
                         ProcessRuntime();
                     }
                     catch (Exception ex)
