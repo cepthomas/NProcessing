@@ -15,7 +15,7 @@ public class gol : ScriptBase
 
     // Colors for active/inactive cells
     color alive = new color(0, 200, 0);
-    color dead = new color(0, 255); // TODOX this doesn't work without the alpha
+    color dead = new color(0, 255); // TODO this doesn't work without the alpha
     // color dead = new color(0);
 
     // Array of cells
