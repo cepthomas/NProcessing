@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
-using Ephemera.ScriptCompiler;
 using NProcessing.Script;
 
 
@@ -76,7 +75,7 @@ namespace NProcessing.App
             LogManager.Run(fi.FullName, 100000);
 
             ///// Init UI //////
-            toolStrip1.Renderer = new GraphicsUtils.CheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
+            toolStrip1.Renderer = new ToolStripCheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
 
             Location = new Point(_settings.FormGeometry.X, _settings.FormGeometry.Y);
             Size = new Size(_settings.FormGeometry.Width, _settings.FormGeometry.Height);
@@ -370,7 +369,7 @@ namespace NProcessing.App
                     var stfn = stf!.GetFileName();
                     if (stfn is not null)
                     {
-                        if (stfn.ToUpper().Contains(_compileTempDir.ToUpper()))
+                        if (stfn.Contains(_compileTempDir, StringComparison.CurrentCultureIgnoreCase))
                         {
                             sf = stf;
                             break;

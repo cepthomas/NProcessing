@@ -6,18 +6,17 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using Ephemera.NBagOfTricks;
-using Ephemera.ScriptCompiler;
 
 
 namespace NProcessing.App
 {
-    public class Compiler : ScriptCompilerCore
+    public class Compiler : CompilerCore
     {
         /// <inheritdoc />
         public override void PreCompile()
         {
             SystemDlls.Add("System.Drawing");
-            LocalDlls = new() { "NAudio", "SkiaSharp", "Ephemera.NBagOfTricks", "NProcessing.Script" };
+            LocalDlls = ["NAudio", "SkiaSharp", "Ephemera.NBagOfTricks", "NProcessing.Script"];
         }
 
         /// <inheritdoc />
