@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
@@ -10,7 +11,6 @@
         <Version>2.0.0</Version>
         <Description>NProcessing application</Description>
         <Copyright>MIT License</Copyright>
-        <OutputPath>bin\</OutputPath>
         <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
         <WarningLevel>4</WarningLevel>
         <NoWarn>CS1591;CA1822</NoWarn>
@@ -19,7 +19,11 @@
         <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
         <ApplicationIcon>Resources\Goupil.ico</ApplicationIcon>
         <!-- en none -->
+
+        <OutputPath>bin\</OutputPath>
+
     </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
         <PackageReference Include="NAudio" Version="2.1.0" />
