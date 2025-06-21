@@ -3,7 +3,6 @@
     <PropertyGroup>
 
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
         <AssemblyName>NProcessing.App</AssemblyName>
         <RootNamespace>NProcessing.App</RootNamespace>
@@ -21,6 +20,9 @@
         <!-- en none -->
 
         <OutputPath>bin\</OutputPath>
+        <TargetFramework>net8.0-windows</TargetFramework>
+    <!-- need RuntimeIdentifier to prevent runtimes dir creation -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
     </PropertyGroup>
 
