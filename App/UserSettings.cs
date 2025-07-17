@@ -9,7 +9,6 @@ using System.Windows.Forms.Design;
 using System.Drawing.Design;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using NAudio.Midi;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
 
@@ -20,12 +19,6 @@ namespace NProcessing.App
     public sealed class UserSettings : SettingsCore
     {
         #region Persisted editable properties
-        // [DisplayName("Script Path")]
-        // [Description("Default location for user scripts.")]
-        // [Browsable(true)]
-        // [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
-        // public string ScriptPath { get; set; } = "";
-
         [DisplayName("Lock UI")]
         [Description("Forces UI to be topmost.")]
         [Category("Cosmetics")]

@@ -7,13 +7,22 @@ using SkiaSharp;
 using Ephemera.NBagOfTricks;
 
 
-// Processing emulation script stuff.
+// Processing emulation script stuff. TODOX make this self-documenting and gen ScriptApi.md.
 // The properties and functions are organized similarly to the API specified in https://processing.org/reference/.
+
+// The following sections list the supported elements in roughly the same structure as the [Processing API](https://processing.org/reference/).
+// Refer to that document for API specifics.  
+
+// There are lots of unimplemented functions and properties, including some of the overloaded flavors. If it's not implemented,
+// you get either a compiler error or a runtime warning.  
+
+// Note also that a lot of these have not been properly tested. Eventually there may be a real unit test project.
+
 
 
 namespace NProcessing.Script
 {
-    public partial class ScriptBase
+    public partial class ScriptCore
     {
         #region Definitions - same values as Processing
         //---- Math
@@ -79,33 +88,19 @@ namespace NProcessing.Script
         public virtual void draw() { }
 
         //---- Script functions
-        protected void exit() { NotImpl(nameof(exit), "This is probably not what you want to do."); exit(); }
         protected void loop() { _loop = true; }
         protected void noLoop() { _loop = false; }
-        //protected void popStyle() { NotImpl(nameof(popStyle)); }
-        //protected void pushStyle() { NotImpl(nameof(pushStyle)); }
         protected void redraw() { _redraw = true; }
-        //protected void thread() { NotImpl(nameof(thread)); }
         #endregion
 
         #region Environment 
         //---- Script properties
-        //public void cursor(int which) { NotImpl(nameof(cursor)); }
-        //public void cursor(PImage image) { NotImpl(nameof(cursor)); }
-        //public void cursor(PImage image, int x, int y) { NotImpl(nameof(cursor)); }
-        //public void delay(int msec) { NotImpl(nameof(delay)); }
-        //public int displayDensity() { NotImpl(nameof(displayDensity)); }
         public bool focused { get; internal set; }
         public int frameCount { get; internal set; } = 1;
         public int frameRate() { return FrameRate; }
         public void frameRate(int num) { FrameRate = num; }
-        public void fullScreen() { NotImpl(nameof(fullScreen), "Size is set by main form."); }
         public int height { get; internal set; } = 300;
-        //public void noCursor() { NotImpl(nameof(noCursor)); }
         public void noSmooth() { _smooth = false; }
-        public void pixelDensity(int density) { NotImpl(nameof(pixelDensity)); }
-        public int pixelHeight { get { NotImpl(nameof(pixelHeight), "Assume 1."); return 1; } }
-        public int pixelWidth { get { NotImpl(nameof(pixelWidth), "Assume 1."); return 1; } }
         public void size(int w, int h) { height = h; width = w; }
         public void smooth() { _smooth = true; }
         public void smooth(int level) { _smooth = level > 0; }
@@ -113,26 +108,12 @@ namespace NProcessing.Script
         #endregion
 
         #region Data
-        //public string binary(object value) { NotImpl(nameof(binary)); }
-        //public bool boolean(object value) { NotImpl(nameof(boolean)); }
-        //public byte @byte (object value) { NotImpl(nameof(@byte)); }
-        //public char @char (object value) { NotImpl(nameof(@char)); }
-        //public float @float(object value) { NotImpl(nameof(@float)); }
-        //public string hex(object value) { NotImpl(nameof(hex)); }
         public int @int(double val) { return (int)val; }
         public int @int(string val) { return int.Parse(val); }
         public string str(object value) { return value.ToString() ?? "null"; }
-        //public int unbinary(string value) { NotImpl(nameof(unbinary)); }
-        //public int unhex(string value) { NotImpl(nameof(unhex)); }
 
         #region Data - String Functions
         public string join(string[] list, char separator) { return string.Join(separator.ToString(), list); }
-        //public string match() { NotImpl(nameof(match)); }
-        //public string matchAll() { NotImpl(nameof(matchAll)); }
-        //public string nf() { NotImpl(nameof(nf)); }
-        //public string nfc() { NotImpl(nameof(nfc)); }
-        //public string nfp() { NotImpl(nameof(nfp)); }
-        //public string nfs() { NotImpl(nameof(nfs)); }
         public string[] split(string value, char delim) { return value.SplitByToken(delim.ToString()).ToArray(); }
         public string[] split(string value, string delim) { return value.SplitByToken(delim).ToArray(); }
         public string[] splitTokens(string value, string delim) { return value.SplitByTokens(delim).ToArray(); }
@@ -141,21 +122,10 @@ namespace NProcessing.Script
         #endregion
 
         #region Data - Array Functions
-        //public void append() { NotImpl(nameof(append)); }
-        //public void arrayCopy() { NotImpl(nameof(arrayCopy)); }
-        //public void concat() { NotImpl(nameof(concat)); }
-        //public void expand() { NotImpl(nameof(expand)); }
-        //public void reverse() { NotImpl(nameof(reverse)); }
-        //public void shorten() { NotImpl(nameof(shorten)); }
-        //public void sort() { NotImpl(nameof(sort)); }
-        //public void splice() { NotImpl(nameof(splice)); }
-        //public void subset() { NotImpl(nameof(subset)); }
         #endregion
         #endregion
 
         #region Shape 
-        //public void createShape() { NotImpl(nameof(createShape)); }
-        //public void loadShape() { NotImpl(nameof(loadShape)); }
 
         #region Shape - 2D Primitives
         public void arc(double x1, double y1, double x2, double y2, double angle1, double angle2, int style)
@@ -290,32 +260,12 @@ namespace NProcessing.Script
             path.CubicTo((float)x2, (float)y2, (float)x3, (float)y3, (float)x4, (float)y4);
             _canvas.DrawPath(path, _pen);
         }
-
-        public void curve(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) { NotImpl(nameof(curve)); }
-        //Draws a curved line on the screen. The first and second parameters specify the beginning control point and the last two 
-        //parameters specify the ending control point. The middle parameters specify the start and stop of the curve. 
-        //Longer curves can be created by putting a series of curve() functions together or using curveVertex().
-        //An additional function called curveTightness() provides control for the visual quality of the curve. 
-        //The curve() function is an implementation of Catmull-Rom splines.
-        //The GDI function: Draws a cardinal spline through a specified array of Point structures.
-        //_gr.DrawCurve(_pen, new SKPoint[4] { new SKPoint(x1, y1), new SKPoint(x2, y2), new SKPoint(x3, y3), new SKPoint(x4, y4) }, 1, 1, 0.5f);
-
-        //public void curveDetail() { NotImpl(nameof(curveDetail)); }
-        //public void curvePoint() { NotImpl(nameof(curvePoint)); }
-        //public void curveTangent() { NotImpl(nameof(curveTangent)); }
-        //public void curveTightness() { NotImpl(nameof(curveTightness)); }
         #endregion
 
         #region Shape - 3D Primitives
-        //public void box() { NotImpl(nameof(box)); }
-        //public void sphere() { NotImpl(nameof(sphere)); }
-        //public void sphereDetail() { NotImpl(nameof(sphereDetail)); }
         #endregion
 
         #region Shape - Attributes
-        public void ellipseMode(int mode) { NotImpl(nameof(ellipseMode), "Assume CORNER mode."); }
-        public void rectMode(int mode) { NotImpl(nameof(rectMode), "Assume CORNER mode."); }
-
         public void strokeCap(int style)
         {
             switch (style)
@@ -340,12 +290,7 @@ namespace NProcessing.Script
         #endregion
 
         #region Shape - Vertex
-        //public void beginContour() { NotImpl(nameof(beginContour)); }
         public void beginShape() { _vertexes.Clear(); }
-        //public void beginShape(int kind) { NotImpl(nameof(beginShape)); } // POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, and QUAD_STRIP
-        //public void bezierVertex() { NotImpl(nameof(bezierVertex)); }
-        //public void curveVertex() { NotImpl(nameof(curveVertex)); }
-        //public void endContour() { NotImpl(nameof(endContour)); }
         public void endShape(int mode = -1)
         {
             SKPoint[] points = _vertexes.ToArray();
@@ -385,14 +330,10 @@ namespace NProcessing.Script
                 NotImpl(nameof(endShape));
             }
         }
-
-        //public void quadraticVertex() { NotImpl(nameof(quadraticVertex)); }
         public void vertex(double x, double y) { _vertexes.Add(new SKPoint((float)x, (float)y)); } // Just x/y.
         #endregion
 
         #region Shape - Loading & Displaying
-        //public void shape() { NotImpl(nameof(shape)); }
-        //public void shapeMode() { NotImpl(nameof(shapeMode)); }
         #endregion
         #endregion
 
@@ -427,20 +368,7 @@ namespace NProcessing.Script
         #endregion
 
         #region Input - Files
-        //public void createInput() { NotImpl(nameof(createInput)); }
-        //public void createReader() { NotImpl(nameof(createReader)); }
-        //public void launch() { NotImpl(nameof(launch)); }
-        //public void loadBytes() { NotImpl(nameof(loadBytes)); }
-        //public void loadJSONArray() { NotImpl(nameof(loadJSONArray)); }
-        //public void loadJSONObject() { NotImpl(nameof(loadJSONObject)); }
         public string[] loadStrings(string filename) { return File.ReadAllLines(filename); }
-        //public void loadTable() { NotImpl(nameof(loadTable)); }
-        //public void loadXML() { NotImpl(nameof(loadXML)); }
-        //public void parseJSONArray() { NotImpl(nameof(parseJSONArray)); }
-        //public void parseJSONObject() { NotImpl(nameof(parseJSONObject)); }
-        //public void parseXML() { NotImpl(nameof(parseXML)); }
-        //public void selectFolder() { NotImpl(nameof(selectFolder)); }
-        //public void selectInput() { NotImpl(nameof(selectInput)); }
         #endregion
 
         #region Input - Time & Date
@@ -456,7 +384,6 @@ namespace NProcessing.Script
 
         #region Output
         #region Output - Text Area
-        //public void println(params object[] vars) { NotImpl(nameof(print), "Use print()."); }
         public void print(params object[] vars)
         {
             _logger.Info(string.Join(" ", vars));
@@ -471,94 +398,40 @@ namespace NProcessing.Script
         #endregion
 
         #region Output - Image
-        //public void save(string fn) { NotImpl(nameof(save)); }
-        //public void saveFrame() { NotImpl(nameof(saveFrame)); }
-        //public void saveFrame(string fn) { NotImpl(nameof(saveFrame)); }
         #endregion
 
         #region Output - Files
-        //public void beginRaw() { NotImpl(nameof(beginRaw)); }
-        //public void beginRecord() { NotImpl(nameof(beginRecord)); }
-        //public void createOutput() { NotImpl(nameof(createOutput)); }
-        //public void createWriter() { NotImpl(nameof(createWriter)); }
-        //public void endRaw() { NotImpl(nameof(endRaw)); }
-        //public void endRecord() { NotImpl(nameof(endRecord)); }
         #endregion
 
         #region Output - PrintWriter
-        //public void saveBytes() { NotImpl(nameof(saveBytes)); }
-        //public void saveJSONArray() { NotImpl(nameof(saveJSONArray)); }
-        //public void saveJSONObject() { NotImpl(nameof(saveJSONObject)); }
-        //public void saveStream() { NotImpl(nameof(saveStream)); }
-        //public void saveStrings() { NotImpl(nameof(saveStrings)); }
-        //public void saveTable() { NotImpl(nameof(saveTable)); }
-        //public void saveXML() { NotImpl(nameof(saveXML)); }
-        //public void selectOutput() { NotImpl(nameof(selectOutput)); }
         #endregion
         #endregion
 
         #region Transform 
-        //public void applyMatrix() { NotImpl(nameof(applyMatrix)); }
         public void popMatrix() { _canvas.SetMatrix(_matrixStack.Pop()); }
-        //public void printMatrix() { NotImpl(nameof(printMatrix)); }
         public void pushMatrix() { _matrixStack.Push(_canvas.TotalMatrix); }
-        //public void resetMatrix() { NotImpl(nameof(resetMatrix)); }
         public void rotate(double angle) { _canvas.RotateRadians((float)angle); }
-        //public void rotateX() { NotImpl(nameof(rotateX)); }
-        //public void rotateY() { NotImpl(nameof(rotateY)); }
-        //public void rotateZ() { NotImpl(nameof(rotateZ)); }
         public void scale(double sc) { _canvas.Scale((float)sc); }
         public void scale(double scx, double scy) { _canvas.Scale((float)scx, (float)scy); }
-        //public void shearX() { NotImpl(nameof(shearX)); }
-        //public void shearY() { NotImpl(nameof(shearY)); }
         public void translate(double dx, double dy) { _canvas.Translate((float)dx, (float)dy); }
         #endregion
 
         #region Lights & Camera
         #region Lights & Camera - Lights
-        //public string ambientLight() { NotImpl(nameof(ambientLight)); }
-        //public string directionalLight() { NotImpl(nameof(directionalLight)); }
-        //public string lightFalloff() { NotImpl(nameof(lightFalloff)); }
-        //public string lights() { NotImpl(nameof(lights)); }
-        //public string lightSpecular() { NotImpl(nameof(lightSpecular)); }
-        //public string noLights() { NotImpl(nameof(noLights)); }
-        //public string normal() { NotImpl(nameof(normal)); }
-        //public string pointLight() { NotImpl(nameof(pointLight)); }
-        //public string spotLight() { NotImpl(nameof(spotLight)); }
         #endregion
 
         #region Lights & Camera - Camera
-        //public string beginCamera() { NotImpl(nameof(beginCamera)); }
-        //public string camera() { NotImpl(nameof(camera)); }
-        //public string endCamera() { NotImpl(nameof(endCamera)); }
-        //public string frustum() { NotImpl(nameof(frustum)); }
-        //public string ortho() { NotImpl(nameof(ortho)); }
-        //public string perspective() { NotImpl(nameof(perspective)); }
-        //public string printCamera() { NotImpl(nameof(printCamera)); }
-        //public string printProjection() { NotImpl(nameof(printProjection)); }
         #endregion
 
         #region Lights & Camera - Coordinates
-        //public string modelX() { NotImpl(nameof(modelX)); }
-        //public string modelY() { NotImpl(nameof(modelY)); }
-        //public string modelZ() { NotImpl(nameof(modelZ)); }
-        //public string screenX() { NotImpl(nameof(screenX)); }
-        //public string screenY() { NotImpl(nameof(screenY)); }
-        //public string screenZ() { NotImpl(nameof(screenZ)); }
         #endregion
 
         #region Lights & Camera - Material Properties
-        //public string ambient() { NotImpl(nameof(ambient)); }
-        //public string emissive() { NotImpl(nameof(emissive)); }
-        //public string shininess() { NotImpl(nameof(shininess)); }
-        //public string specular() { NotImpl(nameof(specular)); }
         #endregion
         #endregion
 
         #region Color
         #region Color - Setting
-        //public void background(int rgb) { NotImpl(nameof(background)); }
-        //public void background(int rgb, double alpha) { NotImpl(nameof(background)); }
         public void background(double gray) { _bgColor = SafeColor(gray, gray, gray, 255); _canvas.Clear(_bgColor); }
         public void background(double gray, double alpha) { _bgColor = SafeColor(gray, gray, gray, alpha); _canvas.Clear(_bgColor); }
         public void background(double v1, double v2, double v3) { color c = new(v1, v2, v3, 255); _bgColor = c.NativeColor; _canvas.Clear(_bgColor); }
@@ -566,8 +439,6 @@ namespace NProcessing.Script
         public void background(PImage img) { _canvas.DrawBitmap(img.bmp, new SKRect(0, 0, width, height)); }
         public void colorMode(int mode, double max = 255) { Script.color.SetMode(mode, max, max, max, max); }
         public void colorMode(int mode, int max1, int max2, int max3, int maxA = 255) { Script.color.SetMode(mode, max1, max2, max3, maxA); }
-        //public void fill(int rgb) { NotImpl(nameof(fill)); }
-        //public void fill(int rgb, double alpha) { NotImpl(nameof(fill)); }
         public void fill(color clr) { _fill.Color = SafeColor(clr.R, clr.G, clr.B, clr.A); }
         public void fill(double gray) { _fill.Color = SafeColor(gray, gray, gray, 255); }
         public void fill(double gray, double alpha) { _fill.Color = SafeColor(gray, gray, gray, alpha); }
@@ -575,8 +446,6 @@ namespace NProcessing.Script
         public void fill(double v1, double v2, double v3, double alpha) { color c = new(v1, v2, v3, alpha); _fill.Color = c.NativeColor; }
         public void noFill() { _fill.Color = SKColors.Transparent; }
         public void noStroke() { _pen.StrokeWidth = 0; }
-        //public void stroke(int rgb) { NotImpl(nameof(stroke)); }
-        //public void stroke(int rgb, float alpha) { NotImpl(nameof(stroke)); }
         public void stroke(color clr) { _pen.Color = clr.NativeColor; }
         public void stroke(double gray) { _pen.Color = SafeColor(gray, gray, gray, 255); }
         public void stroke(double gray, double alpha) { _pen.Color = SafeColor(gray, gray, gray, alpha); }
@@ -608,7 +477,6 @@ namespace NProcessing.Script
         #endregion
 
         #region Image 
-        //public PImage createImage(int w, int h, int format) { NotImpl(nameof(PImage)); }
 
         #region Image - Loading & Displaying
         public void image(PImage img, double x, double y)
@@ -621,49 +489,22 @@ namespace NProcessing.Script
             _canvas.DrawBitmap(img.bmp, new SKRect((float)x1, (float)y1, (float)x2, (float)y2)); // scaled
         }
 
-        public void imageMode(int mode) { NotImpl(nameof(imageMode), "Assume CORNER mode."); }
-
         public PImage loadImage(string filename)
         {
             return new PImage(filename);
         }
-
-        //public void noTint() { NotImpl(nameof(noTint)); }
-        //public void requestImage() { NotImpl(nameof(requestImage)); }
-        //public void tint() { NotImpl(nameof(tint)); }
         #endregion
 
         #region Image - Textures
-        //public void texture() { NotImpl(nameof(texture)); }
-        //public void textureMode() { NotImpl(nameof(textureMode)); }
-        //public void textureWrap() { NotImpl(nameof(textureWrap)); }
         #endregion
 
         #region Image - Pixels
-        // Even though you may have drawn a shape with colorMode(HSB), the numbers returned will be in RGB format.
-        // pixels[]
-        //public void blend() { NotImpl(nameof(blend)); }
-        //public void copy() { NotImpl(nameof(copy)); }
-        //public void filter() { NotImpl(nameof(filter)); }
-        //public PImage get(int x, int y, int w, int h) { NotImpl(nameof(get)); }
-        //public color get(int x, int y) { NotImpl(nameof(get)); }
-        //public void loadPixels() { NotImpl(nameof(loadPixels)); }
-        //public void set(int x, int y, color pcolor) { NotImpl(nameof(set)); }
-        //public void set(int x, int y, PImage src) { NotImpl(nameof(set)); }
-        //public void updatePixels() { NotImpl(nameof(updatePixels)); }
         #endregion
         #endregion
 
         #region Rendering 
-        //public void blendMode() { NotImpl(nameof(blendMode)); }
-        //public void clip() { NotImpl(nameof(clip)); }
-        //public void createGraphics() { NotImpl(nameof(createGraphics)); }
-        //public void noClip() { NotImpl(nameof(noClip)); }
 
         #region Rendering - Shaders
-        //public void loadShader() { NotImpl(nameof(loadShader)); }
-        //public void resetShader() { NotImpl(nameof(resetShader)); }
-        //public void shader() { NotImpl(nameof(shader)); }
         #endregion
         #endregion
 
@@ -673,8 +514,6 @@ namespace NProcessing.Script
         {
             return new PFont(name, size);
         }
-
-        //public PFont loadFont() { NotImpl(nameof(loadFont)); }
 
         public void text(string s, double x, double y)
         {
@@ -699,17 +538,12 @@ namespace NProcessing.Script
             }
             NotImpl(nameof(textAlign));
         }
-        public void textAlign(int alignX, int alignY) { NotImpl(nameof(textAlign)); }
-        //public void textLeading(int leading) { NotImpl(nameof(textLeading)); }
-        //public void textMode() { NotImpl(nameof(textMode)); }
         public void textSize(int pts) { _textPaint.TextSize = pts; }
         double textWidth(string s) { return _textPaint.MeasureText(s); }
         double textWidth(char ch) { return textWidth(ch.ToString()); }
         #endregion
 
         #region Typography - Metrics
-        //public int textAscent() { return (int)Math.Round(_font.FontFamily.GetCellAscent(_font.Style) * _font.Size / _font.FontFamily.GetEmHeight(_font.Style)); }
-        //public int textDescent() { return (int)Math.Round(_font.FontFamily.GetCellDescent(_font.Style) * _font.Size / _font.FontFamily.GetEmHeight(_font.Style)); }
         #endregion
         #endregion
 
@@ -758,9 +592,6 @@ namespace NProcessing.Script
         #endregion
 
         #region Math - Random
-        //public void noise() { NotImpl(nameof(noise)); }
-        //public void noiseDetail() { NotImpl(nameof(noiseDetail)); }
-        //public void noiseSeed() { NotImpl(nameof(noiseSeed)); }
         public double random(double max) { return _rand.NextDouble() * max; }
         public double random(double min, double max) { return min + _rand.NextDouble() * (max - min); }
         public int random(int max) { return _rand.Next(max); }

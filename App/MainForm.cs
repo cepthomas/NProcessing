@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
 using NProcessing.Script;
+using Ephemera.NScript;
 
 
 namespace NProcessing.App
@@ -30,11 +31,14 @@ namespace NProcessing.App
         /// <summary>Surface child form.</summary>
         readonly Surface _surface = new();
 
+        /// <summary>Our compiler.</summary>
+        readonly Compiler _compiler;
+
         /// <summary>Current script file name.</summary>
-        string _scriptFileName = "???";
+        string? _scriptFileName;
 
         /// <summary>The current script.</summary>
-        ScriptBase? _script = null;
+        ScriptCore? _script;
 
         /// <summary>Frame rate in fps.</summary>
         int _frameRate = 30;
@@ -48,8 +52,8 @@ namespace NProcessing.App
         /// <summary>Files that have been changed externally or have runtime errors - requires a recompile.</summary>
         bool _needCompile = false;
 
-        /// <summary>The temp dir for compile products.</summary>
-        string _compileTempDir = "";
+        // /// <summary>The temp dir for compile products.</summary>
+        // string _compileTempDir = "";
 
         /// <summary>The user settings.</summary>
         readonly UserSettings _settings = new();
@@ -63,18 +67,25 @@ namespace NProcessing.App
         {
             InitializeComponent();
 
-            ///// Get settings. /////
+            // Get settings.
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
             _settings = (UserSettings)SettingsCore.Load(appDir, typeof(UserSettings));
 
-            ///// Init logging. /////
+            // Init logging.
             FileInfo fi = new(Path.Combine(appDir, "log.txt"));
             LogManager.MinLevelFile = _settings.FileLogLevel;
             LogManager.MinLevelNotif = _settings.NotifLogLevel;
             LogManager.LogMessage += LogManager_LogMessage;
             LogManager.Run(fi.FullName, 100000);
 
-            ///// Init UI //////
+            _compiler = new()
+            {
+                IgnoreWarnings = true,              // to taste
+                Namespace = "NProcessing.Script",   // same as ScriptCore.cs
+                BaseClassName = "ScriptCore",       // same as ScriptCore.cs
+            };
+
+            // Init UI
             toolStrip1.Renderer = new ToolStripCheckBoxRenderer() { SelectedColor = _settings.SelectedColor };
 
             Location = new Point(_settings.FormGeometry.X, _settings.FormGeometry.Y);
@@ -120,7 +131,7 @@ namespace NProcessing.App
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
-                OpenFile(args[1]);
+                OpenScriptFile(args[1]);
             }
 
             base.OnLoad(e);
@@ -149,7 +160,7 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
-        {
+        { 
             if (disposing)
             {
                 _mmTimer.Dispose();
@@ -171,43 +182,53 @@ namespace NProcessing.App
         {
             bool ok = true;
 
-            if (_scriptFileName == "")
+            if (_scriptFileName is null)
             {
                 _logger.Warn("No script file loaded.");
                 ok = false;
             }
             else
             {
-                _script?.ResetVars();
-
-                Compiler compiler = new();
-
                 // Compile now.
-                compiler.CompileScript(_scriptFileName);
-                _script = (ScriptBase?)compiler.Script;
+                _compiler.CompileScript(_scriptFileName);
+
+                // What happened?
+                if (_compiler.CompiledScript is null)
+                {
+                    _logger.Error($"Compile failed:");
+
+                    // Log compiler results.
+                    LogCompilerResults();
+
+                    return false;
+                }
+
+                _script = _compiler.CompiledScript as ScriptCore;
 
                 // Update file watcher just in case.
                 _watcher.Clear();
-                compiler.SourceFiles.ForEach(f => { _watcher.Add(f); });
+                _compiler.SourceFiles.ForEach(f => { _watcher.Add(f); });
 
-                // Process errors. Some may be warnings.
-                int errorCount = compiler.Results.Count(w => w.ResultType == CompileResultType.Error);
-
-                if (errorCount == 0 && _script is not null)
+                if (ok)
                 {
                     SetCompileStatus(true);
-                    _compileTempDir = compiler.TempDir;
+                    //_compileTempDir = _compiler.TempDir;
 
+                    // Need exception handling here to protect from user script errors.
                     try
                     {
-                        // Init surface area.
+                        // Init shared vars.
                         InitRuntime();
+
+                        // Setup script. This builds the sequences and sections.
                         _surface.InitSurface(_script); // TODO maybe combine with main draw
+
+                        // Script may have altered shared values.
                         ProcessRuntime();
                     }
                     catch (Exception ex)
                     {
-                        ScriptRuntimeError(ex);
+                        ProcessScriptRuntimeError(ex);
                         ok = false;
                     }
 
@@ -220,37 +241,6 @@ namespace NProcessing.App
                     ProcessPlay(PlayCommand.Stop);
                     SetCompileStatus(false);
                 }
-
-                compiler.Results.ForEach(r =>
-                {
-                    string msg;
-
-                    if (r.LineNumber > 0)
-                    {
-                        msg = $"{Path.GetFileName(r.SourceFile)}({r.LineNumber}): {r.Message}";
-                    }
-                    else if (r.SourceFile != "")
-                    {
-                        msg = $"{r.SourceFile}: {r.Message}";
-                    }
-                    else
-                    {
-                        msg = r.Message;
-                    }
-
-                    switch (r.ResultType)
-                    {
-                        case CompileResultType.Error:
-                            _logger.Error(msg);
-                            break;
-                        case CompileResultType.Warning:
-                            _logger.Warn(msg);
-                            break;
-                        case CompileResultType.Info:
-                            _logger.Info(msg);
-                            break;
-                    }
-                });
             }
 
             return ok;
@@ -273,6 +263,24 @@ namespace NProcessing.App
                 _needCompile = true;
             }
         }
+
+        /// <summary>Log helper.</summary>
+        void LogCompilerResults()
+        {
+            _compiler.Reports.ForEach(r =>
+            {
+                var msg = r.SourceFileName is not null ?
+                    $"{r.ReportType}: {r.SourceFileName}({r.SourceLineNumber}) [{r.Message}]" :
+                    $"{r.ReportType}: [{r.Message}]";
+                switch (r.Level)
+                {
+                    case ReportLevel.Error: _logger.Error(msg); break;
+                    case ReportLevel.Warning: _logger.Warn(msg); break;
+                    case ReportLevel.Info: _logger.Info(msg); break;
+                    default: break;
+                }
+            });
+        }
         #endregion
 
         #region Realtime handling
@@ -290,7 +298,7 @@ namespace NProcessing.App
                 }
                 catch (Exception)
                 {
-                    //???
+                    //??? TODOX ProcessScriptRuntimeError?? cross-thread
                 }
             }
         }
@@ -310,7 +318,7 @@ namespace NProcessing.App
                 }
                 catch (Exception ex)
                 {
-                    ScriptRuntimeError(ex);
+                    ProcessScriptRuntimeError(ex);
                 }
             }
 
@@ -346,59 +354,16 @@ namespace NProcessing.App
         }
 
         /// <summary>
-        /// Runtime error. Look for ones generated by our script - normal occurrence which the user should know about.
+        /// Runtime error.
         /// </summary>
         /// <param name="ex"></param>
-        void ScriptRuntimeError(Exception ex)
+        void ProcessScriptRuntimeError(Exception ex)
         {
             ProcessPlay(PlayCommand.Stop);
             SetCompileStatus(false);
 
-            // Locate the offending frame.
-            string srcFile = "???";
-            int srcLine = -1;
-            string msg = ex.Message;
-            StackTrace st = new(ex, true);
-            StackFrame? sf = null;
-
-            for (int i = 0; i < st.FrameCount; i++)
-            {
-                StackFrame? stf = st.GetFrame(i);
-                if (stf is not null)
-                {
-                    var stfn = stf!.GetFileName();
-                    if (stfn is not null)
-                    {
-                        if (stfn.Contains(_compileTempDir, StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            sf = stf;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (sf is not null)
-            {
-                // Dig out generated file parts.
-                string? genFile = sf!.GetFileName();
-                int genLine = sf.GetFileLineNumber() - 1;
-
-                // Open the generated file and dig out the source file and line.
-                string[] genLines = File.ReadAllLines(genFile!);
-
-                srcFile = genLines[0].Trim().Replace("//", "");
-
-                int ind = genLines[genLine].LastIndexOf("//");
-                if (ind != -1)
-                {
-                    string sl = genLines[genLine][(ind + 2)..];
-                    srcLine = int.Parse(sl);
-                }
-            }
-            // else // unknown?
-
-            _logger.Error(srcLine > 0 ? $"{srcFile}({srcLine}): {msg}" : $"{srcFile}: {msg}");
+            _compiler.ProcessRuntimeException(ex);
+            LogCompilerResults();
         }
         #endregion
 
@@ -415,7 +380,7 @@ namespace NProcessing.App
             };
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
-                OpenFile(openDlg.FileName);
+                OpenScriptFile(openDlg.FileName);
             }
         }
 
@@ -424,11 +389,11 @@ namespace NProcessing.App
         /// </summary>
         void Recent_Click(object? sender, EventArgs e)
         {
-            if(sender is not null)
+            if (sender is not null)
             {
                 ToolStripMenuItem item = (ToolStripMenuItem)sender;
                 string fn = item.ToString();
-                OpenFile(fn);
+                OpenScriptFile(fn);
             }
         }
 
@@ -437,7 +402,7 @@ namespace NProcessing.App
         /// </summary>
         /// <param name="fn">The np file to open.</param>
         /// <returns>Error string or empty if ok.</returns>
-        public string OpenFile(string fn)
+        public string OpenScriptFile(string fn)
         {
             string ret = "";
 
@@ -623,7 +588,7 @@ namespace NProcessing.App
         {
             _mmTimer.Stop();
 
-            //MiscUtils.ShowReadme("NProcessing");
+            //Tools.ShowReadme("NProcessing"); TODOX
         }
 
         /// <summary>

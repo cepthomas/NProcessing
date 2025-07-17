@@ -8,11 +8,11 @@ using Ephemera.NBagOfUis;
 
 namespace NProcessing.Script
 {
-    public partial class Surface : Form
+    public partial class Surface : Form // TODOX put in App?
     {
         #region Fields
         /// <summary>The current script.</summary>
-        ScriptBase? _script = null;
+        ScriptCore? _script = null;
 
         /// <summary>Rendered bitmap for display when painting.</summary>
         System.Drawing.Bitmap? _bitmap = null;
@@ -39,7 +39,7 @@ namespace NProcessing.Script
         /// If there are user script exceptions they will bubble up to the MainForm.
         /// </summary>
         /// <param name="script"></param>
-        public void InitSurface(ScriptBase script)
+        public void InitSurface(ScriptCore script)
         {
             if(script is not null)
             {
@@ -243,9 +243,9 @@ namespace NProcessing.Script
 
                 _script.mouseButton = e.Button switch
                 {
-                    MouseButtons.Left => ScriptBase.LEFT,
-                    MouseButtons.Right => ScriptBase.RIGHT,
-                    MouseButtons.Middle => ScriptBase.CENTER,
+                    MouseButtons.Left => ScriptCore.LEFT,
+                    MouseButtons.Right => ScriptCore.RIGHT,
+                    MouseButtons.Middle => ScriptCore.CENTER,
                     _ => 0,
                 };
             }
@@ -420,41 +420,41 @@ namespace NProcessing.Script
             // Check modifiers.
             if (keys.keyCodes.Contains(Keys.Control))
             {
-                _script.keyCode |= ScriptBase.CTRL;
+                _script.keyCode |= ScriptCore.CTRL;
             }
 
             if (keys.keyCodes.Contains(Keys.Alt))
             {
-                _script.keyCode |= ScriptBase.ALT;
+                _script.keyCode |= ScriptCore.ALT;
             }
 
             if (keys.keyCodes.Contains(Keys.Shift))
             {
-                _script.keyCode |= ScriptBase.SHIFT;
+                _script.keyCode |= ScriptCore.SHIFT;
             }
 
             if (keys.keyCodes.Contains(Keys.Left))
             {
-                _script.keyCode |= ScriptBase.LEFT;
-                _script.key = (char)ScriptBase.CODED;
+                _script.keyCode |= ScriptCore.LEFT;
+                _script.key = (char)ScriptCore.CODED;
             }
 
             if (keys.keyCodes.Contains(Keys.Right))
             {
-                _script.keyCode |= ScriptBase.RIGHT;
-                _script.key = (char)ScriptBase.CODED;
+                _script.keyCode |= ScriptCore.RIGHT;
+                _script.key = (char)ScriptCore.CODED;
             }
 
             if (keys.keyCodes.Contains(Keys.Up))
             {
-                _script.keyCode |= ScriptBase.UP;
-                _script.key = (char)ScriptBase.CODED;
+                _script.keyCode |= ScriptCore.UP;
+                _script.key = (char)ScriptCore.CODED;
             }
 
             if (keys.keyCodes.Contains(Keys.Down))
             {
-                _script.keyCode |= ScriptBase.DOWN;
-                _script.key = (char)ScriptBase.CODED;
+                _script.keyCode |= ScriptCore.DOWN;
+                _script.key = (char)ScriptCore.CODED;
             }
         }
         #endregion

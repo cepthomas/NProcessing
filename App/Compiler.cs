@@ -2,31 +2,46 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Reflection;
 using System.Diagnostics;
 using Ephemera.NBagOfTricks;
+using Ephemera.NScript;
 
 
 namespace NProcessing.App
 {
     public class Compiler : CompilerCore
     {
-        /// <inheritdoc />
-        public override void PreCompile()
+        /// <see cref="CompilerCore"/>
+        protected override void PreCompile()
         {
-            SystemDlls.Add("System.Drawing");
-            LocalDlls = ["NAudio", "SkiaSharp", "Ephemera.NBagOfTricks", "NProcessing.Script"];
+            // App references.
+            SystemDlls =
+            [
+                "System",
+                "System.Private.CoreLib",
+                "System.Runtime",
+                //"System.Collections",
+                //"System.IO",
+                //"System.Linq",
+                //"System.Drawing"
+            ];
+
+            LocalDlls =
+            [
+                "SkiaSharp",
+                "Ephemera.NBagOfTricks",
+                "NProcessing.Script"
+            ];
         }
 
-        /// <inheritdoc />
-        public override void PostCompile()
+        /// <see cref="CompilerCore"/>
+        protected override void PostCompile()
         {
             // Nothing to do
         }
 
-        /// <inheritdoc />
-        public override bool PreprocessLine(string sline, FileContext pcont)
+        /// <see cref="CompilerCore"/>
+        protected override bool PreprocessLine(string sline, int lineNum, ScriptFile pcont)
         {
             // Nothing to do
             return false;

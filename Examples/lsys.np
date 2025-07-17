@@ -1,137 +1,134 @@
 
 // Partial implementation of https://en.wikipedia.org/wiki/L-system and http://benvan.co.uk/lsys/
 
-public class lsys : ScriptBase
+// Variables
+int _bcolor = 100;
+int _angle = -3963;
+
+
+// The lines to draw.
+struct point { public int x; public int y; }
+List<point> lines = new List<point>();
+
+
+public override void setup()
 {
-    // Variables
-    int _bcolor = 100;
-    int _angle = -3963;
+    size(600, 600);
 
+    genLSys(-1.359672, -0.138235, _angle, 14.11);
+    print("setup()");
+    noLoop();
 
-    // The lines to draw.
-    struct point { public int x; public int y; }
-    List<point> lines = new List<point>();
+    redraw();
+}
 
+public override void draw()
+{
+    background(_bcolor, 100, 200);
 
-    public override void setup()
+    stroke(255);
+
+    for (var i = 0; i < lines.Count; i += 2)
     {
-        size(600, 600);
-
-        genLSys(-1.359672, -0.138235, _angle, 14.11);
-        print("setup()");
-        noLoop();
-
-        redraw();
+        var a = lines[i];
+        var b = lines[i + 1];
+        line(a.x, a.y, b.x, b.y);
     }
+}
 
-    public override void draw()
+public override void mouseClicked()
+{
+    genLSys(-1.359672, -0.138235, mouseX, 14.11);
+
+    redraw();
+}
+
+
+///// L-systems generator.
+
+class State
+{
+    public double size;
+    public double angle;
+    public double direction;
+    public double x;
+    public double y;
+    public State Clone() { return (State)MemberwiseClone(); }
+}
+
+void genLSys(double sizeGrowth, double angleGrowth, double initAngle, double initSize)
+{
+    lines.Clear();
+
+    var states = new Stack<State>();
+    var str = "L";
+
+    var state = new State()
     {
-        background(_bcolor, 100, 200);
+        x = width / 2,
+        y = height / 2,
+        direction = 0,
+        size = initSize,
+        angle = initAngle
+    };
 
-        stroke(255);
+    // The rules.
+    var tbl = new Dictionary<char, string>
+    {
+        { 'L', "|-S!L!Y" },
+        { 'S', "[F[FF-YS]F)G]+" },
+        { 'Y', "--[F-)<F-FG]-" },
+        { 'G', "FGF[Y+>F]+Y" }
+    };
 
-        for (var i = 0; i < lines.Count; i += 2)
+    // Rewrite.
+    for (var i = 0; i < 10; i++)
+    {
+        var sb = new StringBuilder();
+        foreach(char c in str)
         {
-            var a = lines[i];
-            var b = lines[i + 1];
-            line(a.x, a.y, b.x, b.y);
+            sb.Append(tbl.ContainsKey(c) ? tbl[c] : c.ToString());
         }
+        str = sb.ToString();
     }
 
-    public override void mouseClicked()
+    // Make lines.
+    foreach (var elt in str)
     {
-        genLSys(-1.359672, -0.138235, mouseX, 14.11);
-
-        redraw();
-    }
-
-
-    ///// L-systems generator.
-
-    class State
-    {
-        public double size;
-        public double angle;
-        public double direction;
-        public double x;
-        public double y;
-        public State Clone() { return (State)MemberwiseClone(); }
-    }
-
-    void genLSys(double sizeGrowth, double angleGrowth, double initAngle, double initSize)
-    {
-        lines.Clear();
-
-        var states = new Stack<State>();
-        var str = "L";
-
-        var state = new State()
+        switch (elt)
         {
-            x = width / 2,
-            y = height / 2,
-            direction = 0,
-            size = initSize,
-            angle = initAngle
-        };
+            case 'F':
+                var new_x = state.x + state.size * Math.Cos(state.direction * Math.PI / 180.0);
+                var new_y = state.y + state.size * Math.Sin(state.direction * Math.PI / 180.0);
 
-        // The rules.
-        var tbl = new Dictionary<char, string>
-        {
-            { 'L', "|-S!L!Y" },
-            { 'S', "[F[FF-YS]F)G]+" },
-            { 'Y', "--[F-)<F-FG]-" },
-            { 'G', "FGF[Y+>F]+Y" }
-        };
+                point pt1 = new point();
+                pt1.x = (int)state.x;
+                pt1.y = (int)state.y;
 
-        // Rewrite.
-        for (var i = 0; i < 10; i++)
-        {
-            var sb = new StringBuilder();
-            foreach(char c in str)
-            {
-                sb.Append(tbl.ContainsKey(c) ? tbl[c] : c.ToString());
-            }
-            str = sb.ToString();
-        }
+                point pt2 = new point();
+                pt2.x = (int)state.x;
+                pt2.y = (int)state.y;
 
-        // Make lines.
-        foreach (var elt in str)
-        {
-            switch (elt)
-            {
-                case 'F':
-                    var new_x = state.x + state.size * Math.Cos(state.direction * Math.PI / 180.0);
-                    var new_y = state.y + state.size * Math.Sin(state.direction * Math.PI / 180.0);
+                lines.Add(pt1);
+                lines.Add(pt2);
 
-                    point pt1 = new point();
-                    pt1.x = (int)state.x;
-                    pt1.y = (int)state.y;
+                state.x = new_x;
+                state.y = new_y;
+                break;
 
-                    point pt2 = new point();
-                    pt2.x = (int)state.x;
-                    pt2.y = (int)state.y;
+            case '+': state.direction += state.angle; break;
+            case '-': state.direction -= state.angle; break;
+            case '>': state.size *= (1.0 - sizeGrowth); break;
+            case '<': state.size *= (1.0 + sizeGrowth); break;
+            case ')': state.angle *= (1 + angleGrowth); break;
+            case '(': state.angle *= (1 - angleGrowth); break;
+            case '[': states.Push(state.Clone()); break;
+            case ']': state = states.Pop(); break;
+            case '!': state.angle *= -1.0; break;
+            case '|': state.direction += 180.0; break;
 
-                    lines.Add(pt1);
-                    lines.Add(pt2);
-
-                    state.x = new_x;
-                    state.y = new_y;
-                    break;
-
-                case '+': state.direction += state.angle; break;
-                case '-': state.direction -= state.angle; break;
-                case '>': state.size *= (1.0 - sizeGrowth); break;
-                case '<': state.size *= (1.0 + sizeGrowth); break;
-                case ')': state.angle *= (1 + angleGrowth); break;
-                case '(': state.angle *= (1 - angleGrowth); break;
-                case '[': states.Push(state.Clone()); break;
-                case ']': state = states.Pop(); break;
-                case '!': state.angle *= -1.0; break;
-                case '|': state.direction += 180.0; break;
-
-                default:
-                    break;
-            }
+            default:
+                break;
         }
     }
 }

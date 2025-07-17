@@ -1,107 +1,104 @@
 // Doodle generator Donya Quick http://donyaquick.com/an-avant-garde-jazz-album-cover-generator/
 
 
-public class dquick : ScriptBase
+int shapes = 10;
+double padding = 80;
+double minW = 0;
+double maxW = 0;
+double minH = 0;
+double maxH = 0;
+bool curves = true;
+
+bool draw_one = false;
+
+public override void setup()
 {
-    int shapes = 10;
-    double padding = 80;
-    double minW = 0;
-    double maxW = 0;
-    double minH = 0;
-    double maxH = 0;
-    bool curves = true;
+    size(500,500);
 
-    bool draw_one = false;
+    minW = padding;
+    maxW = width - padding;
+    minH = padding;
+    maxH = height - padding;
+}
 
-    public override void setup()
+public override void draw()
+{
+    if(draw_one)
     {
-        size(500,500);
-
-        minW = padding;
-        maxW = width - padding;
-        minH = padding;
-        maxH = height - padding;
+        newDoodle();
+        draw_one = false;
     }
+}
 
-    public override void draw()
+public override void mousePressed()
+{
+    draw_one = true;
+    curves = !curves;
+}
+
+// Make a new algorithmic squiggle
+void newDoodle()
+{
+    background(50);
+    shapes = round(random(5, 10));
+
+    for (int i = 0; i < shapes; i++)
     {
-        if(draw_one)
+        stroke(randomBrightColor());
+        strokeWeight(random(3, 10));
+        double r = random(0, 1.0);
+        // print(r);
+
+        if (r < 0.25)   // 25% chance to draw a circle
         {
-            newDoodle();
-            draw_one = false;
+            fill(random(0, 255), random(0, 255), random(0, 255), random(0, 255));
+            double size = random(width / 8, width / 4);
+            ellipse(random(minW, maxW), random(minH, maxH), size, size);
         }
-    }
-
-    public override void mousePressed()
-    {
-        draw_one = true;
-        curves = !curves;
-    }
-
-    // Make a new algorithmic squiggle
-    void newDoodle()
-    {
-        background(50);
-        shapes = round(random(5, 10));
-
-        for (int i = 0; i < shapes; i++)
+        else  // otherwise draw a 2-4 vertex line
         {
-            stroke(randomBrightColor());
-            strokeWeight(random(3, 10));
-            double r = random(0, 1.0);
-            // print(r);
+            int vertices = round(random(5.0, 10.0));
+            beginShape();
 
-            if (r < 0.25)   // 25% chance to draw a circle
+            fill(0, 0); // transparent fill
+
+            for (int j = 0; j < vertices; j++)
             {
-                fill(random(0, 255), random(0, 255), random(0, 255), random(0, 255));
-                double size = random(width / 8, width / 4);
-                ellipse(random(minW, maxW), random(minH, maxH), size, size);
-            }
-            else  // otherwise draw a 2-4 vertex line
-            {
-                int vertices = round(random(5.0, 10.0));
-                beginShape();
-
-                fill(0, 0); // transparent fill
-
-                for (int j = 0; j < vertices; j++)
+                if (curves)
                 {
-                    if (curves)
-                    {
-                        //curveVertex(random(minW, maxW), random(minH, maxH));
-                        vertex(random(minW, maxW), random(minH, maxH));
-                    }
-                    else
-                    {
-                        vertex(random(minW, maxW), random(minH, maxH));
-                    }
+                    //curveVertex(random(minW, maxW), random(minH, maxH));
+                    vertex(random(minW, maxW), random(minH, maxH));
                 }
-
-                endShape();
+                else
+                {
+                    vertex(random(minW, maxW), random(minH, maxH));
+                }
             }
+
+            endShape();
         }
     }
+}
 
-    // Function.
-    color randomBrightColor()
+// Function.
+color randomBrightColor()
+{
+    double r = random(0, 255);
+    double g = random(0, 255);
+    double b = random(0, 255);
+
+    // boost colors to be brighter if over a threshold
+    if (r > 70)
     {
-        double r = random(0, 255);
-        double g = random(0, 255);
-        double b = random(0, 255);
-
-        // boost colors to be brighter if over a threshold
-        if (r > 70)
-        {
-            r = r + 50;
-        }
-        if (g > 70)
-        {
-            g = g + 50;
-        }
-        if (b > 70)
-        {
-            b = b + 50;
-        }
-        return color(r, g, b);
+        r = r + 50;
     }
-}    
+    if (g > 70)
+    {
+        g = g + 50;
+    }
+    if (b > 70)
+    {
+        b = b + 50;
+    }
+    return color(r, g, b);
+}

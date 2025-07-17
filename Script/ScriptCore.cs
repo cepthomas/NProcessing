@@ -11,7 +11,7 @@ using Ephemera.NBagOfTricks;
 
 namespace NProcessing.Script
 {
-    public partial class ScriptBase
+    public partial class ScriptCore
     {
         #region Fields - internal
         /// <summary>My logger.</summary>
@@ -29,7 +29,6 @@ namespace NProcessing.Script
         /// <summary>Current working object to draw on.</summary>
         #nullable disable
         internal SKCanvas _canvas;
-        #nullable enable
         #endregion
 
         #region Fields - graphics/processing
@@ -77,7 +76,7 @@ namespace NProcessing.Script
         bool _smooth = true;
         #endregion
 
-        #region Properties - dynamic things shared between host and script at runtime
+        #region Properties - accessible by host and script
         /// <summary>Main -> Script</summary>
         public double RealTime { get; set; } = 0.0;
 
@@ -89,13 +88,13 @@ namespace NProcessing.Script
         /// <summary>
         /// Constructor.
         /// </summary>
-        public ScriptBase()
+        public ScriptCore()
         {
             ResetVars();
         }
 
         /// <summary>
-        /// Ugly way to deal with static vars in color class. TODO?
+        /// Ugly way to deal with static vars in color class. TODOX?
         /// </summary>
         public void ResetVars()
         {

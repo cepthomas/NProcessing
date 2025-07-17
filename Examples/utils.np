@@ -1,20 +1,17 @@
 
 ///// Functions /////
-public class utils : ScriptBase
+int notavar = 911;
+
+bool boing(int which = 0)
 {
-    int notavar = 911;
+    bool boinged = false;
 
-    bool boing(int which = 0)
+    if(which == 0)
     {
-        bool boinged = false;
-
-        if(which == 0)
-        {
-            which = (int)random(30, 60);
-            boinged = true;
-            print("boing");
-        }
-
-        return boinged;
+        which = (int)random(30, 60);
+        boinged = true;
+        print("boing");
     }
+
+    return boinged;
 }

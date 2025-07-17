@@ -15,266 +15,263 @@
 
 // Click the mouse to add a new boid.
 
-public class flocking : ScriptBase
+Flock my_flock;
+
+public override void setup()
 {
-    Flock my_flock;
+    size(600, 600);
+    frameRate(30);
+    
+    my_flock = new Flock();
 
-    public override void setup()
+    // Add an initial set of boids into the system
+    for (int i = 0; i < 150; i++)
     {
-        size(600, 600);
-        frameRate(30);
-        
-        my_flock = new Flock();
+        my_flock.addBoid(new Boid(width / 2, height / 2));
+    }
+}
 
-        // Add an initial set of boids into the system
-        for (int i = 0; i < 150; i++)
+public override void draw()
+{
+    background(50);
+    my_flock.run(this);
+}
+
+// Add a new boid into the System
+public override void mousePressed()
+{
+    my_flock.addBoid(new Boid(mouseX, mouseY));
+}
+
+// The Flock (a list of Boid objects)
+public class Flock
+{
+    List<Boid> boids; // A list of all the boids
+
+    public Flock()
+    {
+        boids = new List<Boid>(); // Initialize the ArrayList
+    }
+
+    public void run(flocking s)
+    {
+        foreach (Boid b in boids)
         {
-            my_flock.addBoid(new Boid(width / 2, height / 2));
+            b.run(s, boids);  // Passing the entire list of boids to each boid individually
         }
     }
 
-    public override void draw()
+    public void addBoid(Boid b)
     {
-        background(50);
-        my_flock.run(this);
+        boids.Add(b);
     }
-
-    // Add a new boid into the System
-    public override void mousePressed()
-    {
-        my_flock.addBoid(new Boid(mouseX, mouseY));
-    }
-
-    // The Flock (a list of Boid objects)
-    public class Flock
-    {
-        List<Boid> boids; // A list of all the boids
-
-        public Flock()
-        {
-            boids = new List<Boid>(); // Initialize the ArrayList
-        }
-
-        public void run(flocking s)
-        {
-            foreach (Boid b in boids)
-            {
-                b.run(s, boids);  // Passing the entire list of boids to each boid individually
-            }
-        }
-
-        public void addBoid(Boid b)
-        {
-            boids.Add(b);
-        }
-    }
+}
 }
 
 // One Boid.
 public class Boid
 {
-    PVector position;
-    PVector velocity;
-    PVector acceleration;
-    double r;
-    double maxforce;    // Maximum steering force
-    double maxspeed;    // Maximum speed
+PVector position;
+PVector velocity;
+PVector acceleration;
+double r;
+double maxforce;    // Maximum steering force
+double maxspeed;    // Maximum speed
 
-    public Boid(double x, double y)
+public Boid(double x, double y)
+{
+    acceleration = new PVector(0, 0);
+    velocity = PVector.random2D();
+    position = new PVector(x, y);
+    r = 2.0;
+    maxspeed = 2;
+    maxforce = 0.03;
+}
+
+public void run(flocking s, List<Boid> boids)
+{
+    recalc(boids);
+
+    update();
+    borders(s);
+    render(s);
+}
+
+// We accumulate a new acceleration each time based on three rules
+public void recalc(List<Boid> boids)
+{
+    PVector sep = separate(boids);   // Separation
+    PVector ali = align(boids);      // Alignment
+    PVector coh = cohesion(boids);   // Cohesion
+
+    // Arbitrarily weight these forces
+    sep.mult(1.5f);
+    ali.mult(1.0f);
+    coh.mult(1.0f);
+    
+    // Add the force vectors to acceleration
+    applyForce(sep);
+    applyForce(ali);
+    applyForce(coh);
+}
+
+// Update position
+public void update()
+{
+    // Update velocity
+    velocity.add(acceleration);
+    // Limit speed
+    velocity.limit(maxspeed);
+    position.add(velocity);
+    // Reset acceleration to 0 each cycle
+    acceleration.mult(0);
+}
+
+// Wraparound
+public void borders(flocking f)
+{
+    if (position.x < -r) position.x = f.width + r;
+    if (position.y < -r) position.y = f.height + r;
+    if (position.x > f.width + r) position.x = -r;
+    if (position.y > f.height + r) position.y = -r;
+}
+
+// Draw.
+public void render(flocking f)
+{
+    // Draw a triangle rotated in the direction of velocity
+    double theta = velocity.heading() + f.radians(90);
+    f.fill(200, 100, 50);
+    f.stroke(255);
+    f.pushMatrix();
+    f.translate(position.x, position.y);
+    f.rotate(theta);
+    f.beginShape();  // was: beginShape(TRIANGLES);
+    f.vertex(0, -r * 2);
+    f.vertex(-r, r * 2);
+    f.vertex(r, r * 2);
+    f.endShape(CLOSE);
+    f.popMatrix();
+}
+
+public void applyForce(PVector force)
+{
+    // We could add mass here if we want A = F / M
+    acceleration.add(force);
+}
+
+// A method that calculates and applies a steering force towards a target
+// STEER = DESIRED MINUS VELOCITY
+public PVector seek(PVector target)
+{
+    PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
+    // Scale to maximum speed
+    desired.setMag(maxspeed);
+
+    // Steering = Desired minus Velocity
+    PVector steer = PVector.sub(desired, velocity);
+    steer.limit(maxforce);  // Limit to maximum steering force
+    return steer;
+}
+
+// Separation method checks for nearby boids and steers away
+public PVector separate (List<Boid> boids)
+{
+    double desiredseparation = 25.0;
+    PVector steer = new PVector(0, 0, 0);
+    int count = 0;
+
+    // For every boid in the system, check if it's too close
+    foreach (Boid other in boids)
     {
-        acceleration = new PVector(0, 0);
-        velocity = PVector.random2D();
-        position = new PVector(x, y);
-        r = 2.0;
-        maxspeed = 2;
-        maxforce = 0.03;
+        double d = PVector.dist(position, other.position);
+        // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+        if ((d > 0) && (d < desiredseparation))
+        {
+            // Calculate vector pointing away from neighbor
+            PVector diff = PVector.sub(position, other.position);
+            diff.normalize();
+            diff.div(d);        // Weight by distance
+            steer.add(diff);
+            count++;            // Keep track of how many
+        }
+    }
+    // Average -- divide by how many
+    if (count > 0)
+    {
+        steer.div((double)count);
     }
 
-    public void run(flocking s, List<Boid> boids)
+    // As long as the vector is greater than 0
+    if (steer.mag() > 0)
     {
-        recalc(boids);
+        // Implement Reynolds: Steering = Desired - Velocity
+        steer.setMag(maxspeed);
+        steer.sub(velocity);
+        steer.limit(maxforce);
+    }
+    return steer;
+}
 
-        update();
-        borders(s);
-        render(s);
+// Alignment
+// For every nearby boid in the system, calculate the average velocity
+public PVector align (List<Boid> boids)
+{
+    double neighbordist = 50;
+    PVector sum = new PVector(0, 0);
+    int count = 0;
+
+    foreach (Boid other in boids)
+    {
+        double d = PVector.dist(position, other.position);
+        if ((d > 0) && (d < neighbordist))
+        {
+            sum.add(other.velocity);
+            count++;
+        }
     }
 
-    // We accumulate a new acceleration each time based on three rules
-    public void recalc(List<Boid> boids)
+    if (count > 0)
     {
-        PVector sep = separate(boids);   // Separation
-        PVector ali = align(boids);      // Alignment
-        PVector coh = cohesion(boids);   // Cohesion
+        sum.div((double)count);
 
-        // Arbitrarily weight these forces
-        sep.mult(1.5f);
-        ali.mult(1.0f);
-        coh.mult(1.0f);
-        
-        // Add the force vectors to acceleration
-        applyForce(sep);
-        applyForce(ali);
-        applyForce(coh);
-    }
-
-    // Update position
-    public void update()
-    {
-        // Update velocity
-        velocity.add(acceleration);
-        // Limit speed
-        velocity.limit(maxspeed);
-        position.add(velocity);
-        // Reset acceleration to 0 each cycle
-        acceleration.mult(0);
-    }
-
-    // Wraparound
-    public void borders(flocking f)
-    {
-        if (position.x < -r) position.x = f.width + r;
-        if (position.y < -r) position.y = f.height + r;
-        if (position.x > f.width + r) position.x = -r;
-        if (position.y > f.height + r) position.y = -r;
-    }
-
-    // Draw.
-    public void render(flocking f)
-    {
-        // Draw a triangle rotated in the direction of velocity
-        double theta = velocity.heading() + f.radians(90);
-        f.fill(200, 100, 50);
-        f.stroke(255);
-        f.pushMatrix();
-        f.translate(position.x, position.y);
-        f.rotate(theta);
-        f.beginShape();  // was: beginShape(TRIANGLES);
-        f.vertex(0, -r * 2);
-        f.vertex(-r, r * 2);
-        f.vertex(r, r * 2);
-        f.endShape(CLOSE);
-        f.popMatrix();
-    }
-
-    public void applyForce(PVector force)
-    {
-        // We could add mass here if we want A = F / M
-        acceleration.add(force);
-    }
-
-    // A method that calculates and applies a steering force towards a target
-    // STEER = DESIRED MINUS VELOCITY
-    public PVector seek(PVector target)
-    {
-        PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
-        // Scale to maximum speed
-        desired.setMag(maxspeed);
-
-        // Steering = Desired minus Velocity
-        PVector steer = PVector.sub(desired, velocity);
-        steer.limit(maxforce);  // Limit to maximum steering force
+        // Implement Reynolds: Steering = Desired - Velocity
+        sum.setMag(maxspeed);
+        PVector steer = PVector.sub(sum, velocity);
+        steer.limit(maxforce);
         return steer;
     }
-
-    // Separation method checks for nearby boids and steers away
-    public PVector separate (List<Boid> boids)
+    else
     {
-        double desiredseparation = 25.0;
-        PVector steer = new PVector(0, 0, 0);
-        int count = 0;
-
-        // For every boid in the system, check if it's too close
-        foreach (Boid other in boids)
-        {
-            double d = PVector.dist(position, other.position);
-            // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-            if ((d > 0) && (d < desiredseparation))
-            {
-                // Calculate vector pointing away from neighbor
-                PVector diff = PVector.sub(position, other.position);
-                diff.normalize();
-                diff.div(d);        // Weight by distance
-                steer.add(diff);
-                count++;            // Keep track of how many
-            }
-        }
-        // Average -- divide by how many
-        if (count > 0)
-        {
-            steer.div((double)count);
-        }
-
-        // As long as the vector is greater than 0
-        if (steer.mag() > 0)
-        {
-            // Implement Reynolds: Steering = Desired - Velocity
-            steer.setMag(maxspeed);
-            steer.sub(velocity);
-            steer.limit(maxforce);
-        }
-        return steer;
+        return new PVector(0, 0);
     }
+}
 
-    // Alignment
-    // For every nearby boid in the system, calculate the average velocity
-    public PVector align (List<Boid> boids)
+// Cohesion
+// For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
+public PVector cohesion (List<Boid> boids)
+{
+    double neighbordist = 50;
+    PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all positions
+    int count = 0;
+
+    foreach (Boid other in boids)
     {
-        double neighbordist = 50;
-        PVector sum = new PVector(0, 0);
-        int count = 0;
-
-        foreach (Boid other in boids)
+        double d = PVector.dist(position, other.position);
+        if ((d > 0) && (d < neighbordist))
         {
-            double d = PVector.dist(position, other.position);
-            if ((d > 0) && (d < neighbordist))
-            {
-                sum.add(other.velocity);
-                count++;
-            }
-        }
-
-        if (count > 0)
-        {
-            sum.div((double)count);
-
-            // Implement Reynolds: Steering = Desired - Velocity
-            sum.setMag(maxspeed);
-            PVector steer = PVector.sub(sum, velocity);
-            steer.limit(maxforce);
-            return steer;
-        }
-        else
-        {
-            return new PVector(0, 0);
+            sum.add(other.position); // Add position
+            count++;
         }
     }
 
-    // Cohesion
-    // For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
-    public PVector cohesion (List<Boid> boids)
+    if (count > 0)
     {
-        double neighbordist = 50;
-        PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all positions
-        int count = 0;
-
-        foreach (Boid other in boids)
-        {
-            double d = PVector.dist(position, other.position);
-            if ((d > 0) && (d < neighbordist))
-            {
-                sum.add(other.position); // Add position
-                count++;
-            }
-        }
-
-        if (count > 0)
-        {
-            sum.div(count);
-            return seek(sum);  // Steer towards the position
-        }
-        else
-        {
-            return new PVector(0, 0);
-        }
+        sum.div(count);
+        return seek(sum);  // Steer towards the position
+    }
+    else
+    {
+        return new PVector(0, 0);
     }
 }
