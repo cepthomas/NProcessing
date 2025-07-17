@@ -8,7 +8,7 @@ using Ephemera.NBagOfUis;
 
 namespace NProcessing.Script
 {
-    public partial class Surface : Form // TODOX put in App?
+    public partial class Surface : Form
     {
         #region Fields
         /// <summary>The current script.</summary>
