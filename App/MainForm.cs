@@ -212,7 +212,6 @@ namespace NProcessing.App
                 if (ok)
                 {
                     SetCompileStatus(true);
-                    //_compileTempDir = _compiler.TempDir;
 
                     // Need exception handling here to protect from user script errors.
                     try
@@ -296,9 +295,9 @@ namespace NProcessing.App
                 {
                     this.InvokeIfRequired(_ => { NextDraw(); });
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //??? TODOX ProcessScriptRuntimeError?? cross-thread
+                    ProcessScriptRuntimeError(ex);
                 }
             }
         }
@@ -586,9 +585,7 @@ namespace NProcessing.App
         /// </summary>
         void About_Click(object? sender, EventArgs e)
         {
-            _mmTimer.Stop();
-
-            //Tools.ShowReadme("NProcessing"); TODOX
+            Tools.ShowReadme("NProcessing");
         }
 
         /// <summary>

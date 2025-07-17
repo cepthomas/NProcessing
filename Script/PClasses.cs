@@ -281,7 +281,7 @@ namespace NProcessing.Script
     }
 
     /// <summary>
-    /// Custom midi data class.
+    /// Custom midi data class. This is not currently implemented - could be grafted from Nebulator.
     /// </summary>
     public class PMidiEvent
     {

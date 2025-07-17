@@ -7,19 +7,6 @@ using SkiaSharp;
 using Ephemera.NBagOfTricks;
 
 
-// Processing emulation script stuff. TODOX make this self-documenting and gen ScriptApi.md.
-// The properties and functions are organized similarly to the API specified in https://processing.org/reference/.
-
-// The following sections list the supported elements in roughly the same structure as the [Processing API](https://processing.org/reference/).
-// Refer to that document for API specifics.  
-
-// There are lots of unimplemented functions and properties, including some of the overloaded flavors. If it's not implemented,
-// you get either a compiler error or a runtime warning.  
-
-// Note also that a lot of these have not been properly tested. Eventually there may be a real unit test project.
-
-
-
 namespace NProcessing.Script
 {
     public partial class ScriptCore
@@ -122,6 +109,7 @@ namespace NProcessing.Script
         #endregion
 
         #region Data - Array Functions
+        // None implemented.
         #endregion
         #endregion
 
@@ -334,6 +322,7 @@ namespace NProcessing.Script
         #endregion
 
         #region Shape - Loading & Displaying
+        // None implemented.
         #endregion
         #endregion
 
@@ -496,15 +485,18 @@ namespace NProcessing.Script
         #endregion
 
         #region Image - Textures
+        // None implemented.
         #endregion
 
         #region Image - Pixels
+        // None implemented.
         #endregion
         #endregion
 
         #region Rendering 
 
         #region Rendering - Shaders
+        // None implemented.
         #endregion
         #endregion
 
