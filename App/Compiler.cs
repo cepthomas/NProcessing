@@ -14,16 +14,15 @@ namespace NProcessing.App
         /// <see cref="CompilerCore"/>
         protected override void PreCompile()
         {
+
             // App references.
             SystemDlls =
             [
                 "System",
                 "System.Private.CoreLib",
                 "System.Runtime",
-                //"System.Collections",
-                //"System.IO",
-                //"System.Linq",
-                //"System.Drawing"
+                "System.Collections",
+                "System.Drawing"
             ];
 
             LocalDlls =
@@ -32,6 +31,13 @@ namespace NProcessing.App
                 "Ephemera.NBagOfTricks",
                 "NProcessing.Script"
             ];
+
+            Usings =
+            [
+                "System.Collections.Generic",
+                "System.Text",
+            ];
+
         }
 
         /// <see cref="CompilerCore"/>

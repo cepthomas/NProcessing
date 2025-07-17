@@ -1,6 +1,5 @@
 // Doodle generator Donya Quick http://donyaquick.com/an-avant-garde-jazz-album-cover-generator/
 
-
 int shapes = 10;
 double padding = 80;
 double minW = 0;

@@ -41,7 +41,7 @@
             <HintPath>..\lib\Ephemera.NBagOfUis.dll</HintPath>
         </Reference>
         <Reference Include="Ephemera.NScript">
-          <HintPath>..\..\Nebulator_new\lib\Ephemera.NScript.dll</HintPath>
+            <HintPath>..\lib\Ephemera.NScript.dll</HintPath>
         </Reference>
     </ItemGroup>
     

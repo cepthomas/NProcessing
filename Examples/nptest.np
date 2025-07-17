@@ -1,7 +1,7 @@
 
 ///// Tester for Processing workalike.
 
-Include(C:\Dev\Apps\NProcessing\Examples\utils.np);
+#:include C:\Dev\Apps\NProcessing\Examples\utils.np
 
 public override void setup()
 {
@@ -202,7 +202,6 @@ void polygon(double x, double y, double radius, int npoints)
 //////////////// radial gradient ///////////////////
 //https://processing.org/examples/radialgradient.html
 
-
 void setup_radial_gradient()
 {
     //size(640, 360);
@@ -238,6 +237,7 @@ void draw_radial_gradient()
 
 
 ////////////////////// sine cosine /////////////////////////////
+
 double x1, x2, y1, y2;
 double angle1, angle2;
 double scalar = 70;
@@ -279,6 +279,7 @@ void draw_sine_cosine()
 
 
 ///////////////////// embedded iteration ///////////////////////////
+
 void draw_embedded_iteration()
 {
     //size(640, 360);
@@ -301,6 +302,7 @@ void draw_embedded_iteration()
 
 
 ////////////////////// pointillism //////////////////////////
+
 PImage img;
 int smallPoint, largePoint;
 
@@ -330,6 +332,7 @@ void draw_pointillism()
 
 
 ///////////////////// random gaussian ///////////////////////////
+
 void setup_random_gaussian()
 {
     //size(640, 360);
@@ -353,6 +356,7 @@ void draw_random_gaussian()
 
 
 //////////////////// load files ////////////////////////////
+
 String[] lines;
 int index = 0;
 

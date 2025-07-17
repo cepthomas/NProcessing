@@ -40,14 +40,6 @@ public override void draw()
             double shiftY3 = mouseY / amt * random(-1.0, 1.0);
             double shiftX4 = mouseX / amt * random(-1.0, 1.0);
             double shiftY4 = mouseY / amt * random(-1.0, 1.0);
-            // int shiftX1 = mouseX / 20 * random(-1, 1);
-            // int shiftY1 = mouseY / 20 * random(-1, 1);
-            // int shiftX2 = mouseX / 20 * random(-1, 1);
-            // int shiftY2 = mouseY / 20 * random(-1, 1);
-            // int shiftX3 = mouseX / 20 * random(-1, 1);
-            // int shiftY3 = mouseY / 20 * random(-1, 1);
-            // int shiftX4 = mouseX / 20 * random(-1, 1);
-            // int shiftY4 = mouseY / 20 * random(-1, 1);
 
             pushMatrix();
             translate(posX, posY);
