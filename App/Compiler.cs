@@ -11,10 +11,8 @@ namespace NProcessing.App
 {
     public class Compiler : CompilerCore
     {
-        /// <see cref="CompilerCore"/>
-        protected override void PreCompile()
+        public Compiler()
         {
-
             // App references.
             SystemDlls =
             [
@@ -37,7 +35,12 @@ namespace NProcessing.App
                 "System.Collections.Generic",
                 "System.Text",
             ];
+        }
 
+        /// <see cref="CompilerCore"/>
+        protected override void PreCompile()
+        {
+            // Nothing to do
         }
 
         /// <see cref="CompilerCore"/>
