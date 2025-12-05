@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Reflection;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
 using NProcessing.Script;
@@ -66,6 +67,7 @@ namespace NProcessing.App
         public MainForm()
         {
             InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
             // Get settings.
             string appDir = MiscUtils.GetAppDataDir("NProcessing", "Ephemera");
