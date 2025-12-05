@@ -55,13 +55,6 @@ namespace NProcessing.App
         [Browsable(true)]
         [JsonConverter(typeof(JsonColorConverter))]
         public Color SelectedColor { get; set; } = Color.Violet;
-
-        [DisplayName("Background Color")]
-        [Description("The color used for overall background.")]
-        [Category("Cosmetics")]
-        [Browsable(true)]
-        [JsonConverter(typeof(JsonColorConverter))]
-        public Color BackColor { get; set; } = Color.AliceBlue;
         #endregion
 
         #region Persisted non-editable properties

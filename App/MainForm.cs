@@ -97,7 +97,7 @@ namespace NProcessing.App
             _surface.TopMost = _settings.LockUi;
 
             // The rest of the controls.
-            textViewer.BackColor = _settings.BackColor;
+            textViewer.BackColor = BackColor;
             textViewer.MatchText.Add("ERR", Color.LightPink);
             textViewer.MatchText.Add("WRN", Color.Plum);
             textViewer.Prompt = "> ";
