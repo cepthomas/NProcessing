@@ -1,7 +1,7 @@
 
 ///// Tester for Processing workalike.
 
-#:include %DEV_PATH%\Apps\NProcessing\Examples\utils.np
+#:include utils.np
 
 public override void setup()
 {

@@ -99,10 +99,14 @@ namespace NProcessing.App
             _surface.TopMost = _settings.LockUi;
 
             // The rest of the controls.
-            textViewer.BackColor = BackColor;
-            textViewer.MatchText.Add("ERR", Color.LightPink);
-            textViewer.MatchText.Add("WRN", Color.Plum);
-            textViewer.Prompt = "> ";
+            tvInfo.BackColor = BackColor;
+            tvInfo.Prompt = "> ";
+            List<TextViewer.Matcher> matchers =
+            [
+                new("ERR", Color.Red),
+                new("WRN", Color.Green),
+            ];
+            tvInfo.Matchers = matchers;
 
             PopulateRecentMenu();
 
@@ -222,7 +226,7 @@ namespace NProcessing.App
                         InitRuntime();
 
                         // Setup script. This builds the sequences and sections.
-                        _surface.InitSurface(_script); // TODO maybe combine with main draw
+                        _surface.InitSurface(_script!); // TODO maybe combine with main draw
 
                         // Script may have altered shared values.
                         ProcessRuntime();
@@ -600,7 +604,7 @@ namespace NProcessing.App
             // Usually come from a different thread.
             if (IsHandleCreated)
             {
-                this.InvokeIfRequired(_ => { textViewer.AppendLine($"{e.Message}"); });
+                this.InvokeIfRequired(_ => { tvInfo.Append($"{e.Message}"); });
             }
         }
 

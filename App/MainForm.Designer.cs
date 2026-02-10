@@ -31,7 +31,7 @@
             this.btnClear = new System.Windows.Forms.ToolStripButton();
             this.btnWrap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.textViewer = new Ephemera.NBagOfUis.TextViewer();
+            this.tvInfo = new Ephemera.NBagOfUis.TextViewer();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -168,17 +168,17 @@
             // 
             // textViewer
             // 
-            this.textViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tvInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textViewer.Location = new System.Drawing.Point(13, 60);
-            this.textViewer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textViewer.MaxText = 5000;
-            this.textViewer.Name = "textViewer";
-            this.textViewer.Size = new System.Drawing.Size(836, 542);
-            this.textViewer.TabIndex = 41;
-            this.textViewer.WordWrap = true;
+            this.tvInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tvInfo.Location = new System.Drawing.Point(13, 60);
+            this.tvInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tvInfo.MaxText = 5000;
+            this.tvInfo.Name = "textViewer";
+            this.tvInfo.Size = new System.Drawing.Size(836, 542);
+            this.tvInfo.TabIndex = 41;
+            this.tvInfo.WordWrap = true;
             // 
             // timer1
             // 
@@ -194,7 +194,7 @@
             this.ClientSize = new System.Drawing.Size(862, 616);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.textViewer);
+            this.Controls.Add(this.tvInfo);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -226,7 +226,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Timer timer1;
-        private Ephemera.NBagOfUis.TextViewer textViewer;
+        private Ephemera.NBagOfUis.TextViewer tvInfo;
     }
 }
 
