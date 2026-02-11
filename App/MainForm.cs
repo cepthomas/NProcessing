@@ -101,12 +101,11 @@ namespace NProcessing.App
             // The rest of the controls.
             tvInfo.BackColor = BackColor;
             tvInfo.Prompt = "> ";
-            List<TextViewer.Matcher> matchers =
+            tvInfo.Matchers =
             [
                 new("ERR", Color.Red),
                 new("WRN", Color.Green),
             ];
-            tvInfo.Matchers = matchers;
 
             PopulateRecentMenu();
 
