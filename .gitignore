@@ -286,15 +286,3 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-
-# My added ignores
-/packages
-temp
-/_old
-/nprocessing.sublime-workspace
-/nprocessing.sublime-project
-/Examples/flocking.npp
-/Examples/generative1.npp
-/Examples/generative2.npp
-/Examples/gol.npp
-/Examples/lsys.npp
