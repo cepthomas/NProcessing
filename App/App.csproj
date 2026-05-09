@@ -18,7 +18,7 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
-        <ApplicationIcon>Resources\Goupil.ico</ApplicationIcon>
+        <ApplicationIcon>Goupil.ico</ApplicationIcon>
         <!-- en none -->
     </PropertyGroup>
 
