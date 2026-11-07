@@ -3,7 +3,7 @@
 
 - NProcessing is a partial port of [Processing](https://processing.org/) to the Windows .NET/C# world.
 - Simple Processing scripts should port easily and run fine. A porting guide is included.
-- Requires VS2022 and .NET8.
+- Requires VS2026 and .NET10.
 - Uses Roslyn for in-memory compilation.
 - No installer yet, it's a build-it-yerself for now. Eventually a nuget package might be created.
 - Settings and log are in `C:\Users\<user>\AppData\Local\Ephemera\NProcessing`.
